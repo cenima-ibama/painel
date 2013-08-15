@@ -4,7 +4,6 @@
   -o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-in;
   transition: transform 0.2s ease-out, opacity 0.2s ease-in;
 }
-
 .marker-cluster-small {
   background-color: rgba(181, 226, 140, 0.6);
 }
@@ -35,12 +34,12 @@
   height: 30px;
   margin-left: 5px;
   margin-top: 5px;
-  text-align: center;
   border-radius: 15px;
+  color: #FFFFFF;
   font-size: 14px;
   font-weight: bold;
-  color: #FFF;
-  text-shadow: 0 0 5px rgba(0, 0, 0, .3);
+  text-align: center;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 .marker-cluster span {
   line-height: 30px;

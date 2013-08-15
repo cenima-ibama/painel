@@ -136,6 +136,13 @@ class CI_Upload {
 	public $file_ext		= '';
 
 	/**
+	 * Force filename extension to lowercase
+	 *
+	 * @var	string
+	 */
+	public $file_ext_tolower		= FALSE;
+
+	/**
 	 * Upload path
 	 *
 	 * @var	string
@@ -294,6 +301,7 @@ class CI_Upload {
 					'file_type'			=> '',
 					'file_size'			=> NULL,
 					'file_ext'			=> '',
+					'file_ext_tolower' => FALSE,
 					'upload_path'			=> '',
 					'overwrite'			=> FALSE,
 					'encrypt_name'			=> FALSE,
@@ -455,7 +463,7 @@ class CI_Upload {
 		}
 
 		// Are the image dimensions within the allowed size?
-		// Note: This can fail if the server has an open_basdir restriction.
+		// Note: This can fail if the server has an open_basedir restriction.
 		if ( ! $this->is_allowed_dimensions())
 		{
 			$this->set_error('upload_invalid_dimensions');
@@ -965,7 +973,14 @@ class CI_Upload {
 	public function get_extension($filename)
 	{
 		$x = explode('.', $filename);
-		return (count($x) !== 1) ? '.'.end($x) : '';
+
+		if (count($x) === 1)
+		{
+		    return '';
+		}
+
+		$ext = ($this->file_ext_tolower) ? strtolower(end($x)) : end($x);
+		return '.'.$ext;
 	}
 
 	// --------------------------------------------------------------------
@@ -1075,18 +1090,14 @@ class CI_Upload {
 		$CI =& get_instance();
 		$CI->lang->load('upload');
 
-		if (is_array($msg))
+		if ( ! is_array($msg))
 		{
-			foreach ($msg as $val)
-			{
-				$msg = ($CI->lang->line($val) === FALSE) ? $val : $CI->lang->line($val);
-				$this->error_msg[] = $msg;
-				log_message('error', $msg);
-			}
+			$msg = array($msg);
 		}
-		else
+
+		foreach ($msg as $val)
 		{
-			$msg = ($CI->lang->line($msg) === FALSE) ? $msg : $CI->lang->line($msg);
+			$msg = ($CI->lang->line($val) === FALSE) ? $val : $CI->lang->line($val);
 			$this->error_msg[] = $msg;
 			log_message('error', $msg);
 		}

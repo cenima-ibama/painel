@@ -27,10 +27,13 @@ class Auth extends CI_Controller {
     function __construct() {
         parent::__construct();
 
-        $this->load->helper('form');
+        // Enable firebug
+        $this->load->library('Firephp');
+        $this->firephp->setEnabled(TRUE);
+
+        $this->load->helper(array('form', 'url'));
         $this->load->library('Form_validation');
         $this->load->library('AuthLDAP');
-        $this->load->helper('url');
     }
 
     function index() {
@@ -43,7 +46,7 @@ class Auth extends CI_Controller {
         if(!$this->authldap->is_authenticated()) {
             // Set up rules for form validation
             $rules = $this->form_validation;
-            $rules->set_rules('username', 'Username', 'required|alpha_dash');
+            $rules->set_rules('username', 'Username', 'required|numeric');
             $rules->set_rules('password', 'Password', 'required');
 
             // Do the login...
@@ -58,13 +61,11 @@ class Auth extends CI_Controller {
                     }
                 }
             else {
+                $data['login_fail'] = TRUE;
+                $data['logged_in'] = FALSE;
                 // Login FAIL
-                $this->load->view('templates/login', array('login_fail_msg'
-                    => 'Error with LDAP authentication.'));
+                $this->load->view('templates/login', $data);
             }
-        } else {
-            // Already logged in...
-            redirect(base_url());
         }
     }
 

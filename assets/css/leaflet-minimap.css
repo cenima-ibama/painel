@@ -1,31 +1,31 @@
 .leaflet-control-minimap {
-    border:1px solid #F8F8F9;
-    box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
-    background: #FFF;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
+  border:1px solid #F8F8F9;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
+  background: #FFF;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 
 .leaflet-control-minimap a {
-    background-color: #F8F8F9;
-    border:1px solid #F8F8F9;
-    border-radius: 4px 0px 4px 0px;
-    background-position: 8px 8px;
-    background-repeat: no-repeat;
-    display: block;
-    outline: none;
-    z-index: 99999;
+  background-color: #F8F8F9;
+  border:1px solid #F8F8F9;
+  border-radius: 4px 0px 4px 0px;
+  background-position: 8px 8px;
+  background-repeat: no-repeat;
+  display: block;
+  outline: none;
+  z-index: 99999;
 }
 .leaflet-control-minimap a.minimized {
-    background-position: 8px -17px;
+  background-position: 8px -17px;
 }
 
 .leaflet-control-minimap-toggle-display {
-    background-image: url("../img/minimap_toggle.png");
-    height: 26px;
-    width: 26px;
-    position: absolute;
-    bottom: 0;
-    right: 0;
+  background-image: url("../img/minimap_toggle.png");
+  height: 26px;
+  width: 26px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }

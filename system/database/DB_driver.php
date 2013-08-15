@@ -561,7 +561,6 @@ abstract class CI_DB_driver {
 		if ($sql === '')
 		{
 			log_message('error', 'Invalid query: '.$sql);
-
 			return ($this->db_debug) ? $this->display_error('db_invalid_query') : FALSE;
 		}
 		elseif ( ! is_bool($return_object))
@@ -1376,7 +1375,9 @@ abstract class CI_DB_driver {
 			$fields[$this->protect_identifiers($key)] = $this->escape($val);
 		}
 
-		return $this->_update($this->protect_identifiers($table, TRUE, NULL, FALSE), $fields);
+		$sql = $this->_update($this->protect_identifiers($table, TRUE, NULL, FALSE), $fields);
+		$this->_reset_write();
+		return $sql;
 	}
 
 	// --------------------------------------------------------------------

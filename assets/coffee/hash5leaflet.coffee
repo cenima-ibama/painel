@@ -334,13 +334,6 @@ H5.Leaflet.Layer = L.Class.extend(
     # If true, don't bother querying again.
     return if @_lastQueriedBounds and @_lastQueriedBounds.equals(bounds) and not @options.autoUpdate
 
-    # Create a cluster layer
-    if @options.cluster
-      # reload cluster in case of reload of page
-      if @options.markers then @options.markers.clearLayers()
-      @options.markers = new L.MarkerClusterGroup()
-      @layer.addLayer @options.markers
-
     # Store the bounds in the _lastQueriedBounds member so we don't have
     # to query the layer again if someone simply turns a layer on/off
     @_lastQueriedBounds = bounds
@@ -405,20 +398,11 @@ H5.Leaflet.Layer = L.Class.extend(
           @_vectors.push data.features[i]
 
           # Add vector or vectors on the map
-          # it's a cluster layer
-          if @options.cluster
-            if @_vectors[i].vector
-              @options.markers.addLayer @_vectors[i].vector
-            else if @_vectors[i].vectors and @_vectors[i].vectors.length
-              for k in [0 ... @_vectors[i].vectors.length]
-                @options.markers.addLayer @_vectors[i].vectors[k]
-          # it's a normal layer
-          else
-            if @_vectors[i].vector
-              @layer.addLayer @_vectors[i].vector
-            else if @_vectors[i].vectors and @_vectors[i].vectors.length
-              for k in [0 ... @_vectors[i].vectors.length]
-                @layer.addLayer @_vectors[i].vectors[k]
+          if @_vectors[i].vector
+            @layer.addLayer @_vectors[i].vector
+          else if @_vectors[i].vectors and @_vectors[i].vectors.length
+            for k in [0 ... @_vectors[i].vectors.length]
+              @layer.addLayer @_vectors[i].vectors[k]
 
           if @options.popupTemplate
             me = this
@@ -480,7 +464,7 @@ H5.Leaflet.Layer = L.Class.extend(
       )
 
     if @options.focus
-      @options.map.panInsideBounds(@layer.getBounds())
+      @options.map.fitBounds(@layer.getBounds())
 
     # clean unused data
     data = null
@@ -564,8 +548,12 @@ H5.Leaflet.Postgis = H5.Leaflet.GeoJSONLayer.extend(
     # Create an array to hold the features
     @_vectors = []
 
-    # create layer to group all vectors
-    @layer = L.featureGroup()
+    if @options.cluster
+      # Create a cluster layer
+      @layer = new L.MarkerClusterGroup()
+    else
+      # create layer to group all vectors
+      @layer = new L.featureGroup()
 
     if @options.map
       if @options.scaleRange and @options.scaleRange instanceof Array and @options.scaleRange.length is 2

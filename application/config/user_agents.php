@@ -149,6 +149,7 @@ $mobiles = array(
 	'mot-'			=> 'Motorola',
 	'playstation portable'	=> 'PlayStation Portable',
 	'playstation 3'		=> 'PlayStation 3',
+	'playstation vita'  	=> 'PlayStation Vita',
 	'hiptop'		=> 'Danger Hiptop',
 	'nec-'			=> 'NEC',
 	'panasonic'		=> 'Panasonic',
@@ -181,7 +182,7 @@ $mobiles = array(
 	'operamini'		=> 'Opera Mini',
 	'opera mini'	=> 'Opera Mini',
 	'opera mobi'	=> 'Opera Mobile',
-	'fennec'	=> 'Firefox Mobile',
+	'fennec'		=> 'Firefox Mobile',
 
 	// Other
 	'digital paths'	=> 'Digital Paths',

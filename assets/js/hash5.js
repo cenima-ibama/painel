@@ -967,20 +967,13 @@
       return this._processFeatures(data);
     },
     _processFeatures: function(data) {
-      var bounds, feature, geometry, geometryOptions, i, j, k, me, onMap, propertiesChanged, symbologyPropertyChanged, vector_or_vectors, _i, _j, _k, _l, _m, _ref3, _ref4, _ref5, _ref6, _ref7;
+      var bounds, feature, geometry, geometryOptions, i, j, k, me, onMap, propertiesChanged, symbologyPropertyChanged, vector_or_vectors, _i, _j, _k, _l, _ref3, _ref4, _ref5, _ref6;
       if (!this.options.map) {
         return;
       }
       bounds = this.options.map.getBounds();
       if (this._lastQueriedBounds && this._lastQueriedBounds.equals(bounds) && !this.options.autoUpdate) {
         return;
-      }
-      if (this.options.cluster) {
-        if (this.options.markers) {
-          this.options.markers.clearLayers();
-        }
-        this.options.markers = new L.MarkerClusterGroup();
-        this.layer.addLayer(this.options.markers);
       }
       this._lastQueriedBounds = bounds;
       this.layer.addTo(this.options.map);
@@ -1037,21 +1030,11 @@
             vector_or_vectors = this._geoJsonGeometryToLeaflet(geometry, geometryOptions);
             data.features[i][(vector_or_vectors instanceof Array ? "vectors" : "vector")] = vector_or_vectors;
             this._vectors.push(data.features[i]);
-            if (this.options.cluster) {
-              if (this._vectors[i].vector) {
-                this.options.markers.addLayer(this._vectors[i].vector);
-              } else if (this._vectors[i].vectors && this._vectors[i].vectors.length) {
-                for (k = _l = 0, _ref6 = this._vectors[i].vectors.length; 0 <= _ref6 ? _l < _ref6 : _l > _ref6; k = 0 <= _ref6 ? ++_l : --_l) {
-                  this.options.markers.addLayer(this._vectors[i].vectors[k]);
-                }
-              }
-            } else {
-              if (this._vectors[i].vector) {
-                this.layer.addLayer(this._vectors[i].vector);
-              } else if (this._vectors[i].vectors && this._vectors[i].vectors.length) {
-                for (k = _m = 0, _ref7 = this._vectors[i].vectors.length; 0 <= _ref7 ? _m < _ref7 : _m > _ref7; k = 0 <= _ref7 ? ++_m : --_m) {
-                  this.layer.addLayer(this._vectors[i].vectors[k]);
-                }
+            if (this._vectors[i].vector) {
+              this.layer.addLayer(this._vectors[i].vector);
+            } else if (this._vectors[i].vectors && this._vectors[i].vectors.length) {
+              for (k = _l = 0, _ref6 = this._vectors[i].vectors.length; 0 <= _ref6 ? _l < _ref6 : _l > _ref6; k = 0 <= _ref6 ? ++_l : --_l) {
+                this.layer.addLayer(this._vectors[i].vectors[k]);
               }
             }
             if (this.options.popupTemplate) {
@@ -1059,14 +1042,14 @@
               feature = data.features[i];
               this._setPopupContent(feature);
               (function(feature) {
-                var _n, _ref8, _results;
+                var _m, _ref7, _results;
                 if (feature.vector) {
                   return feature.vector.on("click", function(event) {
                     return me._showPopup(feature, event);
                   });
                 } else if (feature.vectors) {
                   _results = [];
-                  for (k = _n = 0, _ref8 = feature.vectors.length; 0 <= _ref8 ? _n < _ref8 : _n > _ref8; k = 0 <= _ref8 ? ++_n : --_n) {
+                  for (k = _m = 0, _ref7 = feature.vectors.length; 0 <= _ref7 ? _m < _ref7 : _m > _ref7; k = 0 <= _ref7 ? ++_m : --_m) {
                     _results.push(feature.vectors[k].on("click", function(event) {
                       return me._showPopup(feature, event);
                     }));
@@ -1079,14 +1062,14 @@
               me = this;
               feature = data.features[i];
               (function(feature) {
-                var _n, _ref8, _results;
+                var _m, _ref7, _results;
                 if (feature.vector) {
                   return feature.vector.on("click", function(event) {
                     return me._fireClickEvent(feature, event);
                   });
                 } else if (feature.vectors) {
                   _results = [];
-                  for (k = _n = 0, _ref8 = feature.vectors.length; 0 <= _ref8 ? _n < _ref8 : _n > _ref8; k = 0 <= _ref8 ? ++_n : --_n) {
+                  for (k = _m = 0, _ref7 = feature.vectors.length; 0 <= _ref7 ? _m < _ref7 : _m > _ref7; k = 0 <= _ref7 ? ++_m : --_m) {
                     _results.push(feature.vectors[k].on("click", function(event) {
                       return me._fireClickEvent(feature, event);
                     }));
@@ -1099,14 +1082,14 @@
               me = this;
               feature = data.features[i];
               (function(feature) {
-                var _n, _ref8, _results;
+                var _m, _ref7, _results;
                 if (feature.vector) {
                   return feature.vector.on("mouseover", function(event) {
                     return me._fireMouseoverEvent(feature, event);
                   });
                 } else if (feature.vectors) {
                   _results = [];
-                  for (k = _n = 0, _ref8 = feature.vectors.length; 0 <= _ref8 ? _n < _ref8 : _n > _ref8; k = 0 <= _ref8 ? ++_n : --_n) {
+                  for (k = _m = 0, _ref7 = feature.vectors.length; 0 <= _ref7 ? _m < _ref7 : _m > _ref7; k = 0 <= _ref7 ? ++_m : --_m) {
                     _results.push(feature.vectors[k].on("mouseover", function(event) {
                       return me._fireMouseoverEvent(feature, event);
                     }));
@@ -1119,14 +1102,14 @@
               me = this;
               feature = data.features[i];
               (function(feature) {
-                var _n, _ref8, _results;
+                var _m, _ref7, _results;
                 if (feature.vector) {
                   return feature.vector.on("mouseout", function(event) {
                     return me._fireMouseoutEvent(feature, event);
                   });
                 } else if (feature.vectors) {
                   _results = [];
-                  for (k = _n = 0, _ref8 = feature.vectors.length; 0 <= _ref8 ? _n < _ref8 : _n > _ref8; k = 0 <= _ref8 ? ++_n : --_n) {
+                  for (k = _m = 0, _ref7 = feature.vectors.length; 0 <= _ref7 ? _m < _ref7 : _m > _ref7; k = 0 <= _ref7 ? ++_m : --_m) {
                     _results.push(feature.vectors[k].on("mouseout", function(event) {
                       return me._fireMouseoutEvent(feature, event);
                     }));
@@ -1146,7 +1129,7 @@
         });
       }
       if (this.options.focus) {
-        this.options.map.panInsideBounds(this.layer.getBounds());
+        this.options.map.fitBounds(this.layer.getBounds());
       }
       return data = null;
     }
@@ -1238,7 +1221,11 @@
       this._globalPointer = "Postgis_" + this.options.geotable + "_" + this.options.geomFieldName;
       window[this._globalPointer] = this;
       this._vectors = [];
-      this.layer = L.featureGroup();
+      if (this.options.cluster) {
+        this.layer = new L.MarkerClusterGroup();
+      } else {
+        this.layer = new L.featureGroup();
+      }
       if (this.options.map) {
         if (this.options.scaleRange && this.options.scaleRange instanceof Array && this.options.scaleRange.length === 2) {
           z = this.options.map.getZoom();

@@ -232,7 +232,7 @@ class AuthLDAP {
         }
         // Now actually try to bind as the user
         $bind = ldap_bind($this->ldapconn, $binddn, $password);
-        if(! $bind) {
+        if(!$bind) {
             $this->_audit("Failed login attempt: ".$username." from ".$_SERVER['REMOTE_ADDR']);
             return FALSE;
             show_error('Unable to bind to server: Invalid credentials for '.$username);

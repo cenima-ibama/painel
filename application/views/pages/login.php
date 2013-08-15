@@ -7,9 +7,9 @@
                 echo '<button class="close" data-dismiss="alert">&times;</button><span>' . validation_errors() .'</span>';
                 echo '</div>';
             }
-            else if (isset($login_fail_msg)) {
+            else if (isset($login_fail)) {
                 echo '<div class="alert alert-block alert-error fade in">';
-                echo '<button class="close" data-dismiss="alert">&times;</button><span>' . $login_fail_msg .'</span>';
+                echo '<button class="close" data-dismiss="alert">&times;</button><span> Usuário ou Senha inválidos.</span>';
                 echo '</div>';
             }
          ?>
@@ -19,7 +19,7 @@
         <div class="control-group">
             <?php echo form_label('Usuário:', 'username', array('class' => 'control-label', 'for' => 'username')); ?>
             <div class="controls">
-                <?php echo form_input(array('name' => 'username', 'id' => 'username', 'class' => 'formfield', 'type', 'number')); ?>
+                <?php echo form_input(array('name' => 'username', 'id' => 'username', 'class' => 'formfield', 'type' => 'text', 'placeholder' => 'CPF')); ?>
             </div>
         </div>
         <div class="control-group">

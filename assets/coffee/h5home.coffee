@@ -1,3 +1,7 @@
+if document.getElementById("login")
+  $("#login").load("http://" + document.domain + "/painel/index.php/login")
+  $("#login").hide()
+
 $(document).ready ->
 
   #-------------------------------------------------------------------------
@@ -60,7 +64,4 @@ $(document).ready ->
 
   # Animate load screen
   $(".loading").fadeOut 700
-  if document.getElementById("login")
-    $("#login").load("http://" + document.domain + "/painel/index.php/login")
-    $("#login").hide()
 
