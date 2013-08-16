@@ -46,7 +46,7 @@ class Auth extends CI_Controller {
         if(!$this->authldap->is_authenticated()) {
             // Set up rules for form validation
             $rules = $this->form_validation;
-            $rules->set_rules('username', 'Username', 'required|numeric');
+            $rules->set_rules('username', 'Username', 'required');
             $rules->set_rules('password', 'Password', 'required');
 
             // Do the login...

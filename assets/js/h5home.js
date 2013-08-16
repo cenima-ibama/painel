@@ -45,7 +45,8 @@
         $("#map").show();
         $("#login").show();
       }
-      return $('.nav-collapse').collapse('hide');
+      $('.nav-collapse').collapse('hide');
+      return $("#username").mask("999.999.999-99");
     });
     String.prototype.toProperCase = function() {
       return this.replace(/\w\S*/g, function(txt) {

@@ -277,7 +277,6 @@
       }
       return _results;
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("number", "Dia");
     this.data.addColumn("number", "Área");
@@ -391,7 +390,6 @@
       }
       return Math.round(sum * 100) / 100;
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Mês");
     for (i = _k = 0, _ref2 = this.options.period; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
@@ -511,7 +509,6 @@
       }
       return sumValues(firstPeriod, secondPeriod);
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Ano");
     this.data.addColumn("number", "Parcial");
@@ -598,7 +595,6 @@
       });
       return Math.round(sum * 100) / 100;
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Estado");
     for (i = _k = 0, _ref2 = this.options.period; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
@@ -704,7 +700,6 @@
         return sum;
       }
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Ano");
     this.data.addColumn("number", "Alerta DETER");
@@ -796,7 +791,6 @@
       });
       return Math.round(sum * 100) / 100;
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Estado");
     this.data.addColumn("number", "Alerta DETER");
@@ -887,7 +881,6 @@
       });
       return Math.round(sum * 100) / 100;
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Mês");
     this.data.addColumn("number", H5.Data.periods[this.options.period]);
@@ -949,7 +942,6 @@
         return Math.round(sum * 100) / 100;
       }
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Estado");
     this.data.addColumn("number", "Área Total");
@@ -1038,7 +1030,6 @@
       });
       return Math.round(percent * 100);
     };
-    this.createChart();
     this.createDataTable();
     this.data.addColumn("string", "Mês");
     for (i = _k = 0, _ref2 = this.options.period; 0 <= _ref2 ? _k < _ref2 : _k > _ref2; i = 0 <= _ref2 ? ++_k : --_k) {

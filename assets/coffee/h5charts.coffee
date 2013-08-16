@@ -221,9 +221,6 @@ chart1.drawChart = ->
           return false
       @data.setValue (day - 1), 1, Math.round((@data.getValue((day - 1), 1) + sum) * 100) / 100
 
-  # create new chart
-  @createChart()
-
   # create an empty table
   @createDataTable()
 
@@ -325,9 +322,6 @@ chart2.drawChart = ->
           sum += reg.area
 
     return Math.round(sum * 100) / 100
-
-  # create new chart
-  @createChart()
 
   # create an empty table
   @createDataTable()
@@ -432,9 +426,6 @@ chart3.drawChart = ->
         secondPeriod = new Date(year, month+1, 0)
     sumValues firstPeriod, secondPeriod
 
-  # create new chart
-  @createChart()
-
   # create an empty table
   @createDataTable()
 
@@ -515,9 +506,6 @@ chart4.drawChart = ->
       if firstPeriod <= reg.date <= secondPeriod
         sum += reg.area
     Math.round(sum * 100) / 100
-
-  # create new chart
-  @createChart()
 
   # create an empty table
   @createDataTable()
@@ -609,9 +597,6 @@ chart5.drawChart = ->
 
     return sum if sum >= 0
 
-  # create new chart
-  @createChart()
-
   # create an empty table
   @createDataTable()
 
@@ -690,9 +675,6 @@ chart6.drawChart = ->
       if key is period
         sum+= reg.area if reg.area?
     return Math.round(sum * 100) / 100
-
-  # create new chart
-  @createChart()
 
   # create an empty table
   @createDataTable()
@@ -779,9 +761,6 @@ chart7.drawChart = ->
         sum += reg.area
     Math.round(sum * 100) / 100
 
-  # create new chart
-  @createChart()
-
   # create an empty table
   @createDataTable()
 
@@ -845,9 +824,6 @@ chart8.drawChart = ->
       return 1
     else
       Math.round(sum * 100) / 100
-
-  # create new chart
-  @createChart()
 
   # create an empty table
   @createDataTable()
@@ -934,9 +910,6 @@ chart9.drawChart = ->
         return false
 
     return Math.round(percent * 100)
-
-  # create new chart
-  @createChart()
 
   # create an empty table
   @createDataTable()

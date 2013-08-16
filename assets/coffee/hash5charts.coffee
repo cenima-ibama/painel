@@ -15,7 +15,6 @@ class H5.Charts.Container
     type: null
     container: null
     period: 1
-    started: false
     title: ""
     defaultClass: ""
     selects: undefined
@@ -303,23 +302,25 @@ class H5.Charts.Container
 
 class H5.Charts.GoogleCharts extends H5.Charts.Container
 
+  constructor: ->
+    super
+    @createChart()
+
   createDataTable: ->
     @data = new google.visualization.DataTable()
 
   createChart: ->
-    if not @options.started
-      # setup new chart
-      if @options.type is "Gauge"
-        @chart = new google.visualization.Gauge(
-          @_boxContent
-        )
-      else
-        @chart = new google.visualization[@options.type + "Chart"](
-          @_boxContent
-        )
-      # only init one time
-      @options.started = true
-      @_detectScreenChanges()
+    # setup new chart
+    if @options.type is "Gauge"
+      @chart = new google.visualization.Gauge(
+        @_boxContent
+      )
+    else
+      @chart = new google.visualization[@options.type + "Chart"](
+        @_boxContent
+      )
+    # only init one time
+    @_detectScreenChanges()
 
   _detectScreenChanges: ->
     # Detect whether device supports orientationchange event,
@@ -329,8 +330,10 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
 
     # update chart if orientation or the size of the screen changed
     window.addEventListener orientationEvent, (=>
-      if $(@_boxContent).is(":visible")
+      if $(@_boxContent).is(":visible") and not @options.resizing
+        @options.resizing = true
         @drawChart()
+        @options.resizing = false
     ),false
 
   _enableTable: ->

@@ -19,7 +19,7 @@
         <div class="control-group">
             <?php echo form_label('Usuário:', 'username', array('class' => 'control-label', 'for' => 'username')); ?>
             <div class="controls">
-                <?php echo form_input(array('name' => 'username', 'id' => 'username', 'class' => 'formfield', 'type' => 'text', 'placeholder' => 'CPF')); ?>
+                <?php echo form_input(array('name' => 'username', 'id' => 'username', 'class' => 'formfield', 'type' => 'text')); ?>
             </div>
         </div>
         <div class="control-group">

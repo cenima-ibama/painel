@@ -108,6 +108,8 @@ class AuthLDAP {
          * something else here before hand in the future.
          */
 
+        $username = str_replace(array(".", "-"), "", $username);
+
         $user_info = $this->_authenticate($username,$password);
         if(empty($user_info['cn'])) {
             return FALSE;
