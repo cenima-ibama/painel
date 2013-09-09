@@ -70,10 +70,8 @@ class Auth extends CI_Controller {
     }
 
     function logout() {
-        $this->firephp->log($this->session->userdata('logged_in'));
-        $this->session->set_userdata(array('logged_in' => FALSE));
         $this->session->sess_destroy();
-        $this->firephp->log($this->session->userdata('logged_in'));
+        redirect(base_url());
     }
 }
 
