@@ -8,7 +8,6 @@ class H5.Rest
     parameters: null
     order: null
     limit: null
-    lines: {}
 
   data: null
 

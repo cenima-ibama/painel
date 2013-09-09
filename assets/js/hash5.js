@@ -46,8 +46,7 @@
       fields: null,
       parameters: null,
       order: null,
-      limit: null,
-      lines: {}
+      limit: null
     };
 
     Rest.prototype.data = null;
@@ -348,6 +347,7 @@
         }
         $(_this._boxTable).hide();
         $(_this._boxTable).toggleClass("box-table-overlay");
+        _this._tableIcon.className = "icon-table";
         $(_this._container).toggleClass(_this.defaultClass);
         $(_this._container).toggleClass("box-overlay");
         $("body").toggleClass("body-overlay");
@@ -423,10 +423,19 @@
           $(_this._boxContent).fadeToggle('fast', 'linear');
         }
         $(_this._boxTable).fadeToggle('fast', 'linear');
-        if ($(_this._boxTable).is(":visible")) {
+        if (_this._tableIcon.className === "icon-table") {
+          _this._tableIcon.className = "icon-bar-chart";
           visualization = new google.visualization.Table(_this._boxTable);
-          return visualization.draw(_this.data, null);
+          visualization.draw(_this.data, null);
+        } else {
+          _this._tableIcon.className = "icon-table";
         }
+        return $(_this._leftBtn).add(_this._rightBtn).add(_this._addBtn).add(_this._delBtn).on("click", function(event) {
+          if ($(_this._boxTable).is(":visible")) {
+            visualization = new google.visualization.Table(_this._boxTable);
+            return visualization.draw(_this.data, null);
+          }
+        });
       });
     };
 

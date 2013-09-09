@@ -279,6 +279,7 @@ class H5.Charts.Container
       # always hide the charttable div
       $(@_boxTable).hide()
       $(@_boxTable).toggleClass "box-table-overlay"
+      @_tableIcon.className = "icon-table"
 
       $(@_container).toggleClass @defaultClass
       $(@_container).toggleClass "box-overlay"
@@ -319,7 +320,6 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
       @chart = new google.visualization[@options.type + "Chart"](
         @_boxContent
       )
-    # only init one time
     @_detectScreenChanges()
 
   _detectScreenChanges: ->
@@ -347,29 +347,41 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
 
       $(@_boxTable).fadeToggle('fast', 'linear')
 
-      # only update values when visible
-      if $(@_boxTable).is(":visible")
-
-        # Create and draw the visualization.
+      # update values
+      if @_tableIcon.className is "icon-table"
+        @_tableIcon.className = "icon-bar-chart"
         visualization = new google.visualization.Table(
           @_boxTable
         )
-
         visualization.draw @data, null
+      else
+        @_tableIcon.className = "icon-table"
+
+      $(@_leftBtn).add(@_rightBtn).add(@_addBtn).add(@_delBtn).on "click", (event) =>
+        if $(@_boxTable).is(":visible")
+          # Create and draw the visualization.
+          visualization = new google.visualization.Table(
+            @_boxTable
+          )
+          visualization.draw @data, null
 
   _enableExport: ->
 
+    # generate csv from the @data file
     generateCSV = =>
 
       str = ""
       line = ""
 
+      # get the title of table
       for col in [0...@data.getNumberOfColumns()]
         title = @data.getColumnLabel(col)
         line += "\"" + title + "\","
 
+      # create a new line
       str += line + "\r\n"
 
+      # get data for the rows
       for row in [0...@data.getNumberOfRows()]
         line = ""
         for col in [0...@data.getNumberOfColumns()]
@@ -453,12 +465,12 @@ class H5.Charts.Knobs extends H5.Charts.SmallContainer
       height: 58
       thickness: 0.5
       displayInput: false
-      color: "alert"
+      color: @options.color
       draw: ->
         value = @val()
         _min = @o.min
         _max = @o.max
-        if @color is "coldtohot"
+        if @o.color is "coldtohot"
           if _min <= value <= _min*0.3 then color = pusher.color("#67C2EF")
           else if _min*0.3 < value <= _max*0.3 then color = pusher.color("#CBE968")
           else if _max*0.3 < value <= _max*0.7 then color = pusher.color("#FABB3D")
@@ -480,7 +492,7 @@ class H5.Charts.Knobs extends H5.Charts.SmallContainer
       $(value: dial.val()).animate
         value: total,
           duration: 2000
-          easing: "easeOutSine"
+          easing: "easeOutBounce"
           step: ->
             dial.val(Math.floor @value).trigger "change"
     else

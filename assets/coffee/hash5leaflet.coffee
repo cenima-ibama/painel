@@ -575,7 +575,7 @@ H5.Leaflet.Postgis = H5.Leaflet.GeoJSONLayer.extend(
   _getFeatures: ->
 
     # Build Query
-    where = (if (@options.where) then "&parameters=" + encodeURIComponent(@options.where) else null)
+    where = (if (@options.where) then "&parameters=" + encodeURIComponent(@options.where) else "")
     if not @options.showAll
       bounds = @options.map.getBounds()
       sw = bounds.getSouthWest()

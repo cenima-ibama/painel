@@ -70,15 +70,10 @@ class Auth extends CI_Controller {
     }
 
     function logout() {
-        if($this->session->userdata('logged_in')) {
-            $data['name'] = $this->session->userdata('cn');
-            $data['username'] = $this->session->userdata('username');
-            $data['logged_in'] = TRUE;
-            $this->authldap->logout();
-        } else {
-            $data['logged_in'] = FALSE;
-        }
-        redirect(base_url());
+        $this->firephp->log($this->session->userdata('logged_in'));
+        $this->session->set_userdata(array('logged_in' => FALSE));
+        $this->session->sess_destroy();
+        $this->firephp->log($this->session->userdata('logged_in'));
     }
 }
 

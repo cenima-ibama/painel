@@ -40,6 +40,10 @@ ucFederais = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
   format: "image/png"
   transparent: true
 )
+
+rapidEye = new L.TileLayer("http://geo1.ibama.gov.br/geo/tmstest/{z}/{x}/{y}.png",
+  tms: true
+)
 # }}}
 # SCREEN SIZE {{{
 # update size of the map container
@@ -193,6 +197,8 @@ new H5.Leaflet.LayerControl(
     overlayControl: false
   "DETER Polígonos":
     layer: H5.Map.layer.alerta.layer
+  "RapidEye":
+    layer: rapidEye
 ).addTo(H5.Map.base)
 
 # }}}

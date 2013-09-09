@@ -14,9 +14,10 @@ class Home extends CI_Controller {
 
     public function index()
     {
-        // $this->firephp->log("Home");
-        
-        if($this->authldap->is_authenticated()) {
+
+        // $this->firephp->log($this->session->userdata('logged_in'));
+
+        if($this->session->userdata('logged_in')) {
             $data['name'] = $this->session->userdata('cn');
             $data['username'] = $this->session->userdata('username');
             $data['logged_in'] = TRUE;
