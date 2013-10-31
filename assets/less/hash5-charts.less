@@ -1,0 +1,497 @@
+.box-shadow(@x: 0; @y: 1px; @blur: 0; @r: 255; @g: 255; @b: 255; @alpha: 0.6) {
+  -moz-box-shadow: @x @y @blur rgba(@r, @g, @b, @alpha);
+  -webkit-box-shadow: @x @y @blur rgba(@r, @g, @b, @alpha);
+  box-shadow: @x @y @blur rgba(@r, @g, @b, @alpha);
+}
+.inset-box-shadow(@x: 0; @y: 1px; @blur: 0; @r: 255; @g: 255; @b: 255; @alpha: 0.6) {
+  -moz-box-shadow: inset @x @y @blur rgba(@r, @g, @b, @alpha);
+  -webkit-box-shadow: inset @x @y @blur rgba(@r, @g, @b, @alpha);
+  box-shadow: inset @x @y @blur rgba(@r, @g, @b, @alpha);
+}
+.box-shadow-both(@x1: 0; @y1: 1px; @blur1: 0; @r1: 255; @g1: 255; @b1: 255; @alpha1: 1; @x2: 0; @y2: 1px; @blur2: 0; @r2: 255; @g2: 255; @b2: 255; @alpha2: 0.4) {
+  -moz-box-shadow: @x1 @y1 @blur1 rgba(@r1, @g1, @b1, @alpha1)
+  inset, @x2 @y2 @blur2 rgba(@r2, @g2, @b2, @alpha2);
+  -webkit-box-shadow: @x1 @y1 @blur1 rgba(@r1, @g1, @b1, @alpha1)
+  inset, @x2 @y2 @blur2 rgba(@r2, @g2, @b2, @alpha2);
+  box-shadow: @x1 @y1 @blur1 rgba(@r1, @g1, @b1, @alpha1)
+  inset, @x2 @y2 @blur2 rgba(@r2, @g2, @b2, @alpha2);
+}
+.box-shadow-none {
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.background(@color1; @color2) {
+  background-color: @color1; /* Old browsers */
+  background-image: -moz-linear-gradient(top, @color1, @color2); /* FF3.6+ */
+  background-image: -webkit-linear-gradient(top, @color1, @color2); /* Chrome10+,Safari5.1+ */
+  background-image: linear-gradient(to bottom, @color1, @color2); /* W3C */
+}
+.body-overlay {
+  position:absolute;
+  width:100%;
+  height:92%;
+  overflow: hidden;
+}
+.dash {
+  position: absolute;
+  top: 42px;
+  background-color: #F7F7F7;
+  z-index: 2;
+  width: 100%;
+  @media (max-width: 979px) {
+    top: 53px;
+  }
+}
+.charts-content {
+  text-align: center;
+  margin: 2% 2% 4%;
+  @media (max-width: 979px) {
+    margin: 6% 2% 4%;
+  }
+}
+.gauges {
+  width: auto;
+  margin: 0;
+  .gauge {
+    height: 150px;
+    width: 150px;
+    float: left;
+  }
+}
+.box {
+  float: left;
+  width: 47.8%;
+  margin: 10px;
+  @media (max-width: 979px) {
+    width: 100%;
+    margin: 0 0 15px;
+  }
+  .box-content {
+    background: none repeat scroll 0 0 #FCFCFC;
+    border: 1px solid #DDDDDD;
+    border-radius: 0 0 2px 2px;
+    .box-shadow;
+    margin-top: -1px;
+    height: 220px;
+  }
+  .box-content-table {
+    display: none;
+    background: none repeat scroll 0 0 #FCFCFC;
+    border-radius: 0 0 2px 2px;
+    margin-top: -222px;
+    height: 222px;
+    overflow: auto;
+    position: relative;
+  }
+  .box-content-database {
+    background: none repeat scroll 0 0 #FCFCFC;
+    border: none;
+    border: 1px solid #DDDDDD;
+    .box-shadow;
+    margin-top: -1px;
+    max-height: 220px;
+    overflow: auto;
+  }
+}
+.box-small {
+  float: left;
+  width: 23.1%;
+  margin: 10px;
+  @media (max-width: 979px) {
+    width: 100%;
+    margin: 0 0 15px;
+  }
+  .box-content {
+    background: none repeat scroll 0 0 #FCFCFC;
+    border: 1px solid #DDDDDD;
+    border-radius: 0 0 2px 2px;
+    .box-shadow;
+    margin-top: -1px;
+    height: 220px;
+  }
+  .box-content-table {
+    display: none;
+    background: none repeat scroll 0 0 #FCFCFC;
+    border-radius: 0 0 2px 2px;
+    margin-top: -222px;
+    height: 222px;
+    overflow: auto;
+    position: relative;
+  }
+}
+.sparks {
+  margin:0;
+  display: inline-block;
+  list-style: none outside none;
+  text-align: center;
+  @media (max-width: 979px) {
+    margin: 0 20px 0 10px;
+  }
+  input, textarea {
+    .box-shadow-none;
+  }
+  .spark{
+    .background(#FCFCFC 0%; #EFEFEF 100%);
+    border: 1px solid #D5D5D5;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 0 0 #FFFFFF inset, 0 1px 0 rgba(255, 255, 255, 0.4);
+    display: inline-block;
+    line-height: 18px;
+    margin: 0 10px;
+    padding: 0;
+    @media (max-width: 1024px) {
+      margin: 0 10px 16px;
+    }
+  }
+  .left {
+    border-right: 1px solid lightgrey;
+    box-shadow: 1px 0 0 0 #FFFFFF;
+    font-size: 10px;
+    font-weight: bold;
+    margin-right: 12px;
+    padding: 10px 14px 6px;
+  }
+  .right {
+    color: #666666;
+    font-size: 12px;
+    padding: 20px 16px 6px 2px;
+    text-align: center;
+    width: 90px;
+    strong {
+      font-size: 26px;
+      margin-bottom: 3px;
+      margin-top: 6px;
+    }
+  }
+  .left, .right {
+    float: left;
+    text-shadow: 0 1px 0 #FFFFFF;
+  }
+  span {
+    color: #777777;
+    font-size: 11px;
+  }
+}
+.box-header {
+  .background(#FCFCFC, #EFEFEF);
+  border: 1px solid #DDDDDD;
+  border-radius: 2px 2px 0 0;
+  .box-shadow-none;
+  height: 20px;
+  margin-bottom: -1px;
+  overflow: hidden;
+  padding: 10px;
+  @media (max-width: 979px) {
+    margin-right: 0;
+  }
+  .chart-icon {
+    margin: -6px;
+  }
+  .btn-right {
+    float: right;
+  }
+  .btn-left {
+    float: left;
+  }
+  .break {
+    border-left: 1px solid #FCFCFC;
+    border-right: 1px solid #DDDDDD;
+    margin: -12px 10px -10px;
+    padding: 12px 0 10px;
+  }
+  h2 {
+    color: #646464;
+    float: left;
+    font-size: 1.143em;
+    font-weight: normal;
+    line-height: 16px;
+    margin: 2px -100% 0 0;
+    text-shadow: 0 1px 0 #FFFFFF;
+    @media (max-width: 639px) {
+      display: none;
+    }
+  }
+}
+.box-overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1031;
+  background: #F7F7F7;
+  .content-overlay {
+    height:85%;
+    @media (max-height: 360px) {
+      height: 70%;
+    }
+  }
+}
+.box-table-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 44px;
+  top: 40px;
+  width: 100%;
+  height: 95%;
+  z-index: 1032;
+  background: #F7F7F7;
+  overflow: auto;
+  .content-overlay {
+    height:85%;
+    @media (max-height: 360px) {
+      height: 70%;
+    }
+  }
+}
+.quick-btn{
+  .background(#FCFCFC 0%; #EFEFEF 100%);
+  border-top: 1px solid lightgrey;
+  border-left: 1px solid lightgrey;
+  border-radius: 4px 4px 4px 4px;
+  box-shadow: 0 1px 0 0 #FFFFFF inset, 0 1px 0 rgba(255, 255, 255, 0.4);
+  display: flex;
+  line-height: 18px;
+  margin: 0 8.5%;
+  padding: 0;
+  @media (max-width: 979px) {
+    display: inline-block;
+    margin-top: 40px;
+    width: 80%;
+  }
+  .item {
+    outline:0;
+    border-right: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    box-shadow: 1px 1px 0 0 #FFFFFF;
+    font-weight: bold;
+    margin: 0;
+    padding: 25px 15px 20px;
+    float: left;
+    width: 100%;
+    @media (max-width: 979px) {
+      width: 19.65%;
+    }
+    @media (max-width: 639px) {
+      width: 41%;
+    }
+    @media (max-height: 360px) {
+      width: 14.75%;
+    }
+    @media (max-width: 479px) {
+      width: 40.2%;
+    }
+    @media (max-width: 320px) {
+      width: 39%;
+    }
+    @media (max-height: 320px) {
+      width: 12.85%;
+    }
+    &:first-child{
+      border-radius: 4px 0 0 4px;
+      @media (max-width: 979px) {
+        border-radius: 4px 0 0 0;
+      }
+      @media (max-width: 767px) {
+      }
+      @media (max-height: 360px) {
+      }
+    }
+    &:last-child {
+      border-radius: 0px 4px 4px 0px;
+      @media (max-width: 979px) {
+        border-radius: 0 0 4px 0;
+      }
+      @media (max-width: 767px) {
+      }
+      @media (max-height: 360px) {
+      }
+    }
+    a {
+      outline: none;
+      text-decoration: none;
+    }
+    &:hover{
+      background: #FCFCFC;
+      text-decoration: none;
+      transition: all 0.2s ease 0s;
+    }
+    i {
+      background-color: transparent;
+      background-position: center;
+      background-repeat: no-repeat;
+      padding: 32px;
+      vertical-align: middle;
+    }
+    span {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      position: relative;
+      bottom: -12px;
+      color: #333333;
+    }
+    &.active, &:active{
+      background: #FCFCFC;
+      .box-shadow-both(0; 2px; 4px; 0; 0; 0; 0.15; 0; 1px; 2px; 0; 0; 0; 0.05);
+    }
+    i.icon-ac {
+      background-image: url("../img/states/AC.png");
+    }
+    i.icon-al {
+      background-image: url("../img/states/AL.png");
+    }
+    i.icon-ap {
+      background-image: url("../img/states/AP.png");
+    }
+    i.icon-am {
+      background-image: url("../img/states/AM.png");
+    }
+    i.icon-ba {
+      background-image: url("../img/states/BA.png");
+    }
+    i.icon-ce {
+      background-image: url("../img/states/CE.png");
+    }
+    i.icon-df {
+      background-image: url("../img/states/DF.png");
+    }
+    i.icon-es {
+      background-image: url("../img/states/ES.png");
+    }
+    i.icon-go {
+      background-image: url("../img/states/GO.png");
+    }
+    i.icon-ma {
+      background-image: url("../img/states/MA.png");
+    }
+    i.icon-mt {
+      background-image: url("../img/states/MT.png");
+    }
+    i.icon-ms {
+      background-image: url("../img/states/MS.png");
+    }
+    i.icon-mg {
+      background-image: url("../img/states/MG.png");
+    }
+    i.icon-pa {
+      background-image: url("../img/states/PA.png");
+    }
+    i.icon-pb {
+      background-image: url("../img/states/PB.png");
+    }
+    i.icon-pe {
+      background-image: url("../img/states/PE.png");
+    }
+    i.icon-pi {
+      background-image: url("../img/states/PI.png");
+    }
+    i.icon-pr {
+      background-image: url("../img/states/PR.png");
+    }
+    i.icon-rj {
+      background-image: url("../img/states/RJ.png");
+    }
+    i.icon-rn {
+      background-image: url("../img/states/RN.png");
+    }
+    i.icon-rs {
+      background-image: url("../img/states/RS.png");
+    }
+    i.icon-ro {
+      background-image: url("../img/states/RO.png");
+    }
+    i.icon-rr {
+      background-image: url("../img/states/RR.png");
+    }
+    i.icon-sc {
+      background-image: url("../img/states/SC.png");
+    }
+    i.icon-se {
+      background-image: url("../img/states/SE.png");
+    }
+    i.icon-sp {
+      background-image: url("../img/states/SP.png");
+    }
+    i.icon-to {
+      background-image: url("../img/states/TO.png");
+    }
+    i.icon-norte {
+      background-image: url("../img/states/Norte.png");
+    }
+    i.icon-nordeste {
+      background-image: url("../img/states/Nordeste.png");
+    }
+    i.icon-sul {
+      background-image: url("../img/states/Sul.png");
+    }
+    i.icon-sudeste {
+      background-image: url("../img/states/Sudeste.png");
+    }
+    i.icon-centrooeste {
+      background-image: url("../img/states/Centro-Oeste.png");
+    }
+    i.icon-brasil{
+      background-image: url("../img/states/Brasil.png");
+    }
+  }
+}
+.quick-slct{
+  padding: 0;
+  label {
+    font-weight: bold;
+    color: #666666;
+    font-size: 14px;
+  }
+  .item {
+    display: inline-block;
+    margin: -10px 0;
+    @media (min-width: 1024px) {
+      margin: 0 10px 20px;
+    }
+    @media (max-width: 1023px) {
+      margin: 25px 10px -20px;
+    }
+  }
+}
+
+#loading {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: #111111;
+  text-align: center;
+  .progress {
+    display: none;
+    position: absolute;
+    width: 150px;
+    height: 10px;
+    left: 0;
+    right: 0;
+    bottom: 40%;
+    margin: 0 auto;
+    @media (max-width: 979px) {
+      bottom: 35%;
+    }
+  }
+  img {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 45%;
+    margin: 0 auto;
+    @media (max-width: 979px) {
+      bottom: 40%;
+    }
+  }
+}

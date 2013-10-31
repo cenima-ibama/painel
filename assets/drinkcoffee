@@ -1,0 +1,8 @@
+#!/bin/bash
+
+coffee --join js/h5map.js -cw coffee/h5map.coffee &
+coffee --join js/h5charts.js -cw coffee/h5charts.coffee &
+coffee --join js/h5home.js -cw coffee/h5home.coffee &
+coffee --join js/hash5.js -cw coffee/hash5.coffee \
+                              coffee/hash5rest.coffee \
+                              coffee/hash5charts.coffee
