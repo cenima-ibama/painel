@@ -288,8 +288,10 @@
               where: qry
             });
             obj.vectorLayer.clusters.redraw();
+            if (clusterInput.value === "no") {
+              return this._map.removeLayer(obj.vectorLayer.clusters.layer);
+            }
           }
-          return console.log(qry);
         };
         _ref1 = obj.vectorLayer.filters;
         _results = [];
@@ -462,7 +464,7 @@
       });
       this._btFakeFile = L.DomUtil.create('button', 'btn btnSlide', this._divFile);
       $(this._btFakeFile).attr('type', 'button');
-      $(this._btFakeFile).html("Abrir <i class='icon-folder-open'></i>");
+      $(this._btFakeFile).html("<i class='icon-folder-open'></i> Abrir");
       $(this._btFakeFile).on('click', function(event) {
         return $(_this._btFileLayer).trigger('click');
       });

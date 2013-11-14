@@ -23,7 +23,8 @@
       above: false
     },
     initialize: function(options) {
-      return L.Util.setOptions(this, options);
+      this._createLoader();
+      L.Util.setOptions(this, options);
     },
     setMap: function(map) {
       var sr, z;
@@ -50,8 +51,23 @@
       return L.Util.setOptions(this, options);
     },
     redraw: function() {
+      $(this._loadContainer).fadeIn(300);
       this._hide();
-      return this._show();
+      this._show();
+    },
+    _createLoader: function() {
+      mapContainer = document.getElementById("map");
+      loadContainer = this._loadContainer = L.DomUtil.create("div", "", mapContainer);
+      loadContainer.style.width = "100%";
+      loadContainer.style.height = "100%";
+      loadContainer.style.position = "absolute";
+      loadContainer.style.display = "none";
+      loading = L.DomUtil.create("i", "icon-spinner icon-spin icon-large", loadContainer);
+      loading.style.color = "rgb(117, 187, 73)";
+      loading.style.position = "absolute";
+      loading.style.fontSize = "32px";
+      loading.style.top = "49%";
+      loading.style.left = "49%";
     },
     _show: function() {
       var _this = this;
@@ -62,11 +78,12 @@
       if (this.options.visibleAtScale) {
         if (this.options.autoUpdate && this.options.autoUpdateInterval) {
           this._autoUpdateInterval = setInterval(function() {
-            return _this._getFeatures();
+            _this._getFeatures();
           }, this.options.autoUpdateInterval);
         }
-        return this.options.map.fire("moveend").fire("zoomend");
+        this.options.map.fire("moveend").fire("zoomend");
       }
+      $(this._loadContainer).fadeOut(300);
     },
     _hide: function() {
       if (this._idleListener) {
