@@ -2,6 +2,13 @@
 H5.Data.restURL = "http://" + document.domain + "/painel/rest"
 
 H5.Data.changed = false
+H5.DB.dado_prodes_consolidado = {}
+H5.DB.dado_prodes_consolidado.table = "dado_prodes_consolidado"
+H5.Data.state2 = "AC"
+H5.Data.statesProdes = ["AC", "AP", "AM", "PA", "RO", "RR", "TO", "MT", "MA"]
+
+# H5.Data.state3 = "brasil"
+# H5.Data.statesNewStats = ["AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
 
 H5.Data.state = "brasil"
 H5.Data.states = ["AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
@@ -21,6 +28,9 @@ H5.Data.thisYear = H5.Data.thisDate.getFullYear()
 H5.Data.thisProdesYear = if H5.Data.thisMonth < 7 then H5.Data.thisYear else H5.Data.thisYear + 1
 H5.Data.thisMonth = H5.Data.thisDate.getMonth()
 H5.Data.thisDay = H5.Data.thisDate.getDate()
+
+H5.Data.rateSlct = 0;
+H5.Data.shapeSlct = 0;
 
 H5.Data.totalPeriods = if H5.Data.thisMonth < 7 then (H5.Data.thisDate.getFullYear() - 2005) else (H5.Data.thisDate.getFullYear() - 2004)
 H5.Data.periods = new Array(H5.Data.totalPeriods)
@@ -204,6 +214,90 @@ for i, properties of rest.data
   H5.DB.cloud.data.populate(
     properties.data, properties.percent,
   )
+#}}}
+# PRODES CONSOLIDADO {{{
+H5.DB.dado_prodes_consolidado.data =
+  init: ->
+    @states = {}
+    for state in H5.Data.allstates
+      @states[state] = {}
+
+  populate: (year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta) ->
+    # convert string into date
+    if state and year
+
+      # populate object
+      self = @states[state]
+      self[year] = {}
+      self[year].terra_indigena = if terra_indigena then terra_indigena else 0
+      self[year].uc_sustentavel = uc_sustentavel
+      self[year].uc_integral = uc_integral
+      self[year].assentamento = assentamento
+      self[year].floresta = floresta
+      self[year].year = year
+
+      # set the value of the last value
+      if @lastValue
+        if @lastValue.year < self[year].year
+          @lastValue = self[year]
+      else
+        @lastValue = self[year]
+      return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.dado_prodes_consolidado.table
+  # parameters: "data_cadastro > '2013-01-01'"
+  #fields: "ano, uf, terra_indigena, unidades_de_conservacao_uso_sustentavel, unidades_de_conservacao_protecao_integral, assentamentos, floresta_publica"
+)
+
+H5.DB.dado_prodes_consolidado.data.init()
+for i, properties of rest.data
+  H5.DB.dado_prodes_consolidado.data.populate(
+    properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel),parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica)
+  )
+#}}}
+# DETER CONSOLIDADO {{{
+# H5.DB.dado_deter_consolidado.data =
+#   init: ->
+#     @states = {}
+#     for state in H5.Data.allstates
+#       @states[state] = {}
+
+#   populate: (year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta) ->
+#     # convert string into date
+#     if state and year
+
+#       # populate object
+#       self = @states[state]
+#       self[year] = {}
+#       self[year].terra_indigena = if terra_indigena then terra_indigena else 0
+#       self[year].uc_sustentavel = uc_sustentavel
+#       self[year].uc_integral = uc_integral
+#       self[year].assentamento = assentamento
+#       self[year].floresta = floresta
+#       self[year].year = year
+
+#       # set the value of the last value
+#       if @lastValue
+#         if @lastValue.year < self[year].year
+#           @lastValue = self[year]
+#       else
+#         @lastValue = self[year]
+#       return
+
+
+#   getValues: ->
+#     rest = new H5.Rest (
+#       url: H5.Data.restURL
+#       table: H5.DB.dado_deter_consolidado.table + "('" +  + "'" + "'')"
+#     )
+
+#     H5.DB.dado_prodes_consolidado.data.init()
+#     for i, properties of rest.data
+#       H5.DB.dado_prodes_consolidado.data.populate(
+#         properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel),parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica)
+#       )
 #}}}
 # RELOAD DATE {{{
 # reload date based on database
@@ -981,6 +1075,522 @@ chart9.drawChart = ->
     @_delBtn.disabled = @options.period < 2
 
   @chart.draw @data, options
+#}}}
+# CHART10 {{{
+chart10 = new H5.Charts.GoogleCharts  (
+  type: "Line"
+  container: "chart10"
+  title: "Taxa de desmatamento PRODES em Terras Indígenas"
+  buttons:
+    export: true
+    table: true
+    minimize: true
+    maximize: true
+)
+
+chart10._shapesSlct = document.getElementById('shapesSlct')
+chart10._shapesSlct.options[0].selected = true
+chart10._ratesSlct = document.getElementById('ratesSlct')
+chart10._shapesSlct.options[0].selected = true
+
+chart10._dateBegin = document.getElementById('dateBegin')
+chart10._dateEnd = document.getElementById('dateFinish')
+
+chart10._stateGroup = document.getElementById('quick2').children
+
+
+# SELECT * FROM dados_deter('assentamento', 'AM', '2013-08-01 00:00:00', '2014-02-06 23:59:59') AS (Resultado float);
+# SELECT * FROM dados_deter('unidade_conservacao', 'AM', '2013-08-01 00:00:00', '2014-02-06 23:59:59') AS (Resultado float);
+# SELECT * FROM dados_deter('unidade_conservacao', 'AM', '2013-08-01 00:00:00', '2014-02-06 23:59:59') AS (Resultado float);
+# SELECT * FROM dados_deter('terra_indigena', 'AM', '2013-08-01 00:00:00', '2014-02-06 23:59:59') AS (Resultado float);
+# SELECT * FROM dados_deter('floresta_publica', 'AM', '2013-08-01', '2014-02-06') AS (Resultado float);
+
+
+
+$(chart10._shapesSlct).on "change", (event) ->
+  # H5.Data.shapeSlct =  chart10._shapesSlct.value
+  # chart10.areaSelected = chart10._shapesSlct.value
+  chart10.drawChart()
+$(chart10._ratesSlct).on "change", (event) ->
+  # H5.Data.ratesSlct =  chart10._ratesSlct.value
+  # chart10.rateSelected = chart10._ratesSlct.value
+  chart10.drawChart()
+$(chart10._dateBegin).on "change", (event) ->
+  # chart10._dateBegin = document.getElementById('dateBegin').value
+  # chart10.dateBegin = chart10._dateBegin
+  chart10.drawChart()
+$(chart10._dateEnd).on "change", (event) ->
+  # chart10._dateEnd = document.getElementById('dateFinish').value
+  # chart10.dateEnd = chart10._dateEnd
+  chart10.drawChart()
+$.each chart10._stateGroup, ()->
+  $(@).on "click", (event) ->
+    chart10._state = $(@).children('span').html() ? 'AC'
+    chart10.drawChart()
+
+chart10.drawChart = ->
+  createTable = (state) =>
+    sum = 0
+    for day in [1..daysInMonth]
+      $.each H5.DB.diary.data.states[state], (key, reg) ->
+        if firstPeriod <= reg.date <= secondPeriod and reg.day is day
+          sum += reg.area
+          return false
+      @data.setValue (day - 1), 1, Math.round((@data.getValue((day - 1), 1) + sum) * 100) / 100
+
+
+  # @_loadingScreen('Loading...')
+
+  @createDataTable()
+
+  @data.addColumn "string", "Ano"
+  @data.addColumn "number", "Área em km²"
+
+  data = []
+
+  areaSelected = chart10._shapesSlct.value
+  rateSelected = chart10._ratesSlct.value
+  dateBegin = chart10._dateBegin.value
+  dateEnd = chart10._dateEnd.value
+  state = chart10._state ? 'AC'
+
+
+  shapes =
+    "terra_indigena": "Terras Indígenas"
+    "uc_sustentavel": "Unidade de Conservação de uso sustentável"
+    "uc_integral": "Unidade de Conservação de proteção integral"
+    "assentamento": "Assentamento"
+    "floresta": "Floresta Pública"
+
+  rates =
+    "0": "DETER"
+    "1": "PRODES"
+
+
+  if rateSelected is '1'
+    stateData = H5.DB.dado_prodes_consolidado.data.states[H5.Data.state2]
+
+    switch areaSelected
+      when "terra_indigena"
+        for year in ["2010", "2011", "2012", "2013"]
+          data[0] = year
+          data[1] = stateData[year].terra_indigena
+          @data.addRow data
+        break
+      when "assentamento"
+        for year in ["2010", "2011", "2012", "2013"]
+          data[0] = year
+          data[1] = stateData[year].assentamento
+          @data.addRow data
+        break
+      when "floresta"
+        for year in ["2010", "2011", "2012", "2013"]
+          data[0] = year
+          data[1] = stateData[year].floresta
+          @data.addRow data
+        break
+      when "uc_integral"
+        for year in ["2010", "2011", "2012", "2013"]
+          data[0] = year
+          data[1] = stateData[year].uc_integral
+          @data.addRow data
+        break
+      when "uc_sustentavel"
+        for year in ["2010", "2011", "2012", "2013"]
+          data[0] = year
+          data[1] = stateData[year].uc_sustentavel
+          @data.addRow data
+        break
+
+  else
+
+    deter_area
+
+    switch areaSelected
+      when 'terra_indigena'
+        deter_area = 'terra_indigena'
+        break
+      when 'assentamento'
+        deter_area = 'assentamento'
+        break
+      when 'floresta'
+        deter_area = 'floresta_publica'
+        break
+      when 'uc_integral'
+        deter_area = 'unidade_conservacao'
+        break
+      when 'uc_sustentavel'
+        deter_area = 'unidade_conservacao'
+        break
+
+
+    timeBegin = $.datepicker.parseDate('dd/mm/yy',dateBegin)
+    timeEnd = $.datepicker.parseDate('dd/mm/yy',dateEnd)
+
+    timeBetween = (timeEnd - timeBegin) / 1000 / 60 / 60 / 24
+
+    partialBegin = new Date(timeBegin)
+    partialEnd = new Date(timeBegin)
+
+    if areaSelected is 'uc_integral'
+      function_name = 'dados_deter_pi'
+    else if areaSelected is 'uc_sustentavel'
+      function_name = 'dados_deter_us'
+    else
+      function_name = 'dados_deter'
+
+    deter_field = ''
+    deter_table = function_name + "('" +
+            deter_area + "','" +
+            chart10._state + "','" +
+            $.datepicker.formatDate('dd/mm/yy',partialBegin) + "','" +
+            $.datepicker.formatDate('dd/mm/yy',partialBegin) + "') AS (resultado float)"
+
+    months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+
+    if timeBetween < 50 # about a months and a half
+      console.log 'time to print by days'
+
+      while partialEnd.setDate(partialEnd.getDate() + 1) < timeEnd
+        deter_field += "(select * from dados_deter('" +
+            deter_area + "','" +
+            chart10._state + "','" +
+            $.datepicker.formatDate('dd/mm/yy',partialBegin) + "','" +
+            $.datepicker.formatDate('dd/mm/yy',partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getDate() + "/" + months[partialBegin.getMonth()] + "\","
+
+        partialBegin = new Date(partialEnd)
+
+      partialEnd = timeEnd
+      deter_field += "(select * from dados_deter('" +
+          deter_area + "','" +
+          chart10._state + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialBegin) + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getDate() + "/" + months[partialBegin.getMonth()] + "\""
+
+    else if timeBetween < 730 # 2 years
+      console.log 'time to print by months'
+
+      partialEnd.setDate(1)
+
+      while partialEnd.setMonth(partialEnd.getMonth() + 1) < timeEnd
+        deter_field += "(select * from dados_deter('" +
+            deter_area + "','" +
+            chart10._state + "','" +
+            $.datepicker.formatDate('dd/mm/yy',partialBegin) + "','" +
+            $.datepicker.formatDate('dd/mm/yy',partialEnd) + "') AS (resultado float)) as \"" + months[partialBegin.getMonth()] + "/" + partialBegin.getFullYear() + "\","
+
+        partialBegin = new Date(partialEnd)
+
+      partialEnd = timeEnd
+      deter_field += "(select * from dados_deter('" +
+          deter_area + "','" +
+          chart10._state + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialBegin) + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialEnd) + "') AS (resultado float)) as \"" + months[partialBegin.getMonth()] + "/" + partialBegin.getFullYear() + "\""
+
+    else
+      console.log 'time to print by years'
+
+      partialEnd.setDate(1)
+      partialEnd.setMonth(0)
+
+      while partialEnd.setFullYear(partialEnd.getFullYear() + 1) < timeEnd
+        deter_field += "(select * from dados_deter('" +
+          deter_area + "','" +
+          chart10._state + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialBegin) + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getFullYear() + "\","
+
+        partialBegin = new Date(partialEnd)
+
+      partialEnd = timeEnd
+      deter_field += "(select * from dados_deter('" +
+          deter_area + "','" +
+          chart10._state + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialBegin) + "','" +
+          $.datepicker.formatDate('dd/mm/yy',partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getFullYear() + "\""
+
+
+    # getting values from the database
+    rest = new H5.Rest (
+      url: H5.Data.restURL
+      fields: deter_field
+      table: deter_table
+      restService: "ws_selectonlyquery.php"
+    )
+
+    $.each rest.data[0], (field,result)=>
+      data[0] = field.toString()
+      data[1] = if result then parseFloat(result) else 0
+      @data.addRow data
+
+
+
+  @changeTitle "Taxas de Desmatamento " + rates[rateSelected] + "  em " + shapes[areaSelected] + " - [2010 - 2013]"
+
+  options =
+    title: ""
+    titleTextStyle:
+      color: "#333"
+      fontSize: 13
+    backgroundColor: "transparent"
+    legend: "none"
+    chartArea:
+      width: "70%"
+      height: "70%"
+    colors: ['#3ABCFC']
+    vAxis:
+      title: "Área km²"
+    animation: H5.Data.animate
+
+  @chart.draw @data, options
+#}}}
+# CHART11 {{{
+chart11 = new H5.Charts.GoogleCharts  (
+  type: "Area"
+  container: "chart11"
+  period: 1
+  title: "Taxa de desmatamento PRODES - [2010 - 2013]"
+  buttons:
+    minusplus: false
+    export: true
+    table: true
+    minimize: true
+    maximize: true
+)
+
+chart11.drawChart = ->
+  createTable = (states) =>
+    sum = 0
+    data = []
+    i = 1
+    for year in ["2010", "2011", "2012", "2013"]
+      data[0] = year
+      for rate in ["terra_indigena" , "assentamento", "floresta", "uc_integral", "uc_sustentavel"]
+        for state in H5.Data.statesProdes
+          estado = H5.DB.dado_prodes_consolidado.data.states[state]
+          sum += estado[year][rate]
+        data[i] = sum
+        i++
+        sum = 0
+        # @data.setValue year, 1, sum
+      i = 1
+      @data.addRow data
+
+  # create an empty table
+  @createDataTable()
+
+  @data.addColumn "string", "Ano"
+  @data.addColumn "number", "Terra indígena em km²"
+  @data.addColumn "number", "Assentamento em km²"
+  @data.addColumn "number", "Floresta Pública em km²"
+  @data.addColumn "number", "UC Inegral em km²"
+  @data.addColumn "number", "UC Sustentável em km²"
+
+  data = []
+
+  # populate table with real data
+  createTable "nenhumEstado"
+
+  @changeTitle "Taxas de Desmatamento PRODES  em áreas específicas - [2010 - 2013]"
+
+  options =
+    title: ""
+    titleTextStyle:
+      color: "#333"
+      fontSize: 13
+    backgroundColor: "transparent"
+    focusTarget: "category"
+    chartArea:
+      width: "70%"
+      height: "80%"
+    colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
+             '#FF5454', '#C7A258', '#CBE968', '#FABB3D',
+             '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
+    vAxis:
+      title: "Área em km2"
+    animation: H5.Data.animate
+
+  @chart.draw @data, options
+#}}}
+# CHART12 {{{
+chart12 = new H5.Charts.GoogleCharts(
+  type: "Pie"
+  container: "chart12"
+  period: 0
+  buttons:
+    arrows: true
+    export: true
+    table: true
+    minimize: true
+    maximize: true
+)
+
+chart12.changeTitle "Taxas de desmatamento PRODES em 2012"
+
+chart12._leftBtn.onclick = ->
+  chart12.options.period++
+  chart12.drawChart()
+
+chart12._rightBtn.onclick = ->
+  chart12.options.period--
+  chart12.drawChart()
+
+years = ["2010", "2011", "2012", "2013"]
+
+chart12.drawChart = ->
+  createTable = (states) =>
+    data = []
+    sum = 0
+    years = ["2010", "2011", "2012", "2013"]
+    year = years[chart12.options.period]
+    for rate in ["terra_indigena" , "assentamento", "floresta", "uc_integral", "uc_sustentavel"]
+      data[0] = rate
+      for state in H5.Data.statesProdes
+        estado = H5.DB.dado_prodes_consolidado.data.states[state]
+        sum += estado[year][rate]
+      data[1] = sum
+      sum = 0
+      @data.addRow data
+
+  # create an empty table
+  @createDataTable()
+
+  @data.addColumn "string", "Comparação"
+  @data.addColumn "number", "Área em km²"
+
+  # populate table with real data
+  createTable "nenhumEstado"
+
+  options =
+    title: ""
+    titleTextStyle:
+      color: "#333"
+      fontSize: 13
+    backgroundColor: "transparent"
+    chartArea:
+      width: "90%"
+      height: "80%"
+    colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
+             '#FF5454', '#C7A258', '#CBE968', '#FABB3D',
+             '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
+
+  @changeTitle "Taxas de desmatamento PRODES em " + years[@options.period]
+
+  # Disabling the buttons while the chart is drawing.
+  @_rightBtn.disabled = true
+  @_leftBtn.disabled = true
+
+  google.visualization.events.addListener @chart, "ready", =>
+    # Enabling only relevant buttons.
+    @_rightBtn.disabled = @options.period < 1
+    @_leftBtn.disabled = @options.period >= 3
+
+  @chart.draw @data, options
+#}}}
+# CHART13 {{{
+# chart13 = new H5.Charts.GoogleCharts  (
+#   type: "Line"
+#   container: "chart13"
+#   title: "Comparações"
+#   buttons:
+#     export: true
+#     table: true
+#     minimize: true
+#     maximize: true
+# )
+
+# chart13._dtInitialslct = document.getElementById('dateBeginNewStats')
+# chart13._dtFinalslct = document.getElementById('dateEndNewStats')
+# chart13._ratesSlct = document.getElementById('ratesSlctNewStats')
+# chart13._shapesSlct = document.getElementById('shapesSlctNewStats')
+
+# chart13._ratesSlct.options[0].selected = true
+# chart13._shapesSlct.options[0].selected = true
+
+# #trigger the redraw whe values changed
+# $(chart13._dtInitialslct).on "change", (event) ->
+#   chart13.drawChart()
+
+# $(chart13._dtFinalslct).on "change", (event) ->
+#   chart13.drawChart()
+
+# $(chart13._ratesSlct).on "change", (event) ->
+#   H5.Data.rateSlct = parseInt chart13._ratesSlct.value
+#   chart13.drawChart()
+
+# $(chart13._shapesSlct).on "change", (event) ->
+#   H5.Data.shapeSlct = parseInt chart13._shapesSlct.value
+#   chart13.drawChart()
+
+# chart13.drawChart = ->
+#   createTable = (state) =>
+#     sum = 0
+#     for day in [1..daysInMonth]
+#       # for state in H5.Data.statesNewStats
+#       $.each H5.DB.diary.data.states[state], (key, reg) ->
+#         if firstPeriod <= reg.date <= secondPeriod and reg.day is day
+#           sum += reg.area
+#           return false
+#       @data.setValue (day - 1), 1, Math.round((@data.getValue((day - 1), 1) + sum) * 100) / 100
+
+#   # create an empty table
+#   @createDataTable()
+
+#   @data.addColumn "number", "Dia"
+#   @data.addColumn "number", "Área"
+
+#   daysInMonth = new Date(H5.Data.selectedYear, H5.Data.selectedMonth + 1, 0).getDate()
+#   firstPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, 1)
+#   secondPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, daysInMonth)
+#   data = []
+
+#   # populate table with 0
+#   for day in [1..daysInMonth]
+#     data[0] = day
+#     data[1] = 0
+#     @data.addRow data
+
+#   # populate table with real values
+#   if H5.Data.state3 is "brasil"
+#     # $.each H5.DB.diary.data.states, (state, value) ->
+#     for state in H5.Data.statesNewStats
+#       createTable state
+#   else
+#     createTable H5.Data.state3
+
+#   shapes =
+#     0: "Terras Indígenas"
+#     1: "Bioma IBGE"
+#     2: "Unidades de Conservação"
+
+#   rates =
+#     0: "DETER"
+#     1: "PRODES"
+
+#   @changeTitle "Taxas de Desmatamento " + rates[H5.Data.rateSlct] + " em " + shapes[H5.Data.shapeSlct]
+
+#   options =
+#     title: ""
+#     titleTextStyle:
+#       color: "#333"
+#       fontSize: 13
+#     backgroundColor: "transparent"
+#     legend: "none"
+#     chartArea:
+#       width: "70%"
+#       height: "70%"
+#     colors: ['#3ABCFC']
+#     vAxis:
+#       title: "Área km²"
+#     hAxis:
+#       title: "Dias"
+#       gridlines:
+#         color: "#CCC"
+#         count: daysInMonth / 5
+#     animation: H5.Data.animate
+
+#   @chart.draw @data, options
 #}}}
 # SPARK1 {{{
 spark1 = new H5.Charts.Sparks(
@@ -1842,6 +2452,9 @@ reloadChartsEmbargos = ->
   sparkAnnualEmbargo.drawChart()
   sparkMonthlyEmbargo.drawChart()
 
+# reloadChartsNewStats = ->
+#   chart13.drawChart()
+
 # selects
 selectYears = document.getElementById('yearsSlct')
 selectMonths = document.getElementById('monthsSlct')
@@ -1908,8 +2521,20 @@ $(selectType).on "change", (e) ->
   if this.value is "deter"
     for region in H5.Data.regions.names
       $("#" + region).hide()
+    for state in H5.Data.regions.norte
+      $("#" + state).hide()
+    for state in H5.Data.regions.sul
+      $("#" + state).hide()
+    for state in H5.Data.regions.nordeste
+      $("#" + state).hide()
+    for state in H5.Data.regions.sudeste
+      $("#" + state).hide()
+    for state in H5.Data.regions.centrooeste
+      $("#" + state).hide()
+
     for state in H5.Data.regions.amazonia
       $("#" + state).show()
+
     $(chartsEmbargo).hide()
     $(sparksEmbargo).hide()
     $(chartsDeter).show()
@@ -1921,7 +2546,15 @@ $(selectType).on "change", (e) ->
   else if this.value is "embargos"
     for region in H5.Data.regions.names
       $("#" + region).show()
-    for state in H5.Data.regions.amazonia
+    for state in H5.Data.regions.norte
+      $("#" + state).hide()
+    for state in H5.Data.regions.sul
+      $("#" + state).hide()
+    for state in H5.Data.regions.nordeste
+      $("#" + state).hide()
+    for state in H5.Data.regions.sudeste
+      $("#" + state).hide()
+    for state in H5.Data.regions.centrooeste
       $("#" + state).hide()
     $("#brasil").show()
     $(chartsDeter).hide()
@@ -1940,7 +2573,7 @@ $(selectType).on "change", (e) ->
 
 # QUICK BTNS
 lastSelectedRegion = ""
-$(".quick-btn a").on "click", (e) ->
+$("#quick1 a").on "click", (e) ->
   e.preventDefault()
 
   return if H5.Data.state is this.id
@@ -2011,11 +2644,70 @@ $(".quick-btn a").on "click", (e) ->
     reloadChartsDeter()
 
     H5.Data.changed = true
+#}}
+# QUICK BTNS 2
+lastSelectedRegion = ""
+$("#quick2 a").on "click", (e) ->
+  e.preventDefault()
+
+  return if H5.Data.state2 is this.id
+
+  H5.Data.state2 = this.id
+
+  # clean all selection
+  $(this).each ->
+    $("a").removeClass "active"
+
+  $(this).addClass "active"
+
+  # chart10.drawChart()
+
+  # H5.Data.changed = true
+
+# #}}
+# # QUICK BTNS 2
+# $("#quick3 a").on "click", (event) ->
+# # $(".quick-btn a").on "click", (event) ->
+#   event.preventDefault()
+
+#   return if H5.Data.state3 is this.id
+
+#   H5.Data.state2 = this.id
+
+#   # clean all selection
+#   $(@).each ->
+#     $("a").removeClass "active"
+#   # mark selected option
+#   $(@).addClass "active"
+
+#   # save the selected option
+#   H5.Data.state3 = $(@).prop("id")
+
+#   # reload charts
+#   reloadChartsNewStats()
+
+#   H5.Data.changed = true
+
+
+
 
 $(document).ready ->
+  chart10.drawChart()
+  chart11.drawChart()
+  chart12.drawChart()
   # BOOTSTRAP
   $("[rel=tooltip]").tooltip placement: "bottom"
   $(".alert").alert()
   # DISPLAY CHARTS AFTER LOADING
   reloadChartsDeter()
+
+  # MISC
+  # enable masonry plugin
+  $("#charts-content").masonry
+    # options
+    itemSelector: ".chart"
+    animationOptions:
+      duration: 1000
+
+  $("#prodes").hide()
 # }}}

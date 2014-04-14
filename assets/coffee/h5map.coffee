@@ -167,6 +167,109 @@ H5.Map.layer.alerta = new L.VectorLayer.Postgis (
 )
 H5.Map.layer.alerta.setMap H5.Map.base
 
+H5.Map.layer.heli_hist = {}
+H5.Map.layer.heli_atual = {}
+
+actualDate = new Date()
+subtractDate = 5
+
+actualDate.setDate(actualDate.getDate() - subtractDate)
+
+if window.currentUser.logged_in is 'true'
+  H5.Map.layer.heli_hist = new L.VectorLayer.Postgis (
+    url: H5.Data.restURL
+    geotable: "new_history_helicopters"
+    fields: "nome, hora_inicio, hora_fim"
+    srid: 4326
+    geomFieldName: "ST_FlipCoordinates(shape)"
+    popupTemplate: (properties) ->
+      html = '<div class="iw-content"><h4>' + properties.nome + '</h4>'
+      html += '<table class="condensed-table bordered-table zebra-striped"><tbody>'
+      html += '<tr><th style="vertical-align:0px">Hora Inicial: </th><td>' + properties.hora_inicio + '</td></tr>'
+      html += '<tr><th style="vertical-align:0px">Hora Final: </th><td>' + properties.hora_fim + '</td></tr>'
+      # html += '<tr><th style="vertical-align:0px">Histórico: </th><td>' + properties.history.replace(/","/g, "").replace(/[{"]/g, "").replace(/["}]/g, "") + '</td></tr>'
+      html += '</tbody></table></div>'
+      return html
+    singlePopup: true
+    popupOptions:
+      maxHeight: 300
+    order: "nome, data_hora"
+    where:  "hora_inicio > '" + $.datepicker.formatDate('yy-mm-dd',actualDate) + "'"
+    showAll: false
+    showDirection:
+        color: "#FF3D0D"
+    symbology:
+      type: "single"
+      vectorStyle:
+        fillColor: "#FF3D0D"
+        fillOpacity: 0.6
+        weight: 3.0
+        color: "#FF3D0D"
+        opacity: 0.2
+  )
+  H5.Map.layer.heli_hist.setMap H5.Map.base
+
+
+  heliMarker = L.Icon.extend(
+    options:
+      iconUrl: "http://" + document.domain + "/painel/assets/img/marker_heli.png"
+      # iconUrl: "http://" + document.domain + "/painel/assets/img/green-dot.png"
+      iconAnchor: [12,41]
+      # iconAnchor: [10,10]
+      clickable: true
+  )
+
+
+  H5.Map.layer.heli_atual = new L.VectorLayer.Postgis (
+    url: H5.Data.restURL
+    geotable: "last_known_position"
+    fields: "id, nome, data_hora, velocidade, altitude"
+    srid: 4326
+    geomFieldName: "ST_FlipCoordinates(shape)"
+    popupTemplate: (properties) ->
+      html = '<div class="iw-content"><h4>' + properties.nome + '</h4>'
+      html += '<table class="condensed-table bordered-table zebra-striped"><tbody>'
+      html += '<tr><th>Identificador: </th><td>' + properties.id + '</td></tr>'
+      html += '<tr><th>Última atualização: </th><td>' + properties.data_hora + '</td></tr>'
+      html += '<tr><th>Altitude (pés): </th><td>' + properties.altitude + '</td></tr>'
+      html += '<tr><th>Velocidade (milhas nálticas): </th><td>' + properties.velocidade + '</td></tr>'
+      html += '</tbody></table></div>'
+      return html
+    singlePopup: true
+    order: "data_hora"
+    showAll: true
+    # filter:
+    #   field: "data_hora"
+    #   value: "2014-02-15"
+    #   smaller:
+    #     function: (options)->
+    #       console.log 'smaller'
+    #       carMarker = L.Icon.extend(
+    #         options:
+    #           iconUrl: "http://" + document.domain + "/painel/assets/img/yellow-dot.png"
+    #           iconAnchor: [12,12]
+    #           clickable: true
+    #       )
+    #       options.icon = new carMarker()
+    #   equal:
+    #     function: (options)->
+    #       console.log 'equal'
+    #   bigger:
+    #     function: (options)->
+    #       console.log 'bigger'
+    limit: 200
+    symbology:
+      type: "single"
+      vectorStyle:
+        fillColor: "#FF3D0D"
+        fillOpacity: 0.6
+        weight: 3.0
+        color: "#FF3D0D"
+        opacity: 0.8
+        icon: new heliMarker()
+  )
+  H5.Map.layer.heli_atual.setMap H5.Map.base
+
 customMarker = L.Icon.extend(
   options:
     iconUrl: "http://" + document.domain + "/painel/assets/img/ibama_marker.png"
@@ -188,7 +291,6 @@ H5.Map.layer.clusters = new L.VectorLayer.Postgis (
   cluster: true
   popupTemplate: null
   where: "ano = '2013'"
-  # focus: true
   symbology:
     type: "single"
     vectorStyle:
@@ -196,34 +298,92 @@ H5.Map.layer.clusters = new L.VectorLayer.Postgis (
 )
 H5.Map.layer.clusters.setMap H5.Map.base
 
-new L.Control.Cleancontrol(
-  "OSM":
-    layer: openstreet
-  "Bing Aerial":
-    layer: bingaerial
-  "Bing Road":
-    layer: bingroad
-  "Bing Hybrid":
-    layer: binghybrid
-,
-  "DETER Alerta":
-    layer: H5.Map.layer.alerta.layer
-    vectorLayer:
-      layer: H5.Map.layer.alerta
-      clusters: H5.Map.layer.clusters
-      opacity: true
-      filters:
-        "Estado":
-          type: "select"
-          value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
-          reset: "Todos"
-          dbfield: "estado"
-        "Periodo":
-          type: "period"
-          placeholder: "dd/mm/aaaa"
-          dbfield: "data_imagem"
-  # "RapidEye":
-    # layer: rapidEye
-).addTo(H5.Map.base)
 
-# }}}
+if window.currentUser.logged_in is 'true'
+  new L.Control.Cleancontrol(
+    "OSM":
+      layer: openstreet
+    "Bing Aerial":
+      layer: bingaerial
+    "Bing Road":
+      layer: bingroad
+    "Bing Hybrid":
+      layer: binghybrid
+  ,
+    "DETER Alerta":
+      layer: H5.Map.layer.alerta.layer
+      vectorLayer:
+        layer: H5.Map.layer.alerta
+        clusters: H5.Map.layer.clusters
+        opacity: true
+        filters:
+          "Estado":
+            type: "select"
+            value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
+            reset: "Todos"
+            dbfield: "estado"
+          "Periodo":
+            type: "period"
+            placeholder: "dd/mm/aaaa"
+            dbfield: "data_imagem"
+    "Helicópteros(histórico)":
+      layer: H5.Map.layer.heli_hist.layer
+      vectorLayer:
+        layer: H5.Map.layer.heli_hist
+        opacity: 100
+        filters:
+          "Periodo":
+            type: "period"
+            placeholder: "dd/mm/aaaa"
+            dbfield: "hora_inicio"
+    "Helicópteros(atual)":
+      layer: H5.Map.layer.heli_atual.layer
+      vectorLayer:
+        layer: H5.Map.layer.heli_atual
+        opacity: true
+        # filters:
+        #   "Estado":
+        #     type: "select"
+        #     value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
+        #     reset: "Todos"
+        #     dbfield: "estado"
+        #   "Periodo":
+        #     type: "period"
+        #     placeholder: "dd/mm/aaaa"
+        #     dbfield: "data_imagem"
+    "RapidEye":
+      layer: rapidEye
+  ).addTo(H5.Map.base)
+
+else
+  new L.Control.Cleancontrol(
+    "OSM":
+      layer: openstreet
+    "Bing Aerial":
+      layer: bingaerial
+    "Bing Road":
+      layer: bingroad
+    "Bing Hybrid":
+      layer: binghybrid
+  ,
+    "DETER Alerta":
+      layer: H5.Map.layer.alerta.layer
+      vectorLayer:
+        layer: H5.Map.layer.alerta
+        clusters: H5.Map.layer.clusters
+        opacity: true
+        filters:
+          "Estado":
+            type: "select"
+            value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
+            reset: "Todos"
+            dbfield: "estado"
+          "Periodo":
+            type: "period"
+            placeholder: "dd/mm/aaaa"
+            dbfield: "data_imagem"
+    "RapidEye":
+      layer: rapidEye
+  ).addTo(H5.Map.base)
+
+# $(H5.Map.layer.heli_hist._vectors.length).on "change"

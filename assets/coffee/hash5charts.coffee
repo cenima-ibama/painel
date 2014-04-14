@@ -307,6 +307,10 @@ class H5.Charts.Container
     $(select).on "change", (event) =>
       @drawChart()
 
+  # _loadingScreen: (message)->
+  #   if @_boxContent
+  #     document.getElementById(@_boxContent.id).innerHTML = message
+
 class H5.Charts.GoogleCharts extends H5.Charts.Container
 
   constructor: ->

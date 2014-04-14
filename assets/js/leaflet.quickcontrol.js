@@ -4,6 +4,74 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+  L.Rest = (function() {
+    Rest.prototype.options = {
+      url: null,
+      restService: "ws_geo_attributequery.php",
+      table: null,
+      fields: null,
+      values: null,
+      parameters: null,
+      order: null,
+      limit: null
+    };
+
+    Rest.prototype.data = null;
+
+    function Rest(options) {
+      if (options.url.substr(options.url.length - 1, 1) !== "/") {
+        options.url += "/";
+      }
+      this.options = $.extend({}, this.options, options);
+      this._request();
+    }
+
+    Rest.prototype._request = function() {
+      var query, url;
+      url = this.options.url + "v1/" + this.options.restService;
+      if (this.options.table) {
+        query = "&table=" + this.options.table;
+      }
+      if (this.options.parameters) {
+        query += "&parameters=" + this.options.parameters;
+      }
+      if (this.options.fields) {
+        query += "&fields=" + this.options.fields;
+      }
+      if (this.options.values) {
+        query += "&values=" + this.options.values;
+      }
+      if (this.options.order) {
+        query += "&order=" + this.options.order;
+      }
+      if (this.options.limit) {
+        query += "&limit=" + this.options.limit;
+      }
+      url = url + "?" + query;
+      console.log(url);
+      return this.data = JSON.parse(this._getfile(url));
+    };
+
+    Rest.prototype._getfile = function(url) {
+      var AJAX;
+      if (window.XMLHttpRequest) {
+        AJAX = new XMLHttpRequest();
+      } else {
+        AJAX = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      if (AJAX) {
+        AJAX.open("GET", url, false);
+        AJAX.send(null);
+        return AJAX.responseText;
+      } else {
+        return false;
+      }
+    };
+
+    return Rest;
+
+  })();
+
   L.Control.Quickcontrol = (function(_super) {
     __extends(Quickcontrol, _super);
 
@@ -210,7 +278,12 @@
         $(opacityInput).attr("type", "number");
         $(opacityInput).attr("max", "100");
         $(opacityInput).attr("min", "0");
-        $(opacityInput).val("70");
+        vSymb = obj.vectorLayer.layer.options.symbology;
+        if (vSymb && vSymb.vectorStyle && vSymb.vectorStyle.opacity) {
+          $(opacityInput).val(vSymb.vectorStyle.opacity * 100);
+        } else {
+          $(opacityInput).val("70");
+        }
         $(opacityInput).on("change", function() {
           var _this = this;
           return obj.layer.eachLayer(function(layer) {
@@ -275,7 +348,7 @@
                   if (qry) {
                     qry += " AND ";
                   }
-                  qry += filter.dbfield + " BETWEEN '" + start[2] + "-" + start[1] + "-" + start[0] + "' AND '" + end[2] + "-" + end[1] + "-" + end[0] + "'";
+                  qry += filter.dbfield + " BETWEEN '" + start[2] + "-" + start[1] + "-" + start[0] + "' AND '" + end[2] + "-" + end[1] + "-" + parseInt(parseInt(end[0]) + 1) + "'";
                 }
             }
           }
@@ -355,7 +428,7 @@
                 startDate: "01/07/2004",
                 endDate: "today"
               });
-              $(inputRange.start).datepicker('update', '-1y');
+              $(inputRange.start).datepicker('update', '-5d');
               $(inputRange.end).datepicker('update', 'today');
               $(inputRange).on("changeDate", function(e) {
                 if (!inputRange.start.value || !inputRange.end.value) {
@@ -416,7 +489,10 @@
 
     Supercontrol.prototype.initialize = function(baseLayers, overlayers, tabs, options) {
       var _this = this;
-      Supercontrol.__super__.initialize.apply(this, arguments);
+      L.Util.setOptions(this, options);
+      this._layers = {};
+      this._lastZIndex = 0;
+      this._handlingClick = false;
       if (Object.keys(tabs).length > 0) {
         this._tabs = tabs;
         this.options.enableTabs = true;
@@ -462,16 +538,16 @@
         _this._handleFiles(event);
         return _strAux = $('#btFileLayer').val();
       });
-      this._btFakeFile = L.DomUtil.create('button', 'btn btnSlide', this._divFile);
+      this._btFakeFile = L.DomUtil.create('button', 'btn', this._divFile);
       $(this._btFakeFile).attr('type', 'button');
-      $(this._btFakeFile).html("<i class='icon-folder-open'></i> Abrir");
+      $(this._btFakeFile).html("<i class='icon-folder-open'></i> Importar camadas");
       $(this._btFakeFile).on('click', function(event) {
         return $(_this._btFileLayer).trigger('click');
       });
-      this._btAddToMap = L.DomUtil.create('button', 'btn btn-primary btnSlide', this._divFile);
+      this._btAddToMap = L.DomUtil.create('button', 'btn btn-primary', this._divFile);
       $(this._btAddToMap).attr('type', 'button');
       $(this._btAddToMap).attr('id', 'btAddToMap');
-      $(this._btAddToMap).html("Adicionar");
+      $(this._btAddToMap).html("<i class='icon-plus'></i> Adicionar camadas");
       $(this._btAddToMap).hide();
       this._divFileError = L.DomUtil.create('div', 'divError', this._divContainer);
       $(this._divFileError).attr('id', 'divFileError');
@@ -483,7 +559,8 @@
         _this._createLayer();
         $(_this._divFileError).hide();
         $(_this._divFileAlert).html('<div id="nenhuma"><i>Nenhum arquivo selecionado.</i></div>');
-        return $(_this._btAddToMap).hide();
+        $(_this._btAddToMap).hide();
+        return $(_this._btFakeFile).show();
       });
     };
 
@@ -496,69 +573,98 @@
         _extIndex = f.name.lastIndexOf('.');
         _strExt = f.name.substring(_extIndex);
         _this = this;
-        if (_strExt === '.shp') {
-          shape = new Shapefile(f, function(data) {
-            var newLayer, track;
-            track = L.geoJson(data.geojson).addTo(map);
-            newLayer = {
-              name: _this._reduceString(data.fileName, 11),
-              layer: track,
-              overlayControl: true,
-              tab: "uploaded",
-              overlayer: true,
-              deleteControl: true
+        switch (_strExt) {
+          case '.shp':
+            shape = new Shapefile(f, function(data) {
+              var layer;
+              layer = L.geoJson(data.geojson).addTo(map);
+              _this._setLayer(layer, data.fileName);
+              if (_this.options.dbtables) {
+                return _this._insertIntoDatabase(layer, data.fileName);
+              }
+            });
+            break;
+          case '.kml':
+            reader = new FileReader();
+            reader.file = f;
+            reader.onloadend = function(event) {
+              var layer, _fileContent;
+              if (event.target.readyState === FileReader.DONE) {
+                _fileContent = event.target.result;
+                layer = new L.KML(_fileContent, {
+                  async: true
+                });
+                _this._setLayer(layer, this.file.name);
+                if (_this.options.dbtables) {
+                  return _this._insertIntoDatabase(layer, this.file.name);
+                }
+              }
             };
-            return _this._addItem(newLayer);
-          });
-        } else if (_strExt === '.kml') {
-          reader = new FileReader();
-          reader.file = f;
-          reader.onloadend = function(event) {
-            var newLayer, track, _fileContent;
-            if (event.target.readyState === FileReader.DONE) {
-              _fileContent = event.target.result;
-              track = new L.KML(_fileContent, {
-                async: true
-              });
-              newLayer = {
-                name: _this._reduceString(this.file.name, 11),
-                layer: track,
-                overlayControl: true,
-                tab: "uploaded",
-                overlayer: true,
-                deleteControl: true
-              };
-              return _this._addItem(newLayer);
-            }
-          };
-          reader.readAsText(f);
-        } else if (_strExt === '.gpx') {
-          reader = new FileReader();
-          reader.file = f;
-          reader.onloadend = function(event) {
-            var newLayer, track, _fileContent;
-            if (event.target.readyState === FileReader.DONE) {
-              _fileContent = event.target.result;
-              track = new L.GPX(_fileContent, {
-                async: true
-              });
-              newLayer = {
-                name: _this._reduceString(this.file.name, 11),
-                layer: track,
-                overlayControl: true,
-                tab: "uploaded",
-                overlayer: true,
-                deleteControl: true
-              };
-              return _this._addItem(newLayer);
-            }
-          };
-          reader.readAsText(f);
+            reader.readAsText(f);
+            break;
+          case '.gpx':
+            reader = new FileReader();
+            reader.file = f;
+            reader.onloadend = function(event) {
+              var layer, _fileContent;
+              if (event.target.readyState === FileReader.DONE) {
+                _fileContent = event.target.result;
+                layer = new L.GPX(_fileContent, {
+                  async: true
+                });
+                _this._setLayer(layer, this.file.name);
+                if (_this.options.dbtables) {
+                  return _this._insertIntoDatabase(layer, this.file.name);
+                }
+              }
+            };
+            reader.readAsText(f);
         }
         this._files = [];
         _results.push($(this._divFileAlert).html('<div id="nenhuma"><i>Nenhum arquivo selecionado.</i></div>'));
       }
       return _results;
+    };
+
+    Supercontrol.prototype._setLayer = function(layer, name) {
+      var newLayer;
+      newLayer = {
+        name: this._reduceString(name, 18),
+        layer: layer,
+        overlayControl: true,
+        tab: "imported",
+        overlayer: true,
+        deleteControl: true
+      };
+      return this._addItem(newLayer);
+    };
+
+    Supercontrol.prototype._insertIntoDatabase = function(layers, name) {
+      var _this = this;
+      return layers.eachLayer(function(layer) {
+        var dbtable, fields, rest, shape, values;
+        shape = layer.toGeoJSON();
+        switch (shape.geometry.type) {
+          case "Poligon":
+            dbtable = _this.options.dbtables.poligon;
+            break;
+          case "Line":
+            dbtable = _this.options.dbtables.line;
+            break;
+          case "Point":
+            dbtable = _this.options.dbtables.point;
+        }
+        fields = _this.options.dbtables.nameField + "," + _this.options.dbtables.geomField;
+        values = "'" + name + "' , ST_SetSRID(ST_GeomFromGeoJSON('" + JSON.stringify(shape.geometry) + "')," + _this.options.dbtables.srid + ")";
+        console.log(values);
+        return rest = new L.Rest({
+          url: _this.options.dburl,
+          fields: fields,
+          values: values,
+          table: dbtable,
+          restService: "ws_insertquery.php"
+        });
+      });
     };
 
     Supercontrol.prototype._handleFiles = function(evt) {
@@ -599,9 +705,11 @@
         $(this._divFileAlert).html('<div id="nenhuma"><i>Nenhum arquivo selecionado.</i></div>');
       }
       if (this._files.length > 0) {
-        return $("#btAddToMap").show();
+        $(this._btAddToMap).show();
+        return $(this._btFakeFile).hide();
       } else {
-        return $("#btAddToMap").hide();
+        $(this._btAddToMap).hide();
+        return $(this._btFakeFile).show();
       }
     };
 
@@ -613,47 +721,29 @@
       _strAux = string;
       _nroRemove = string.length - size;
       _strAux = string.slice(12, _nroRemove + 15);
-      string = string.replace(_strAux, "...");
+      string = string.replace(_strAux, "…");
       return string;
     };
 
     Supercontrol.prototype._createFileItem = function(file, container) {
-      var _btnTrash, _btnType, _divTemp, _nameAux, _ulTemp,
+      var _btnGroup, _btnTrash, _btnType, _divTemp, _inputName,
         _this = this;
       _divTemp = L.DomUtil.create('div', 'divItem', container);
-      _btnType = L.DomUtil.create('button', 'btn pull-left', _divTemp);
-      $(_btnType).html('<img src="../dist/img/world.png"></img>');
-      _ulTemp = L.DomUtil.create('ul', '', _divTemp);
-      _nameAux = this._reduceString(file.name, 28);
-      $(_ulTemp).attr('id', file.name);
-      $(_ulTemp).html('<strong>' + _nameAux + '</strong>');
-      _btnTrash = L.DomUtil.create('button', 'btn pull-right', _divTemp);
+      _inputName = L.DomUtil.create('input', 'input-medium', _divTemp);
+      $(_inputName).attr('type', 'text');
+      _inputName.value = file.name;
+      _btnGroup = L.DomUtil.create('div', 'btn-group pull-right', _divTemp);
+      _btnType = L.DomUtil.create('button', 'btn', _btnGroup);
+      $(_btnType).html('<i class="icon-tags"></i>');
+      _btnTrash = L.DomUtil.create('button', 'btn', _btnGroup);
       $(_btnTrash).html('<i class="icon-trash"></i>');
       $(_btnTrash).on('click', function(e) {
-        var div, divParent, f, fileName, index, _i, _len, _ref2, _ulAux;
         L.DomEvent.preventDefault(e);
-        div = e.target.parentNode;
-        _ulAux = $(div).children('ul');
-        fileName = _ulAux.attr('id');
-        console.log(_this._files);
-        _ref2 = _this._files;
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          f = _ref2[_i];
-          if (f.name === fileName) {
-            index = _this._files.indexOf(f);
-            _this._files.splice(index, 1);
-            break;
-          }
-        }
-        console.log(_this._files);
-        if (e.target.nodeName === 'I') {
-          divParent = e.target.parentNode.parentNode;
-        } else {
-          divParent = e.target.parentNode;
-        }
-        $(divParent).remove();
-        if ($("#divFileContainer").html() === "") {
-          return $("#btAddToMap").hide();
+        $(_divTemp).remove();
+        if ($(container).html() === "") {
+          $(_this._btAddToMap).hide();
+          $(_this._btFakeFile).show();
+          return _this._files = [];
         }
       });
       return _divTemp;
@@ -680,26 +770,26 @@
         });
       } else {
         obj = {
-          icon: "../dist/img/baselayers.png"
+          icon: "assets/img/baselayers.png"
         };
         this._createTab('baselayers', obj);
         obj = {
-          icon: "../dist/img/overlayers.png"
+          icon: "assets/img/overlayers.png"
         };
         this._createTab('overlayers', obj);
       }
       if (this.options.miscTabs) {
         obj = {
-          icon: "../dist/img/world.png"
+          icon: "assets/img/world.png"
         };
         this._createTab(this.options.miscTabsName, obj);
       }
       obj = {
-        icon: "../dist/img/preferences.png"
+        icon: "assets/img/userlayers.png"
       };
-      this._createTab('uploaded', obj);
+      this._createTab('imported', obj);
       obj = {
-        icon: "../dist/img/upload.png"
+        icon: "assets/img/import.png"
       };
       return this._createTab('upload', obj);
     };
@@ -717,7 +807,7 @@
       if (obj.name) {
         newTabName.innerHTML = obj.name;
       } else {
-        newTabName.innerHTML = '<img src=" ' + obj.icon + '" width="22px" height="22px">';
+        newTabName.innerHTML = '<img src=" ' + obj.icon + '" width="28px" height="28px">';
       }
       L.DomEvent.on(newTabName, "click", (function() {
         this._selectedTab = newTabName;
@@ -762,7 +852,7 @@
             this._layerContainer = this._tabsList[this.options.miscTabsName];
           }
         } else {
-          if (obj.tab === 'uploaded') {
+          if (obj.tab === 'imported') {
             this._layerContainer = this._tabsList[obj.tab];
           } else {
             this._layerContainer = this._tabsList['overlayers'];
@@ -783,7 +873,7 @@
       if (obj.deleteControl) {
         this._createDeleteButton(obj);
       }
-      if (obj.tab === 'uploaded') {
+      if (obj.tab === 'imported') {
         return $(this._onBtn).trigger('click');
       }
     };
