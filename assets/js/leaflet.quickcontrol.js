@@ -428,7 +428,7 @@
                 startDate: "01/07/2004",
                 endDate: "today"
               });
-              $(inputRange.start).datepicker('update', '-1y');
+              $(inputRange.start).datepicker('update', '-5d');
               $(inputRange.end).datepicker('update', 'today');
               $(inputRange).on("changeDate", function(e) {
                 if (!inputRange.start.value || !inputRange.end.value) {

@@ -273,6 +273,7 @@
 
   H5.DB.dado_prodes_consolidado.data = {
     init: function() {
+<<<<<<< HEAD
       var state, _j, _len, _ref5;
       this.states = {};
       _ref5 = H5.Data.allstates;
@@ -281,6 +282,17 @@
         this.states[state] = {};
       }
       return this.states['brasil'] = {};
+=======
+      var state, _j, _len, _ref5, _results;
+      this.states = {};
+      _ref5 = H5.Data.allstates;
+      _results = [];
+      for (_j = 0, _len = _ref5.length; _j < _len; _j++) {
+        state = _ref5[_j];
+        _results.push(this.states[state] = {});
+      }
+      return _results;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     },
     populate: function(year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta) {
       var self;
@@ -300,6 +312,7 @@
         } else {
           this.lastValue = self[year];
         }
+<<<<<<< HEAD
         self = this.states['brasil'];
         if (!self[year]) {
           self[year] = {};
@@ -315,6 +328,8 @@
         self[year].uc_integral += uc_integral;
         self[year].assentamento += assentamento;
         self[year].floresta += floresta;
+=======
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
       }
     }
   };
@@ -371,6 +386,7 @@
   });
 
   chart1.drawChart = function() {
+<<<<<<< HEAD
     var createTable, data, day, daysInMonth, firstPeriod, months, options, secondPeriod, state, _k;
     createTable = (function(_this) {
       return function(state) {
@@ -391,6 +407,26 @@
             _fn(reg);
           }
           _results.push(_this.data.setValue(day - 1, 1, Math.round((_this.data.getValue(day - 1, 1) + sum) * 100) / 100));
+=======
+    var createTable, data, day, daysInMonth, firstPeriod, months, options, secondPeriod, state, _k,
+      _this = this;
+    createTable = function(state) {
+      var day, key, reg, sum, _fn, _k, _ref7, _results;
+      sum = 0;
+      _results = [];
+      for (day = _k = 1; 1 <= daysInMonth ? _k <= daysInMonth : _k >= daysInMonth; day = 1 <= daysInMonth ? ++_k : --_k) {
+        _ref7 = H5.DB.diary.data.states[state];
+        _fn = function(reg) {
+          var _ref8;
+          if ((firstPeriod <= (_ref8 = reg.date) && _ref8 <= secondPeriod) && reg.day === day) {
+            sum += reg.area;
+            return false;
+          }
+        };
+        for (key in _ref7) {
+          reg = _ref7[key];
+          _fn(reg);
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
         }
         return _results;
       };
@@ -482,7 +518,12 @@
   };
 
   chart2.drawChart = function() {
+<<<<<<< HEAD
     var data, month, options, sumValues, _k, _l, _ref7, _ref8, _ref9;
+=======
+    var data, month, options, sumValues, _k, _l, _ref7, _ref8, _ref9,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumValues = function(year, month) {
       var firstPeriod, key, name, reg, secondPeriod, state, sum, _ref10, _ref7, _ref8, _ref9;
       sum = 0;
@@ -582,7 +623,12 @@
   };
 
   chart3.drawChart = function() {
+<<<<<<< HEAD
     var data, options, sumAvg, sumAvgValues, sumTotal, sumTotalValues, sumValues, _k, _ref7;
+=======
+    var data, options, sumAvg, sumAvgValues, sumTotal, sumTotalValues, sumValues, _k, _ref7,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumValues = function(firstPeriod, secondPeriod) {
       var key, name, reg, state, sum, _ref10, _ref7, _ref8, _ref9;
       sum = 0;
@@ -706,7 +752,12 @@
   };
 
   chart4.drawChart = function() {
+<<<<<<< HEAD
     var data, j, name, options, state, sumValues, _k, _l, _m, _ref10, _ref7, _ref8, _ref9;
+=======
+    var data, j, name, options, state, sumValues, _k, _l, _m, _ref10, _ref7, _ref8, _ref9,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumValues = function(state, year) {
       var firstPeriod, key, reg, secondPeriod, sum, _ref7, _ref8;
       sum = 0;
@@ -897,7 +948,12 @@
   };
 
   chart6.drawChart = function() {
+<<<<<<< HEAD
     var data, name, options, state, sumDeter, sumProdes, _ref7;
+=======
+    var data, name, options, state, sumDeter, sumProdes, _ref7,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumDeter = function(state, year) {
       var firstPeriod, key, reg, secondPeriod, sum, _ref7, _ref8;
       sum = 0;
@@ -1005,7 +1061,12 @@
   };
 
   chart7.drawChart = function() {
+<<<<<<< HEAD
     var data, estado, options, sumValues, _k, _ref7;
+=======
+    var data, estado, options, sumValues, _k, _ref7,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumValues = function(state, year) {
       var firstPeriod, key, reg, secondPeriod, sum, _ref7, _ref8;
       sum = 0;
@@ -1157,6 +1218,7 @@
   };
 
   chart9.drawChart = function() {
+<<<<<<< HEAD
     var data, month, options, sumValues, _k, _l, _ref7, _ref8, _ref9;
     sumValues = function(year, month) {
       var firstPeriod, key, maxDate, percent, reg, secondPeriod, _fn, _ref7;
@@ -1164,6 +1226,15 @@
       firstPeriod = new Date(year - 1, 7, 1);
       secondPeriod = new Date(year, 7, 0);
       maxDate = firstPeriod;
+=======
+    var data, month, options, sumValues, _k, _l, _ref7, _ref8, _ref9,
+      _this = this;
+    sumValues = function(year, month) {
+      var firstPeriod, key, percent, reg, secondPeriod, _fn, _ref7;
+      percent = 0;
+      firstPeriod = new Date(year - 1, 7, 1);
+      secondPeriod = new Date(year, 7, 0);
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
       _ref7 = H5.DB.cloud.data.nuvem;
       _fn = function(reg) {
         if (reg.date >= firstPeriod && reg.date <= secondPeriod && reg.month === month) {
@@ -1687,12 +1758,403 @@
     return this.chart.draw(this.data, options);
   };
 
+  chart10 = new H5.Charts.GoogleCharts({
+    type: "Line",
+    container: "chart10",
+    title: "Taxa de desmatamento PRODES em Terras Indígenas",
+    buttons: {
+      "export": true,
+      table: true,
+      minimize: true,
+      maximize: true
+    }
+  });
+
+  chart10._shapesSlct = document.getElementById('shapesSlct');
+
+  chart10._shapesSlct.options[0].selected = true;
+
+  chart10._ratesSlct = document.getElementById('ratesSlct');
+
+  chart10._shapesSlct.options[0].selected = true;
+
+  chart10._dateBegin = document.getElementById('dateBegin');
+
+  chart10._dateEnd = document.getElementById('dateFinish');
+
+  chart10._stateGroup = document.getElementById('quick2').children;
+
+  $(chart10._shapesSlct).on("change", function(event) {
+    return chart10.drawChart();
+  });
+
+  $(chart10._ratesSlct).on("change", function(event) {
+    return chart10.drawChart();
+  });
+
+  $(chart10._dateBegin).on("change", function(event) {
+    return chart10.drawChart();
+  });
+
+  $(chart10._dateEnd).on("change", function(event) {
+    return chart10.drawChart();
+  });
+
+  $.each(chart10._stateGroup, function() {
+    return $(this).on("click", function(event) {
+      var _ref7;
+      chart10._state = (_ref7 = $(this).children('span').html()) != null ? _ref7 : 'AC';
+      return chart10.drawChart();
+    });
+  });
+
+  chart10.drawChart = function() {
+    var areaSelected, createTable, data, dateBegin, dateEnd, deter_area, deter_field, deter_table, function_name, months, options, partialBegin, partialEnd, rateSelected, rates, shapes, state, stateData, timeBegin, timeBetween, timeEnd, year, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _n, _o, _ref10, _ref11, _ref12, _ref7, _ref8, _ref9,
+      _this = this;
+    createTable = function(state) {
+      var day, sum, _k, _results;
+      sum = 0;
+      _results = [];
+      for (day = _k = 1; 1 <= daysInMonth ? _k <= daysInMonth : _k >= daysInMonth; day = 1 <= daysInMonth ? ++_k : --_k) {
+        $.each(H5.DB.diary.data.states[state], function(key, reg) {
+          var _ref7;
+          if ((firstPeriod <= (_ref7 = reg.date) && _ref7 <= secondPeriod) && reg.day === day) {
+            sum += reg.area;
+            return false;
+          }
+        });
+        _results.push(_this.data.setValue(day - 1, 1, Math.round((_this.data.getValue(day - 1, 1) + sum) * 100) / 100));
+      }
+      return _results;
+    };
+    this.createDataTable();
+    this.data.addColumn("string", "Ano");
+    this.data.addColumn("number", "Área em km²");
+    data = [];
+    areaSelected = chart10._shapesSlct.value;
+    rateSelected = chart10._ratesSlct.value;
+    dateBegin = chart10._dateBegin.value;
+    dateEnd = chart10._dateEnd.value;
+    state = (_ref7 = chart10._state) != null ? _ref7 : 'AC';
+    shapes = {
+      "terra_indigena": "Terras Indígenas",
+      "uc_sustentavel": "Unidade de Conservação de uso sustentável",
+      "uc_integral": "Unidade de Conservação de proteção integral",
+      "assentamento": "Assentamento",
+      "floresta": "Floresta Pública"
+    };
+    rates = {
+      "0": "DETER",
+      "1": "PRODES"
+    };
+    if (rateSelected === '1') {
+      stateData = H5.DB.dado_prodes_consolidado.data.states[H5.Data.state2];
+      switch (areaSelected) {
+        case "terra_indigena":
+          _ref8 = ["2010", "2011", "2012", "2013"];
+          for (_k = 0, _len = _ref8.length; _k < _len; _k++) {
+            year = _ref8[_k];
+            data[0] = year;
+            data[1] = stateData[year].terra_indigena;
+            this.data.addRow(data);
+          }
+          break;
+        case "assentamento":
+          _ref9 = ["2010", "2011", "2012", "2013"];
+          for (_l = 0, _len1 = _ref9.length; _l < _len1; _l++) {
+            year = _ref9[_l];
+            data[0] = year;
+            data[1] = stateData[year].assentamento;
+            this.data.addRow(data);
+          }
+          break;
+        case "floresta":
+          _ref10 = ["2010", "2011", "2012", "2013"];
+          for (_m = 0, _len2 = _ref10.length; _m < _len2; _m++) {
+            year = _ref10[_m];
+            data[0] = year;
+            data[1] = stateData[year].floresta;
+            this.data.addRow(data);
+          }
+          break;
+        case "uc_integral":
+          _ref11 = ["2010", "2011", "2012", "2013"];
+          for (_n = 0, _len3 = _ref11.length; _n < _len3; _n++) {
+            year = _ref11[_n];
+            data[0] = year;
+            data[1] = stateData[year].uc_integral;
+            this.data.addRow(data);
+          }
+          break;
+        case "uc_sustentavel":
+          _ref12 = ["2010", "2011", "2012", "2013"];
+          for (_o = 0, _len4 = _ref12.length; _o < _len4; _o++) {
+            year = _ref12[_o];
+            data[0] = year;
+            data[1] = stateData[year].uc_sustentavel;
+            this.data.addRow(data);
+          }
+          break;
+      }
+    } else {
+      deter_area;
+      switch (areaSelected) {
+        case 'terra_indigena':
+          deter_area = 'terra_indigena';
+          break;
+        case 'assentamento':
+          deter_area = 'assentamento';
+          break;
+        case 'floresta':
+          deter_area = 'floresta_publica';
+          break;
+        case 'uc_integral':
+          deter_area = 'unidade_conservacao';
+          break;
+        case 'uc_sustentavel':
+          deter_area = 'unidade_conservacao';
+          break;
+      }
+      timeBegin = $.datepicker.parseDate('dd/mm/yy', dateBegin);
+      timeEnd = $.datepicker.parseDate('dd/mm/yy', dateEnd);
+      timeBetween = (timeEnd - timeBegin) / 1000 / 60 / 60 / 24;
+      partialBegin = new Date(timeBegin);
+      partialEnd = new Date(timeBegin);
+      if (areaSelected === 'uc_integral') {
+        function_name = 'dados_deter_pi';
+      } else if (areaSelected === 'uc_sustentavel') {
+        function_name = 'dados_deter_us';
+      } else {
+        function_name = 'dados_deter';
+      }
+      deter_field = '';
+      deter_table = function_name + "('" + deter_area + "','" + chart10._state + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "') AS (resultado float)";
+      months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+      if (timeBetween < 50) {
+        console.log('time to print by days');
+        while (partialEnd.setDate(partialEnd.getDate() + 1) < timeEnd) {
+          deter_field += "(select * from dados_deter('" + deter_area + "','" + chart10._state + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "','" + $.datepicker.formatDate('dd/mm/yy', partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getDate() + "/" + months[partialBegin.getMonth()] + "\",";
+          partialBegin = new Date(partialEnd);
+        }
+        partialEnd = timeEnd;
+        deter_field += "(select * from dados_deter('" + deter_area + "','" + chart10._state + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "','" + $.datepicker.formatDate('dd/mm/yy', partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getDate() + "/" + months[partialBegin.getMonth()] + "\"";
+      } else if (timeBetween < 730) {
+        console.log('time to print by months');
+        partialEnd.setDate(1);
+        while (partialEnd.setMonth(partialEnd.getMonth() + 1) < timeEnd) {
+          deter_field += "(select * from dados_deter('" + deter_area + "','" + chart10._state + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "','" + $.datepicker.formatDate('dd/mm/yy', partialEnd) + "') AS (resultado float)) as \"" + months[partialBegin.getMonth()] + "/" + partialBegin.getFullYear() + "\",";
+          partialBegin = new Date(partialEnd);
+        }
+        partialEnd = timeEnd;
+        deter_field += "(select * from dados_deter('" + deter_area + "','" + chart10._state + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "','" + $.datepicker.formatDate('dd/mm/yy', partialEnd) + "') AS (resultado float)) as \"" + months[partialBegin.getMonth()] + "/" + partialBegin.getFullYear() + "\"";
+      } else {
+        console.log('time to print by years');
+        partialEnd.setDate(1);
+        partialEnd.setMonth(0);
+        while (partialEnd.setFullYear(partialEnd.getFullYear() + 1) < timeEnd) {
+          deter_field += "(select * from dados_deter('" + deter_area + "','" + chart10._state + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "','" + $.datepicker.formatDate('dd/mm/yy', partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getFullYear() + "\",";
+          partialBegin = new Date(partialEnd);
+        }
+        partialEnd = timeEnd;
+        deter_field += "(select * from dados_deter('" + deter_area + "','" + chart10._state + "','" + $.datepicker.formatDate('dd/mm/yy', partialBegin) + "','" + $.datepicker.formatDate('dd/mm/yy', partialEnd) + "') AS (resultado float)) as \"" + partialBegin.getFullYear() + "\"";
+      }
+      rest = new H5.Rest({
+        url: H5.Data.restURL,
+        fields: deter_field,
+        table: deter_table,
+        restService: "ws_selectonlyquery.php"
+      });
+      $.each(rest.data[0], function(field, result) {
+        data[0] = field.toString();
+        data[1] = result ? parseFloat(result) : 0;
+        return _this.data.addRow(data);
+      });
+    }
+    this.changeTitle("Taxas de Desmatamento " + rates[rateSelected] + "  em " + shapes[areaSelected] + " - [2010 - 2013]");
+    options = {
+      title: "",
+      titleTextStyle: {
+        color: "#333",
+        fontSize: 13
+      },
+      backgroundColor: "transparent",
+      legend: "none",
+      chartArea: {
+        width: "70%",
+        height: "70%"
+      },
+      colors: ['#3ABCFC'],
+      vAxis: {
+        title: "Área km²"
+      },
+      animation: H5.Data.animate
+    };
+    return this.chart.draw(this.data, options);
+  };
+
+  chart11 = new H5.Charts.GoogleCharts({
+    type: "Area",
+    container: "chart11",
+    period: 1,
+    title: "Taxa de desmatamento PRODES - [2010 - 2013]",
+    buttons: {
+      minusplus: false,
+      "export": true,
+      table: true,
+      minimize: true,
+      maximize: true
+    }
+  });
+
+  chart11.drawChart = function() {
+    var createTable, data, options,
+      _this = this;
+    createTable = function(states) {
+      var data, estado, rate, state, sum, year, _k, _l, _len, _len1, _len2, _m, _ref7, _ref8, _ref9, _results;
+      sum = 0;
+      data = [];
+      i = 1;
+      _ref7 = ["2010", "2011", "2012", "2013"];
+      _results = [];
+      for (_k = 0, _len = _ref7.length; _k < _len; _k++) {
+        year = _ref7[_k];
+        data[0] = year;
+        _ref8 = ["terra_indigena", "assentamento", "floresta", "uc_integral", "uc_sustentavel"];
+        for (_l = 0, _len1 = _ref8.length; _l < _len1; _l++) {
+          rate = _ref8[_l];
+          _ref9 = H5.Data.statesProdes;
+          for (_m = 0, _len2 = _ref9.length; _m < _len2; _m++) {
+            state = _ref9[_m];
+            estado = H5.DB.dado_prodes_consolidado.data.states[state];
+            sum += estado[year][rate];
+          }
+          data[i] = sum;
+          i++;
+          sum = 0;
+        }
+        i = 1;
+        _results.push(_this.data.addRow(data));
+      }
+      return _results;
+    };
+    this.createDataTable();
+    this.data.addColumn("string", "Ano");
+    this.data.addColumn("number", "Terra indígena em km²");
+    this.data.addColumn("number", "Assentamento em km²");
+    this.data.addColumn("number", "Floresta Pública em km²");
+    this.data.addColumn("number", "UC Inegral em km²");
+    this.data.addColumn("number", "UC Sustentável em km²");
+    data = [];
+    createTable("nenhumEstado");
+    this.changeTitle("Taxas de Desmatamento PRODES  em áreas específicas - [2010 - 2013]");
+    options = {
+      title: "",
+      titleTextStyle: {
+        color: "#333",
+        fontSize: 13
+      },
+      backgroundColor: "transparent",
+      focusTarget: "category",
+      chartArea: {
+        width: "70%",
+        height: "80%"
+      },
+      colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A', '#FF5454', '#C7A258', '#CBE968', '#FABB3D', '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258'],
+      vAxis: {
+        title: "Área em km2"
+      },
+      animation: H5.Data.animate
+    };
+    return this.chart.draw(this.data, options);
+  };
+
+  chart12 = new H5.Charts.GoogleCharts({
+    type: "Pie",
+    container: "chart12",
+    period: 0,
+    buttons: {
+      arrows: true,
+      "export": true,
+      table: true,
+      minimize: true,
+      maximize: true
+    }
+  });
+
+  chart12.changeTitle("Taxas de desmatamento PRODES em 2012");
+
+  chart12._leftBtn.onclick = function() {
+    chart12.options.period++;
+    return chart12.drawChart();
+  };
+
+  chart12._rightBtn.onclick = function() {
+    chart12.options.period--;
+    return chart12.drawChart();
+  };
+
+  years = ["2010", "2011", "2012", "2013"];
+
+  chart12.drawChart = function() {
+    var createTable, options,
+      _this = this;
+    createTable = function(states) {
+      var data, estado, rate, state, sum, year, _k, _l, _len, _len1, _ref7, _ref8, _results;
+      data = [];
+      sum = 0;
+      years = ["2010", "2011", "2012", "2013"];
+      year = years[chart12.options.period];
+      _ref7 = ["terra_indigena", "assentamento", "floresta", "uc_integral", "uc_sustentavel"];
+      _results = [];
+      for (_k = 0, _len = _ref7.length; _k < _len; _k++) {
+        rate = _ref7[_k];
+        data[0] = rate;
+        _ref8 = H5.Data.statesProdes;
+        for (_l = 0, _len1 = _ref8.length; _l < _len1; _l++) {
+          state = _ref8[_l];
+          estado = H5.DB.dado_prodes_consolidado.data.states[state];
+          sum += estado[year][rate];
+        }
+        data[1] = sum;
+        sum = 0;
+        _results.push(_this.data.addRow(data));
+      }
+      return _results;
+    };
+    this.createDataTable();
+    this.data.addColumn("string", "Comparação");
+    this.data.addColumn("number", "Área em km²");
+    createTable("nenhumEstado");
+    options = {
+      title: "",
+      titleTextStyle: {
+        color: "#333",
+        fontSize: 13
+      },
+      backgroundColor: "transparent",
+      chartArea: {
+        width: "90%",
+        height: "80%"
+      },
+      colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A', '#FF5454', '#C7A258', '#CBE968', '#FABB3D', '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
+    };
+    this.changeTitle("Taxas de desmatamento PRODES em " + years[this.options.period]);
+    this._rightBtn.disabled = true;
+    this._leftBtn.disabled = true;
+    google.visualization.events.addListener(this.chart, "ready", function() {
+      _this._rightBtn.disabled = _this.options.period < 1;
+      return _this._leftBtn.disabled = _this.options.period >= 3;
+    });
+    return this.chart.draw(this.data, options);
+  };
+
   spark1 = new H5.Charts.Sparks({
     container: "spark1",
     title: "Total Mensal"
   });
 
   spark1.drawChart = function() {
+<<<<<<< HEAD
     var createTable, data, day, daysInMonth, firstPeriod, name, secondPeriod, state, value, _k, _ref7;
     createTable = (function(_this) {
       return function(state) {
@@ -1713,6 +2175,26 @@
             _fn(reg);
           }
           _results.push(data[day - 1] = Math.round((data[day - 1] + dayValue) * 100) / 100);
+=======
+    var createTable, data, day, daysInMonth, firstPeriod, name, secondPeriod, state, value, _k, _ref7,
+      _this = this;
+    createTable = function(state) {
+      var day, dayValue, key, reg, _fn, _k, _ref7, _results;
+      dayValue = 0;
+      _results = [];
+      for (day = _k = 1; 1 <= daysInMonth ? _k <= daysInMonth : _k >= daysInMonth; day = 1 <= daysInMonth ? ++_k : --_k) {
+        _ref7 = H5.DB.diary.data.states[state];
+        _fn = function(reg) {
+          var _ref8;
+          if ((firstPeriod <= (_ref8 = reg.date) && _ref8 <= secondPeriod) && reg.day === day) {
+            dayValue += reg.area;
+            return false;
+          }
+        };
+        for (key in _ref7) {
+          reg = _ref7[key];
+          _fn(reg);
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
         }
         return _results;
       };
@@ -1980,6 +2462,7 @@
   });
 
   chartDailyEmbargo.drawChart = function() {
+<<<<<<< HEAD
     var createTable, data, day, daysInMonth, firstPeriod, months, name, options, secondPeriod, _k;
     createTable = (function(_this) {
       return function(state) {
@@ -2000,6 +2483,26 @@
             _fn(reg);
           }
           _results.push(_this.data.setValue(day - 1, 1, Math.round((_this.data.getValue(day - 1, 1) + sum) * 100) / 100));
+=======
+    var createTable, data, day, daysInMonth, firstPeriod, months, name, options, secondPeriod, _k,
+      _this = this;
+    createTable = function(state) {
+      var day, key, reg, sum, _fn, _k, _ref7, _results;
+      sum = 0;
+      _results = [];
+      for (day = _k = 1; 1 <= daysInMonth ? _k <= daysInMonth : _k >= daysInMonth; day = 1 <= daysInMonth ? ++_k : --_k) {
+        _ref7 = H5.DB.embargo.data.states[state];
+        _fn = function(reg) {
+          var _ref8;
+          if ((firstPeriod <= (_ref8 = reg.date) && _ref8 <= secondPeriod) && reg.day === day) {
+            sum += reg.area;
+            return false;
+          }
+        };
+        for (key in _ref7) {
+          reg = _ref7[key];
+          _fn(reg);
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
         }
         return _results;
       };
@@ -2091,7 +2594,12 @@
   };
 
   chartMonthlyEmbargo.drawChart = function() {
+<<<<<<< HEAD
     var data, month, options, sumValues, _k, _l, _ref7, _ref8, _ref9;
+=======
+    var data, month, options, sumValues, _k, _l, _ref7, _ref8, _ref9,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumValues = function(year, month) {
       var firstPeriod, key, name, reg, secondPeriod, state, sum, _ref10, _ref7, _ref8, _ref9;
       sum = 0;
@@ -2191,7 +2699,12 @@
   };
 
   chartAnnualEmbargo.drawChart = function() {
+<<<<<<< HEAD
     var data, options, sumAvg, sumAvgValues, sumTotal, sumTotalValues, sumValues, _k, _ref7;
+=======
+    var data, options, sumAvg, sumAvgValues, sumTotal, sumTotalValues, sumValues, _k, _ref7,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumValues = function(firstPeriod, secondPeriod) {
       var key, name, reg, state, sum, _ref10, _ref7, _ref8, _ref9;
       sum = 0;
@@ -2315,7 +2828,12 @@
   };
 
   chartStatesEmbargo.drawChart = function() {
+<<<<<<< HEAD
     var data, j, name, options, state, sumValues, _k, _l, _m, _ref10, _ref7, _ref8, _ref9;
+=======
+    var data, j, name, options, state, sumValues, _k, _l, _m, _ref10, _ref7, _ref8, _ref9,
+      _this = this;
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
     sumValues = function(state, year) {
       var firstPeriod, key, reg, secondPeriod, sum, _ref7, _ref8;
       sum = 0;
@@ -2552,6 +3070,7 @@
   });
 
   sparkMonthlyEmbargo.drawChart = function() {
+<<<<<<< HEAD
     var createTable, data, day, daysInMonth, firstPeriod, name, secondPeriod, state, value, _k, _ref7;
     createTable = (function(_this) {
       return function(state) {
@@ -2572,6 +3091,26 @@
             _fn(reg);
           }
           _results.push(data[day - 1] = Math.round((data[day - 1] + dayValue) * 100) / 100);
+=======
+    var createTable, data, day, daysInMonth, firstPeriod, name, secondPeriod, state, value, _k, _ref7,
+      _this = this;
+    createTable = function(state) {
+      var day, dayValue, key, reg, _fn, _k, _ref7, _results;
+      dayValue = 0;
+      _results = [];
+      for (day = _k = 1; 1 <= daysInMonth ? _k <= daysInMonth : _k >= daysInMonth; day = 1 <= daysInMonth ? ++_k : --_k) {
+        _ref7 = H5.DB.embargo.data.states[state];
+        _fn = function(reg) {
+          var _ref8;
+          if ((firstPeriod <= (_ref8 = reg.date) && _ref8 <= secondPeriod) && reg.day === day) {
+            dayValue += reg.area;
+            return false;
+          }
+        };
+        for (key in _ref7) {
+          reg = _ref7[key];
+          _fn(reg);
+>>>>>>> b4c7c262927293bf78f38a3a259dbd938a189d61
         }
         return _results;
       };
@@ -2943,6 +3482,20 @@
       reloadChartsDeter();
       return H5.Data.changed = true;
     }
+  });
+
+  lastSelectedRegion = "";
+
+  $("#quick2 a").on("click", function(e) {
+    e.preventDefault();
+    if (H5.Data.state2 === this.id) {
+      return;
+    }
+    H5.Data.state2 = this.id;
+    $(this).each(function() {
+      return $("a").removeClass("active");
+    });
+    return $(this).addClass("active");
   });
 
   $(document).ready(function() {

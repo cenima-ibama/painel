@@ -2531,9 +2531,6 @@ reloadChartsEmbargos = ->
   sparkAnnualEmbargo.drawChart()
   sparkMonthlyEmbargo.drawChart()
 
-# reloadChartsNewStats = ->
-#   chart13.drawChart()
-
 # selects
 selectYears = document.getElementById('yearsSlct')
 selectMonths = document.getElementById('monthsSlct')

@@ -193,6 +193,7 @@ H5.Map.layer.clusters = new L.VectorLayer.Postgis (
   cluster: true
   popupTemplate: null
   where: "ano = '2013'"
+  # focus: true
   symbology:
     type: "single"
     vectorStyle:
