@@ -12,19 +12,24 @@
   <script src="<?= base_url()?>assets/js/leaflet.markercluster.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.minimap.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.fullscreen.js"></script>
-  <script src="<?= base_url()?>assets/js/leaflet.vectorlayer.js"></script>
+  <!-- <script src="https://siscom.ibama.gov.br/painel/assets/js/leaflet.vectorlayer.js"></script> -->
+  <script src="<?= base_url()?>assets/js/leaflet.vectorLayer.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.quickcontrol.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.control.locate.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.control.geosearch.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.geosearch.provider.google.js"></script>
-  <!-- <script src="<?= base_url()?>assets/js/leaflet.draw.js"></script> -->
+  <script src="<?= base_url()?>assets/js/leaflet.textpath.js"></script>
+  <!-- <script src="https://siscom.ibama.gov.br/painel/assets/js/leaflet.draw.js"></script> -->
   <!-- Bootstrap -->
   <script src="<?= base_url()?>assets/js/bootstrap.min.js"></script>
+  <script src="<?= base_url()?>assets/js/bootstrap.select.js"></script>
+  <script src="<?= base_url()?>assets/js/bootstrap.switch.js"></script>
   <script src="<?= base_url()?>assets/js/bootstrap-datepicker.js"></script>
   <script src="<?= base_url()?>assets/js/locales/bootstrap-datepicker.pt-BR.js" charset="UTF-8"></script>
   <!-- Charts -->
   <!-- <script src="//www.google.com/jsapi" type="text/javascript"></script> -->
   <script src="<?= base_url()?>assets/js/google-api.js"></script>
+  <script src="<?= base_url()?>assets/js/masonry.min.js"></script>
   <script src="<?= base_url()?>assets/js/jquery.knob.js"></script>
   <script src="<?= base_url()?>assets/js/jquery.sparkline.min.js"></script>
   <script src="<?= base_url()?>assets/js/jquery.pusher.color.min.js"></script>

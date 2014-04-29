@@ -78,7 +78,7 @@ window.addEventListener orientationEvent, (->
 # MAP LAYER {{{
 H5.Map.base = new L.Map("map",
   center: new L.LatLng(-10.0, -58.0)
-  zoom: 6
+  zoom: 5
   layers: [binghybrid]
 )
 
@@ -167,6 +167,11 @@ H5.Map.layer.alerta = new L.VectorLayer.Postgis (
 )
 H5.Map.layer.alerta.setMap H5.Map.base
 
+H5.Map.layer.heli_hist = {}
+H5.Map.layer.heli_atual = {}
+
+actualDate = new Date()
+
 customMarker = L.Icon.extend(
   options:
     iconUrl: "http://" + document.domain + "/painel/assets/img/ibama_marker.png"
@@ -188,7 +193,6 @@ H5.Map.layer.clusters = new L.VectorLayer.Postgis (
   cluster: true
   popupTemplate: null
   where: "ano = '2013'"
-  # focus: true
   symbology:
     type: "single"
     vectorStyle:
@@ -222,8 +226,8 @@ new L.Control.Cleancontrol(
           type: "period"
           placeholder: "dd/mm/aaaa"
           dbfield: "data_imagem"
-  # "RapidEye":
-    # layer: rapidEye
+  "RapidEye":
+    layer: rapidEye
 ).addTo(H5.Map.base)
 
-# }}}
+# $(H5.Map.layer.heli_hist._vectors.length).on "change"

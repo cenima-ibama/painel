@@ -19,6 +19,7 @@ class H5.Charts.Container
     defaultClass: ""
     selects: undefined
     resizing: 0
+    loadingImage: null
     buttons:
       minusplus: false
       arrows: false
@@ -63,8 +64,15 @@ class H5.Charts.Container
     boxContent.className = "box-content"
     @_boxContent = boxContent
 
+    boxLoad = document.createElement("div")
+    boxLoad.id = "box-" + @options.container
+    boxLoad.className = "box-content"
+    boxLoad.style = "display:none;"
+    boxLoad.innerHTML = if @options.loadingImage then @options.loadingImage else "Loading..."
+    @_boxLoad = boxLoad
+
     $(@_boxHeader).append @_leftCtrl, @_boxTitle, @_rightCtrl
-    $(@_container).append @_boxHeader, @_boxContent
+    $(@_container).append @_boxHeader, @_boxContent, @_boxLoad
 
     pipeline = "<span class=\"break\"></span>"
     # add minus and plus controllers
@@ -306,6 +314,16 @@ class H5.Charts.Container
   _enableSelect: (select) ->
     $(select).on "change", (event) =>
       @drawChart()
+
+  _loadScreen: ()->
+    if !$(@_boxLoad).is ':visible'
+      $(@_boxLoad).show()
+      $(@_boxContent).hide()
+
+  _chartScreen: ()->
+    if !$(@_boxContent).is ':visible'
+      $(@_boxContent).show()
+      $(@_boxLoad).hide()
 
 class H5.Charts.GoogleCharts extends H5.Charts.Container
 

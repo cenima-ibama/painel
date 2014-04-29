@@ -10,6 +10,14 @@
       <ul class="nav">
         <li class=""><a id="btn-map" href="#"><i class="icon-globe icon-white"></i> Mapa</a></li>
         <li class="active"><a id="btn-charts" href="#"><i class="icon-dashboard icon-white"></i> Estatística</a></li>
+
+        <?php
+          //if($this->session->userdata('logged_in')) {
+            echo '<li class=""><a id="btn-charts2" href="#"><i class="icon-bar-chart icon-white"></i> Cruzamento de Dados</a></li>';
+            // echo '<li class=""><a id="btn-charts3" href="#"><i class="icon-bar-chart icon-white"></i> Configurações do Sistema</a></li>';
+          //}
+        ?>
+        <!-- <li class=""><a id="btn-charts3" href="#"><i class="icon-bar-chart icon-white"></i> Novas Estatísticas</a></li> -->
       </ul>
       <?php
         if($this->session->userdata('logged_in')) {
@@ -17,7 +25,7 @@
             echo '<li class="dropdown">';
               echo('<a id="btn-logged" class="dropdown-toggle" href="#" data-toggle="dropdown"><i class="icon-user icon-white"></i> ' . $name . '<strong class="caret"></strong></a>');
               echo '<ul class="dropdown-menu">';
-                echo '<li>' . anchor(base_url() . 'index.php/auth/logout', 'Logout', '') . '</li>';
+                echo '<li>' . anchor(base_url() . '/index.php/auth/logout', 'Logout', '') . '</li>';
               echo '</ul>';
             echo '</li>';
           echo '</ul>';

@@ -1,6 +1,8 @@
 if document.getElementById("login")
   $("#login").load("http://" + document.domain + "/painel/index.php/login")
   $("#login").hide()
+  $("#configs").hide()
+  # $("#prodes").hide()
 
 $(document).ready ->
 
@@ -21,6 +23,8 @@ $(document).ready ->
     if $(@).prop("id") is "btn-map"
       $("#dash").hide()
       $("#login").hide()
+      $("#prodes").hide()
+      $("#configs").hide()
       $("#map").show()
 
       if H5.Data.changed
@@ -39,11 +43,27 @@ $(document).ready ->
     else if $(@).prop("id") is "btn-charts"
       $("#login").hide()
       $("#map").hide()
+      $("#prodes").hide()
+      $("#configs").hide()
       $("#dash").show()
     else if $(@).prop("id") is "btn-login"
       $("#dash").hide()
-      $("#map").show()
       $("#login").show()
+      $("#prodes").hide()
+      $("#configs").hide()
+      $("#map").show()
+    else if $(@).prop("id") is "btn-charts2"
+      $("#dash").hide()
+      $("#map").hide()
+      $("#login").hide()
+      $("#configs").hide()
+      $("#prodes").show()
+    else if $(@).prop("id") is "btn-charts3"
+      $("#dash").hide()
+      $("#map").hide()
+      $("#login").hide()
+      $("#prodes").hide()
+      $("#configs").show()
 
     $('.nav-collapse').collapse('hide')
 
@@ -66,3 +86,16 @@ $(document).ready ->
 
   # Animate load screen
   $(".loading").fadeOut 2000
+
+  #-------------------------------------------------------------------------
+  # Aba 2
+  #-------------------------------------------------------------------------
+  # $('#newstats .input-append.date').datepicker({})
+  # $('#newstats .input-daterange').datepicker({format: "dd/mm/yyyy",language: "pt-BR"})
+
+  # $('.selectpicker').selectpicker()
+
+  $('#prodes .input-append.date').datepicker({format: "dd/mm/yyyy",language: "pt-BR", autoclose: true})
+  $('#prodes .input-daterange').datepicker({format: "dd/mm/yyyy",language: "pt-BR", autoclose: true, cleanbtn: true})
+
+  $('.selectpicker').selectpicker()
