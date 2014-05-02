@@ -172,7 +172,7 @@
         boxLoad = document.createElement("div");
         boxLoad.id = "box-" + this.options.container;
         boxLoad.className = "box-content";
-        boxLoad.style = "display:none;";
+        boxLoad.style.display = "none";
         boxLoad.innerHTML = this.options.loadingImage ? this.options.loadingImage : "Loading...";
         this._boxLoad = boxLoad;
       }

@@ -68,7 +68,7 @@ class H5.Charts.Container
       boxLoad = document.createElement("div")
       boxLoad.id = "box-" + @options.container
       boxLoad.className = "box-content"
-      boxLoad.style = "display:none;"
+      boxLoad.style.display = "none"
       boxLoad.innerHTML = if @options.loadingImage then @options.loadingImage else "Loading..."
       @_boxLoad = boxLoad
 
