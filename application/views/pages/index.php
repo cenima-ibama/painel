@@ -304,9 +304,9 @@
               <option value="dominio_publico">Domínio Público</option>
             </select>
           </div>
-<!--           <div class="button" style="margin:25px 0 0 55px;">
+          <div id="consultBotton"class="button" style="margin:25px 0 0 55px;">
             <input type="button" id="consultBtn" value="Cruzar Dados" class="btn"/>
-          </div> -->
+          </div>
         </div>
       </div>
       <div id="quick2" class="quick-btn">

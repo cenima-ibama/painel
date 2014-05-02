@@ -1141,6 +1141,9 @@ chart10 = new H5.Charts.GoogleCharts  (
     maximize: true
 )
 
+
+chart10._consultBtn = document.getElementById('consultBtn')
+
 chart10._shapesSlct = document.getElementById('shapesSlct')
 chart10._shapesSlct.options[0].selected = true
 chart10._ratesSlct = document.getElementById('ratesSlct')
@@ -1153,6 +1156,8 @@ chart10._stateGroup = document.getElementById('quick2').children
 chart10._state = 'Brasil'
 
 
+
+
 # SELECT * FROM dados_deter('assentamento', 'AM', '2013-08-01 00:00:00', '2014-02-06 23:59:59') AS (Resultado float);
 # SELECT * FROM dados_deter('unidade_conservacao', 'AM', '2013-08-01 00:00:00', '2014-02-06 23:59:59') AS (Resultado float);
 # SELECT * FROM dados_deter('unidade_conservacao', 'AM', '2013-08-01 00:00:00', '2014-02-06 23:59:59') AS (Resultado float);
@@ -1160,22 +1165,9 @@ chart10._state = 'Brasil'
 # SELECT * FROM dados_deter('floresta_publica', 'AM', '2013-08-01', '2014-02-06') AS (Resultado float);
 
 
-$(chart10._shapesSlct).on "change", (event) ->
-  # H5.Data.shapeSlct =  chart10._shapesSlct.value
-  # chart10.areaSelected = chart10._shapesSlct.value
+$(chart10._consultBtn).on "click", (event) ->
   chart10.drawChart()
-$(chart10._ratesSlct).on "change", (event) ->
-  # H5.Data.ratesSlct =  chart10._ratesSlct.value
-  # chart10.rateSelected = chart10._ratesSlct.value
-  chart10.drawChart()
-$(chart10._dateBegin).on "change", (event) ->
-  # chart10._dateBegin = document.getElementById('dateBegin').value
-  # chart10.dateBegin = chart10._dateBegin
-  chart10.drawChart()
-$(chart10._dateEnd).on "change", (event) ->
-  # chart10._dateEnd = document.getElementById('dateFinish').value
-  # chart10.dateEnd = chart10._dateEnd
-  chart10.drawChart()
+
 $.each chart10._stateGroup, ()->
   $(@).on "click", (event) ->
     chart10._state = $(@).children('span').html() ? 'Brasil'

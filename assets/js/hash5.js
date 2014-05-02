@@ -168,14 +168,20 @@
       boxContent.id = "box-" + this.options.container;
       boxContent.className = "box-content";
       this._boxContent = boxContent;
-      boxLoad = document.createElement("div");
-      boxLoad.id = "box-" + this.options.container;
-      boxLoad.className = "box-content";
-      boxLoad.style = "display:none;";
-      boxLoad.innerHTML = this.options.loadingImage ? this.options.loadingImage : "Loading...";
-      this._boxLoad = boxLoad;
+      if (this.options.loadingImage) {
+        boxLoad = document.createElement("div");
+        boxLoad.id = "box-" + this.options.container;
+        boxLoad.className = "box-content";
+        boxLoad.style = "display:none;";
+        boxLoad.innerHTML = this.options.loadingImage ? this.options.loadingImage : "Loading...";
+        this._boxLoad = boxLoad;
+      }
       $(this._boxHeader).append(this._leftCtrl, this._boxTitle, this._rightCtrl);
-      $(this._container).append(this._boxHeader, this._boxContent, this._boxLoad);
+      if (this.options.loadingImage) {
+        $(this._container).append(this._boxHeader, this._boxContent, this._boxLoad);
+      } else {
+        $(this._container).append(this._boxHeader, this._boxContent);
+      }
       pipeline = "<span class=\"break\"></span>";
       if (this.options.buttons.minusplus) {
         $(this._boxTitle).prepend(pipeline);
