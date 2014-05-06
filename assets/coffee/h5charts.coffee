@@ -1171,7 +1171,7 @@ $(chart10._consultBtn).on "click", (event) ->
 $.each chart10._stateGroup, ()->
   $(@).on "click", (event) ->
     chart10._state = $(@).children('span').html() ? 'Brasil'
-    chart10.drawChart()
+    # chart10.drawChart()
 
 chart10.drawChart = ->
   createTable = (state) =>

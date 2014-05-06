@@ -1279,8 +1279,7 @@
   $.each(chart10._stateGroup, function() {
     return $(this).on("click", function(event) {
       var _ref7;
-      chart10._state = (_ref7 = $(this).children('span').html()) != null ? _ref7 : 'Brasil';
-      return chart10.drawChart();
+      return chart10._state = (_ref7 = $(this).children('span').html()) != null ? _ref7 : 'Brasil';
     });
   });
 

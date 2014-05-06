@@ -301,10 +301,10 @@
               <option value="uc_integral">Unidades de Conservação de proteção integral</option>
               <option value="assentamento">Assentamentos</option>
               <option value="floresta">Floresta Pública</option>
-              <option value="dominio_publico">Domínio Público</option>
+              <option value="dominio_publico">Domínio Estadual</option>
             </select>
           </div>
-          <div id="consultBotton"class="button" style="margin:25px 0 0 55px;">
+          <div class="button" style="margin:25px 0 0 55px;">
             <input type="button" id="consultBtn" value="Cruzar Dados" class="btn"/>
           </div>
         </div>
