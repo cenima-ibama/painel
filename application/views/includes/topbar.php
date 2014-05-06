@@ -14,7 +14,7 @@
         <?php
           if($this->session->userdata('logged_in')) {
             echo '<li class=""><a id="btn-charts2" href="#"><i class="icon-bar-chart icon-white"></i> Cruzamento de Dados</a></li>';
-            echo '<li class=""><a id="btn-charts3" href="#"><i class="icon-bar-chart icon-white"></i> Configurações do Sistema</a></li>';
+            // echo '<li class=""><a id="btn-charts3" href="#"><i class="icon-bar-chart icon-white"></i> Configurações do Sistema</a></li>';
           }
         ?>
         <!-- <li class=""><a id="btn-charts3" href="#"><i class="icon-bar-chart icon-white"></i> Novas Estatísticas</a></li> -->
