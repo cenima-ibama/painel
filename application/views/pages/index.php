@@ -255,16 +255,6 @@
   </div>
 </div>
 <div  id="prodes" class="dash">
-
-  <div class="alert alert-danger alert-block fade in" style="margin: 30px 20% 20px">
-    <button class="close" data-dismiss="alert">&times;</button>
-    <h4 style="text-align: left">Importante:</h4>
-    </br>
-    <p style="text-align: left">
-      Cruzamentos em fase de teste. Valores podem não corresponder a realidade
-    </p>
-  </div>
-
   <div class="charts-content">
     <!-- <div class="row-fluid" id="compare" class="row-fluid">
       <div class="item" style="margin:0;">
@@ -311,10 +301,10 @@
               <option value="uc_integral">Unidades de Conservação de proteção integral</option>
               <option value="assentamento">Assentamentos</option>
               <option value="floresta">Floresta Pública</option>
-              <option value="dominio_publico">Domínio Estadual</option>
+              <option value="dominio_publico">Domínio Público</option>
             </select>
           </div>
-          <div class="button" style="margin:25px 0 0 55px;">
+          <div id="consultBotton"class="button" style="margin:25px 0 0 55px;">
             <input type="button" id="consultBtn" value="Cruzar Dados" class="btn"/>
           </div>
         </div>
@@ -367,9 +357,6 @@
       <div id="chart10" class="box" style="display:block"> </div>
       <div id="chart11" class="box" style="display:block"> </div>
       <div id="chart12" class="box" style="display:block"> </div>
-      <div id="chart13" class="box" style="display:block"> </div>
-      <div id="chart14" class="box" style="display:block"> </div>
-      <div id="chart15" class="box" style="display:block"> </div>
     </div>
   </div>
 </div>

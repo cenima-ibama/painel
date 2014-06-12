@@ -58,13 +58,6 @@ ucFederais = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
 rapidEye = new L.TileLayer("http://geo1.ibama.gov.br/geo/tmstest/{z}/{x}/{y}.png",
   tms: true
 )
-
-nuvem = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
-  layers: "cemam:Daily_Cloud_With_Geometry"
-  format: "image/png"
-  transparent: true
-)
-
 # }}}
 # SCREEN SIZE {{{
 # update size of the map container
@@ -208,67 +201,34 @@ H5.Map.layer.clusters = new L.VectorLayer.Postgis (
 )
 H5.Map.layer.clusters.setMap H5.Map.base
 
-if H5.DB.logged_in
-  new L.Control.Cleancontrol(
-    "OSM":
-      layer: openstreet
-    "Bing Aerial":
-      layer: bingaerial
-    "Bing Road":
-      layer: bingroad
-    "Bing Hybrid":
-      layer: binghybrid
-  ,
-    "DETER Alerta":
-      layer: H5.Map.layer.alerta.layer
-      vectorLayer:
-        layer: H5.Map.layer.alerta
-        clusters: H5.Map.layer.clusters
-        opacity: true
-        filters:
-          "Estado":
-            type: "select"
-            value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
-            reset: "Todos"
-            dbfield: "estado"
-          "Periodo":
-            type: "period"
-            placeholder: "dd/mm/aaaa"
-            dbfield: "data_imagem"
-    "RapidEye":
-      layer: rapidEye
-    "DETER Nuvem":
-      layer: nuvem
-  ).addTo(H5.Map.base)
-else
-  new L.Control.Cleancontrol(
-    "OSM":
-      layer: openstreet
-    "Bing Aerial":
-      layer: bingaerial
-    "Bing Road":
-      layer: bingroad
-    "Bing Hybrid":
-      layer: binghybrid
-  ,
-    "DETER Alerta":
-      layer: H5.Map.layer.alerta.layer
-      vectorLayer:
-        layer: H5.Map.layer.alerta
-        clusters: H5.Map.layer.clusters
-        opacity: true
-        filters:
-          "Estado":
-            type: "select"
-            value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
-            reset: "Todos"
-            dbfield: "estado"
-          "Periodo":
-            type: "period"
-            placeholder: "dd/mm/aaaa"
-            dbfield: "data_imagem"
-    "RapidEye":
-      layer: rapidEye
-  ).addTo(H5.Map.base)
+new L.Control.Cleancontrol(
+  "OSM":
+    layer: openstreet
+  "Bing Aerial":
+    layer: bingaerial
+  "Bing Road":
+    layer: bingroad
+  "Bing Hybrid":
+    layer: binghybrid
+,
+  "DETER Alerta":
+    layer: H5.Map.layer.alerta.layer
+    vectorLayer:
+      layer: H5.Map.layer.alerta
+      clusters: H5.Map.layer.clusters
+      opacity: true
+      filters:
+        "Estado":
+          type: "select"
+          value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
+          reset: "Todos"
+          dbfield: "estado"
+        "Periodo":
+          type: "period"
+          placeholder: "dd/mm/aaaa"
+          dbfield: "data_imagem"
+  "RapidEye":
+    layer: rapidEye
+).addTo(H5.Map.base)
 
 # $(H5.Map.layer.heli_hist._vectors.length).on "change"

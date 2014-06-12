@@ -24,8 +24,6 @@ H5.Data.regions = {
   centrooeste: ["DF", "GO", "MT", "MS"]
 }
 
-H5.Data.years = [ "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006","2005" ]
-
 H5.Data.thisDate = new Date()
 H5.Data.thisYear = H5.Data.thisDate.getFullYear()
 H5.Data.thisProdesYear = if H5.Data.thisMonth < 7 then H5.Data.thisYear else H5.Data.thisYear + 1
@@ -226,7 +224,7 @@ H5.DB.dado_prodes_consolidado.data =
       @states[state] = {}
     @states['brasil'] = {}
 
-  populate: (year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta, dominio) ->
+  populate: (year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta) ->
     # convert string into date
     if state and year
 
@@ -238,7 +236,6 @@ H5.DB.dado_prodes_consolidado.data =
       self[year].uc_integral = uc_integral
       self[year].assentamento = assentamento
       self[year].floresta = floresta
-      self[year].dominio = dominio
       self[year].year = year
 
       # set the value of the last value
@@ -256,7 +253,6 @@ H5.DB.dado_prodes_consolidado.data =
         self[year].uc_integral = 0
         self[year].assentamento = 0
         self[year].floresta = 0
-        self[year].dominio = 0
         self[year].year = year
 
       self[year].terra_indigena += if terra_indigena then terra_indigena else 0
@@ -264,7 +260,6 @@ H5.DB.dado_prodes_consolidado.data =
       self[year].uc_integral += uc_integral
       self[year].assentamento += assentamento
       self[year].floresta += floresta
-      self[year].dominio += dominio
 
       return
 
@@ -278,7 +273,7 @@ rest = new H5.Rest (
 H5.DB.dado_prodes_consolidado.data.init()
 for i, properties of rest.data
   H5.DB.dado_prodes_consolidado.data.populate(
-    properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel),parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica), if properties.dominio_estadual then parseFloat(properties.dominio_estadual) else parseFloat(0)
+    properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel),parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica)
   )
 
 #   terra_indigena_sum += properties.terra_indigena
@@ -1167,7 +1162,6 @@ $(chart10._consultBtn).on "click", (event) ->
 $.each chart10._stateGroup, ()->
   $(@).on "click", (event) ->
     chart10._state = $(@).children('span').html() ? 'Brasil'
-    # chart10.drawChart()
 
 chart10.drawChart = ->
   createTable = (state) =>
@@ -1202,7 +1196,6 @@ chart10.drawChart = ->
     "uc_integral": "Unidade de Conservação de proteção integral"
     "assentamento": "Assentamento"
     "floresta": "Floresta Pública"
-    "dominio_publico": "Domínio Estadual"
 
   rates =
     "0": "DETER"
@@ -1216,37 +1209,37 @@ chart10.drawChart = ->
       when "terra_indigena"
         for year in ["2010", "2011", "2012", "2013"]
           data[0] = year
-          data[1] = parseFloat stateData[year].terra_indigena.toFixed(2)
+          data[1] = stateData[year].terra_indigena
           @data.addRow data
         break
       when "assentamento"
         for year in ["2010", "2011", "2012", "2013"]
           data[0] = year
-          data[1] = parseFloat stateData[year].assentamento.toFixed(2)
+          data[1] = stateData[year].assentamento
           @data.addRow data
         break
       when "floresta"
         for year in ["2010", "2011", "2012", "2013"]
           data[0] = year
-          data[1] = parseFloat stateData[year].floresta.toFixed(2)
+          data[1] = stateData[year].floresta
           @data.addRow data
         break
       when "uc_integral"
         for year in ["2010", "2011", "2012", "2013"]
           data[0] = year
-          data[1] = parseFloat stateData[year].uc_integral.toFixed(2)
+          data[1] = stateData[year].uc_integral
           @data.addRow data
         break
       when "uc_sustentavel"
         for year in ["2010", "2011", "2012", "2013"]
           data[0] = year
-          data[1] = parseFloat stateData[year].uc_sustentavel.toFixed(2)
+          data[1] = stateData[year].uc_sustentavel
           @data.addRow data
         break
       when "dominio_publico"
         for year in ["2010", "2011", "2012", "2013"]
           data[0] = year
-          data[1] = parseFloat stateData[year].uc_sustentavel.toFixed(2)
+          data[1] = stateData[year].uc_sustentavel
           @data.addRow data
         break
 
@@ -1375,7 +1368,7 @@ chart10.drawChart = ->
 
     $.each rest.data[0], (field,result)=>
       data[0] = field.toString()
-      data[1] = if result then parseFloat result.toFixed(2) else 0
+      data[1] = if result then parseFloat(result) else 0
       @data.addRow data
 
 
@@ -1409,57 +1402,38 @@ chart11 = new H5.Charts.GoogleCharts  (
   period: 1
   title: "Taxa de desmatamento PRODES - [2010 - 2013]"
   buttons:
-    minusplus: true
+    minusplus: false
     export: true
     table: true
     minimize: true
     maximize: true
 )
 
-chart11._addBtn.onclick = ->
-  chart11.options.period++
-  chart11.drawChart()
-
-chart11._delBtn.onclick = ->
-  chart11.options.period--
-  chart11.drawChart()
-
-
 chart11.drawChart = ->
   createTable = (states) =>
     sum = 0
-    totalsum = 0
     data = []
     i = 1
-
-    period = []
-
-    for j in [0..@options.period + 3]
-      period[j] = H5.Data.years[j]
-
-    for year in period
+    for year in ["2010", "2011", "2012", "2013"]
       data[0] = year
       for rate in ["terra_indigena" , "assentamento", "floresta", "uc_integral", "uc_sustentavel"]
         for state in H5.Data.statesProdes
           estado = H5.DB.dado_prodes_consolidado.data.states[state]
           sum += estado[year][rate]
-
-        data[i] = parseFloat sum.toFixed(2)
+        data[i] = sum
         i++
         sum = 0
-
+        # @data.setValue year, 1, sum
       i = 1
       @data.addRow data
-      @data.addRow [null, null, null, null, null, null]
 
-    @data.removeRow(@data.getNumberOfRows() - 1)
   # create an empty table
   @createDataTable()
 
   @data.addColumn "string", "Ano"
   @data.addColumn "number", "Terra indígena em km²"
   @data.addColumn "number", "Assentamento em km²"
-  @data.addColumn "number", "Terras Arrecadadas em km²"
+  @data.addColumn "number", "Floresta Pública em km²"
   @data.addColumn "number", "UC Inegral em km²"
   @data.addColumn "number", "UC Sustentável em km²"
 
@@ -1468,7 +1442,7 @@ chart11.drawChart = ->
   # populate table with real data
   createTable "nenhumEstado"
 
-  @changeTitle "Taxas de Desmatamento PRODES  em áreas específicas - [" + H5.Data.years[@options.period + 3] + " - " + H5.Data.years[0] + "]"
+  @changeTitle "Taxas de Desmatamento PRODES  em áreas específicas - [2010 - 2013]"
 
   options =
     title: ""
@@ -1477,7 +1451,6 @@ chart11.drawChart = ->
       fontSize: 13
     backgroundColor: "transparent"
     focusTarget: "category"
-    connectSteps: "false"
     chartArea:
       width: "70%"
       height: "80%"
@@ -1488,15 +1461,6 @@ chart11.drawChart = ->
       title: "Área em km2"
     isStacked: true
     animation: H5.Data.animate
-
-  # Disabling the buttons while the chart is drawing.
-  @_addBtn.disabled = true
-  @_delBtn.disabled = true
-
-  google.visualization.events.addListener @chart, "ready", =>
-    # Enabling only relevant buttons.
-    @_delBtn.disabled = @options.period < 2
-    @_addBtn.disabled = @options.period >= 5
 
   @chart.draw @data, options
 #}}}
@@ -1513,6 +1477,8 @@ chart12 = new H5.Charts.GoogleCharts(
     maximize: true
 )
 
+chart12.changeTitle "Taxas de desmatamento PRODES em 2012"
+
 chart12._leftBtn.onclick = ->
   chart12.options.period++
   chart12.drawChart()
@@ -1521,114 +1487,22 @@ chart12._rightBtn.onclick = ->
   chart12.options.period--
   chart12.drawChart()
 
-# years = ["2010", "2011", "2012", "2013"]
-years = H5.Data.years
+years = ["2010", "2011", "2012", "2013"]
 
 chart12.drawChart = ->
   createTable = (states) =>
     data = []
-    sumFederal = 0
-    sumEstadual = 0
-    # years = ["2010", "2011", "2012", "2013"]
-    years = H5.Data.years
-    year = years[chart12.options.period]
-
-    for state in H5.Data.statesProdes
-      for territory in ['uc_sustentavel', 'uc_integral', 'terra_indigena', 'floresta', 'assentamento', 'dominio']
-        switch territory
-          when 'uc_sustentavel', 'uc_integral', 'terra_indigena', 'floresta'
-            estado = H5.DB.dado_prodes_consolidado.data.states[state]
-            sumFederal += estado[year][territory]
-          when 'assentamento', 'dominio'
-            estado = H5.DB.dado_prodes_consolidado.data.states[state]
-            sumEstadual += estado[year][territory]
-
-    for rate in ["federal" , "estadual"]
-      if rate is "federal"
-        data[0] = "Territórios de Competência Federal"
-        data[1] = parseFloat sumFederal.toFixed(2)
-      else
-        data[0] = "Territórios de Competência Estadual"
-        data[1] = parseFloat sumEstadual.toFixed(2)
-
-      @data.addRow data
-
-  # create an empty table
-  @createDataTable()
-
-  @data.addColumn "string", "Comparação"
-  @data.addColumn "number", "Área em km²"
-
-  # populate table with real data
-  createTable "nenhumEstado"
-
-  options =
-    title: ""
-    titleTextStyle:
-      color: "#333"
-      fontSize: 13
-    backgroundColor: "transparent"
-    chartArea:
-      width: "90%"
-      height: "80%"
-    colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
-             '#FF5454', '#C7A258', '#CBE968', '#FABB3D',
-             '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
-
-  @changeTitle "Distribuição de Detecções por Competência de Fiscalização [" + H5.Data.years[chart12.options.period] + "]"
-
-  # Disabling the buttons while the chart is drawing.
-  @_rightBtn.disabled = true
-  @_leftBtn.disabled = true
-
-  google.visualization.events.addListener @chart, "ready", =>
-    # Enabling only relevant buttons.
-    @_rightBtn.disabled = @options.period < 1
-    @_leftBtn.disabled = @options.period >= 8
-
-  @chart.draw @data, options
-#}}}
-# CHART13 {{{
-chart13 = new H5.Charts.GoogleCharts(
-  type: "Pie"
-  container: "chart13"
-  period: 0
-  buttons:
-    arrows: true
-    export: true
-    table: true
-    minimize: true
-    maximize: true
-)
-
-# chart13.changeTitle "Taxas de desmatamento PRODES em 2012"
-
-chart13._leftBtn.onclick = ->
-  chart13.options.period++
-  chart13.drawChart()
-
-chart13._rightBtn.onclick = ->
-  chart13.options.period--
-  chart13.drawChart()
-
-# years = ["2010", "2011", "2012", "2013"]
-years = H5.Data.years
-
-chart13.drawChart = ->
-  createTable = (states) =>
-    data = []
     sum = 0
-    # years = ["2010", "2011", "2012", "2013"]
-    years = H5.Data.years
+    years = ["2010", "2011", "2012", "2013"]
     year = years[chart12.options.period]
-    for rate in ["terra_indigena" , "floresta", "uc_integral", "uc_sustentavel"]
+    for rate in ["terra_indigena" , "assentamento", "floresta", "uc_integral", "uc_sustentavel"]
       switch rate
         when "terra_indigena"
           data[0] = "Terras Indígenas"
-        # when "assentamento"
-        #   data[0] = "Assentamentos"
+        when "assentamento"
+          data[0] = "Assentamentos"
         when "floresta"
-          data[0] = "Terras Arrecadadas"
+          data[0] = "Floresta Pública"
         when "uc_integral"
           data[0] = "UC Integral"
         when "uc_sustentavel"
@@ -1636,7 +1510,7 @@ chart13.drawChart = ->
       for state in H5.Data.statesProdes
         estado = H5.DB.dado_prodes_consolidado.data.states[state]
         sum += estado[year][rate]
-      data[1] = parseFloat sum.toFixed(2)
+      data[1] = sum
       sum = 0
       @data.addRow data
 
@@ -1662,7 +1536,7 @@ chart13.drawChart = ->
              '#FF5454', '#C7A258', '#CBE968', '#FABB3D',
              '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
 
-  @changeTitle "Território de Competência Federal em " + years[@options.period]
+  @changeTitle "Taxas de desmatamento PRODES em " + years[@options.period]
 
   # Disabling the buttons while the chart is drawing.
   @_rightBtn.disabled = true
@@ -1671,95 +1545,113 @@ chart13.drawChart = ->
   google.visualization.events.addListener @chart, "ready", =>
     # Enabling only relevant buttons.
     @_rightBtn.disabled = @options.period < 1
-    @_leftBtn.disabled = @options.period >= 8
+    @_leftBtn.disabled = @options.period >= 3
 
   @chart.draw @data, options
 #}}}
-# CHART14 {{{
-chart14 = new H5.Charts.GoogleCharts(
-  type: "Pie"
-  container: "chart14"
-  period: 0
-  buttons:
-    arrows: true
-    export: true
-    table: true
-    minimize: true
-    maximize: true
-)
+# CHART13 {{{
+# chart13 = new H5.Charts.GoogleCharts  (
+#   type: "Line"
+#   container: "chart13"
+#   title: "Comparações"
+#   buttons:
+#     export: true
+#     table: true
+#     minimize: true
+#     maximize: true
+# )
 
-chart14._leftBtn.onclick = ->
-  chart14.options.period++
-  chart14.drawChart()
+# chart13._dtInitialslct = document.getElementById('dateBeginNewStats')
+# chart13._dtFinalslct = document.getElementById('dateEndNewStats')
+# chart13._ratesSlct = document.getElementById('ratesSlctNewStats')
+# chart13._shapesSlct = document.getElementById('shapesSlctNewStats')
 
-chart14._rightBtn.onclick = ->
-  chart14.options.period--
-  chart14.drawChart()
+# chart13._ratesSlct.options[0].selected = true
+# chart13._shapesSlct.options[0].selected = true
 
-years = H5.Data.years
+# #trigger the redraw whe values changed
+# $(chart13._dtInitialslct).on "change", (event) ->
+#   chart13.drawChart()
 
-chart14.drawChart = ->
-  createTable = (states) =>
-    data = []
-    sum = 0
-    sumUC = 0
+# $(chart13._dtFinalslct).on "change", (event) ->
+#   chart13.drawChart()
 
-    years = H5.Data.years
-    year = years[chart14.options.period]
-    for rate in [ "assentamento", "uc_integral_estadual", "uc_sustentavel_estadual", "dominio" ]
-      switch rate
-        when "assentamento"
-          data[0] = "Assentamentos"
-        when "uc_integral_estadual"
-          data[0] = "UC Integral"
-        when "uc_sustentavel_estadual"
-          data[0] = "UC Federal"
-        when "dominio"
-          data[0] = "Demais Territórios do Estado"
-      for state in H5.Data.statesProdes
-        estado = H5.DB.dado_prodes_consolidado.data.states[state]
-        sum += estado[year][rate]
-        if rate is 'dominio'
-          sumUC += estado[year]['uc_integral_estadual'] + estado[year]['uc_sustentavel_estadual']
+# $(chart13._ratesSlct).on "change", (event) ->
+#   H5.Data.rateSlct = parseInt chart13._ratesSlct.value
+#   chart13.drawChart()
 
-      data[1] = parseFloat sum.toFixed(2) - parseFloat sumUC.toFixed(2)
-      sum = 0
-      @data.addRow data
+# $(chart13._shapesSlct).on "change", (event) ->
+#   H5.Data.shapeSlct = parseInt chart13._shapesSlct.value
+#   chart13.drawChart()
 
-  # create an empty table
-  @createDataTable()
+# chart13.drawChart = ->
+#   createTable = (state) =>
+#     sum = 0
+#     for day in [1..daysInMonth]
+#       # for state in H5.Data.statesNewStats
+#       $.each H5.DB.diary.data.states[state], (key, reg) ->
+#         if firstPeriod <= reg.date <= secondPeriod and reg.day is day
+#           sum += reg.area
+#           return false
+#       @data.setValue (day - 1), 1, Math.round((@data.getValue((day - 1), 1) + sum) * 100) / 100
 
-  @data.addColumn "string", "Comparação"
-  @data.addColumn "number", "Área em km²"
+#   # create an empty table
+#   @createDataTable()
 
-  # populate table with real data
-  createTable "nenhumEstado"
+#   @data.addColumn "number", "Dia"
+#   @data.addColumn "number", "Área"
 
-  options =
-    title: ""
-    titleTextStyle:
-      color: "#333"
-      fontSize: 13
-    backgroundColor: "transparent"
-    chartArea:
-      width: "90%"
-      height: "80%"
-    colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
-             '#FF5454', '#C7A258', '#CBE968', '#FABB3D',
-             '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
+#   daysInMonth = new Date(H5.Data.selectedYear, H5.Data.selectedMonth + 1, 0).getDate()
+#   firstPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, 1)
+#   secondPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, daysInMonth)
+#   data = []
 
-  @changeTitle "Território de Competência Estadual em " + years[@options.period]
+#   # populate table with 0
+#   for day in [1..daysInMonth]
+#     data[0] = day
+#     data[1] = 0
+#     @data.addRow data
 
-  # Disabling the buttons while the chart is drawing.
-  @_rightBtn.disabled = true
-  @_leftBtn.disabled = true
+#   # populate table with real values
+#   if H5.Data.state3 is "brasil"
+#     # $.each H5.DB.diary.data.states, (state, value) ->
+#     for state in H5.Data.statesNewStats
+#       createTable state
+#   else
+#     createTable H5.Data.state3
 
-  google.visualization.events.addListener @chart, "ready", =>
-    # Enabling only relevant buttons.
-    @_rightBtn.disabled = @options.period < 1
-    @_leftBtn.disabled = @options.period >= 8
+#   shapes =
+#     0: "Terras Indígenas"
+#     1: "Bioma IBGE"
+#     2: "Unidades de Conservação"
 
-  @chart.draw @data, options
+#   rates =
+#     0: "DETER"
+#     1: "PRODES"
+
+#   @changeTitle "Taxas de Desmatamento " + rates[H5.Data.rateSlct] + " em " + shapes[H5.Data.shapeSlct]
+
+#   options =
+#     title: ""
+#     titleTextStyle:
+#       color: "#333"
+#       fontSize: 13
+#     backgroundColor: "transparent"
+#     legend: "none"
+#     chartArea:
+#       width: "70%"
+#       height: "70%"
+#     colors: ['#3ABCFC']
+#     vAxis:
+#       title: "Área km²"
+#     hAxis:
+#       title: "Dias"
+#       gridlines:
+#         color: "#CCC"
+#         count: daysInMonth / 5
+#     animation: H5.Data.animate
+
+#   @chart.draw @data, options
 #}}}
 # SPARK1 {{{
 spark1 = new H5.Charts.Sparks(
@@ -1972,14 +1864,12 @@ knob3.drawChart = ->
       firstPeriod = new Date(year-1, 7, 1)
       if month > 6
         if month is H5.Data.thisMonth
-          # secondPeriod = new Date(year-1, month, H5.Data.thisDay)
-          secondPeriod = new Date(year-1, month + 1,  1 - 1)
+          secondPeriod = new Date(year-1, month, H5.Data.thisDay)
         else
           secondPeriod = new Date(year-1, month+1, 0)
       else
         if month is H5.Data.thisMonth
-          # secondPeriod = new Date(year, month, H5.Data.thisDay)
-          secondPeriod = new Date(year, month + 1, 1 - 1)
+          secondPeriod = new Date(year, month, H5.Data.thisDay)
         else
           secondPeriod = new Date(year, month+1, 0)
       sumValues firstPeriod, secondPeriod
@@ -2843,8 +2733,6 @@ $(document).ready ->
   chart10.drawChart()
   chart11.drawChart()
   chart12.drawChart()
-  chart13.drawChart()
-  chart14.drawChart()
   # BOOTSTRAP
   $("[rel=tooltip]").tooltip placement: "bottom"
   $(".alert").alert()
