@@ -125,7 +125,6 @@
       selects: void 0,
       resizing: 0,
       loadingImage: null,
-      numberOfBox: 1,
       buttons: {
         minusplus: false,
         arrows: false,
@@ -152,7 +151,7 @@
     };
 
     Container.prototype._createContainer = function() {
-      var addBtn, addIcon, boxContent, boxHeader, boxLoad, boxTable, boxTitle, closeBtn, closeIcon, data, delBtn, delIcon, exportBtn, exportIcon, formBtn, i, key, leftBtn, leftCtrl, leftIcon, maxBtn, maxIcon, minBtn, minIcon, name, options, pipeline, rightBtn, rightCtrl, rightIcon, select, tableBtn, tableIcon, value, width, _i, _j, _k, _ref, _ref1, _ref2, _ref3, _ref4;
+      var addBtn, addIcon, boxContent, boxHeader, boxLoad, boxTable, boxTitle, closeBtn, closeIcon, data, delBtn, delIcon, exportBtn, exportIcon, formBtn, key, leftBtn, leftCtrl, leftIcon, maxBtn, maxIcon, minBtn, minIcon, name, options, pipeline, rightBtn, rightCtrl, rightIcon, select, tableBtn, tableIcon, value, _ref, _ref1;
       this._container = document.getElementById(this.options.container);
       boxHeader = document.createElement("div");
       boxHeader.className = "box-header";
@@ -166,17 +165,10 @@
       rightCtrl = document.createElement("div");
       rightCtrl.className = "btn-group chart-icon btn-right";
       this._rightCtrl = rightCtrl;
-      this._boxContent = [];
-      width = 99.7 / this.options.numberOfBox;
-      for (i = _i = 0, _ref = this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        boxContent = document.createElement("div");
-        boxContent.id = "box-" + this.options.container + "-" + i;
-        boxContent.className = "box-content";
-        if (this.options.numberOfBox > 1) {
-          $(boxContent).attr('style', 'width:' + width + '%;border-' + (i === 0 ? 'right: 0; float: left' : i === parseInt(this.options.numberOfBox - 1) ? 'left: 0; float: left;' : 'right: 0; border-left:0; float:left;'));
-        }
-        this._boxContent[i] = boxContent;
-      }
+      boxContent = document.createElement("div");
+      boxContent.id = "box-" + this.options.container;
+      boxContent.className = "box-content";
+      this._boxContent = boxContent;
       if (this.options.loadingImage) {
         boxLoad = document.createElement("div");
         boxLoad.id = "box-" + this.options.container;
@@ -186,14 +178,10 @@
         this._boxLoad = boxLoad;
       }
       $(this._boxHeader).append(this._leftCtrl, this._boxTitle, this._rightCtrl);
-      this._box = document.createElement("div");
-      for (i = _j = 0, _ref1 = this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        this._box.appendChild(this._boxContent[i]);
-      }
       if (this.options.loadingImage) {
-        $(this._container).append(this._boxHeader, this._box, this._boxLoad);
+        $(this._container).append(this._boxHeader, this._boxContent, this._boxLoad);
       } else {
-        $(this._container).append(this._boxHeader, this._box);
+        $(this._container).append(this._boxHeader, this._boxContent);
       }
       pipeline = "<span class=\"break\"></span>";
       if (this.options.buttons.minusplus) {
@@ -242,9 +230,9 @@
         formBtn.name = "form-" + this.options.container;
         formBtn.className = "form-inline";
         this._formBtn = formBtn;
-        _ref2 = this.options.selects;
-        for (name in _ref2) {
-          options = _ref2[name];
+        _ref = this.options.selects;
+        for (name in _ref) {
+          options = _ref[name];
           select = "<select id=\"" + name + "Slct\" class=\"input-mini\" name=\"" + name + "\">";
           for (value in options) {
             key = options[value];
@@ -255,9 +243,9 @@
         }
         $(this._leftCtrl).append(this._formBtn);
         $(this._leftCtrl).removeClass("btn-group");
-        _ref3 = this.options.selects;
-        for (name in _ref3) {
-          data = _ref3[name];
+        _ref1 = this.options.selects;
+        for (name in _ref1) {
+          data = _ref1[name];
           this["_" + name + "Slct"] = document["form-" + this.options.container][name];
           this._enableSelect("#" + name + "Slct");
         }
@@ -273,18 +261,11 @@
         this._tableIcon = tableIcon;
         $(this._tableBtn).append(this._tableIcon);
         $(this._rightCtrl).append(this._tableBtn);
-        this._boxTable = [];
-        width = 1384 / this.options.numberOfBox;
-        for (i = _k = 0, _ref4 = this.options.numberOfBox - 1; 0 <= _ref4 ? _k <= _ref4 : _k >= _ref4; i = 0 <= _ref4 ? ++_k : --_k) {
-          boxTable = document.createElement("div");
-          boxTable.id = "table-" + this.options.container;
-          boxTable.className = "box-content-table";
-          if (this.options.numberOfBox > 1) {
-            $(boxTable).attr('style', 'margin-left:' + parseFloat(width * i) + 'px;width: ' + width + 'px; border-' + (i === 0 ? 'right: 0; float: left' : 'left: 0; float: left;'));
-          }
-          this._boxTable[i] = boxTable;
-        }
-        $(this._box).append(this._boxTable);
+        boxTable = document.createElement("div");
+        boxTable.id = "table-" + this.options.container;
+        boxTable.className = "box-content-table";
+        this._boxTable = boxTable;
+        $(this._container).append(this._boxTable);
         this._enableTable();
       }
       if (this.options.buttons["export"]) {
@@ -343,9 +324,8 @@
     Container.prototype._enableMinimize = function() {
       var _this = this;
       return $(this._minBtn).on("click", function(event) {
-        var i, _i, _j, _ref, _ref1, _results;
         event.preventDefault();
-        if ($(_this._boxContent[0]).is(":visible")) {
+        if ($(_this._boxContent).is(":visible")) {
           _this._minIcon.className = "icon-chevron-down";
           if (_this.options.buttons.minusplus) {
             $(_this._addBtn).prop("disabled", true);
@@ -364,23 +344,16 @@
             $(_this._rightBtn).prop("disabled", false);
           }
         }
-        if ($(_this._boxTable[0]).is(":visible")) {
-          for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-            $(_this._boxTable[i]).slideToggle("fast", "linear");
-          }
+        if ($(_this._boxTable).is(":visible")) {
+          $(_this._boxTable).slideToggle("fast", "linear");
         }
-        _results = [];
-        for (i = _j = 0, _ref1 = _this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          _results.push($(_this._boxContent[i]).slideToggle("fast", "linear"));
-        }
-        return _results;
+        return $(_this._boxContent).slideToggle("fast", "linear");
       });
     };
 
     Container.prototype._enableMaximize = function() {
       var _this = this;
       return $(this._maxBtn).on("click", function(event) {
-        var i, _i, _j, _ref, _ref1;
         event.preventDefault();
         if (_this._maxIcon.className === "icon-resize-full") {
           _this.defaultClass = _this._container.className;
@@ -394,20 +367,16 @@
           _this._maxIcon.className = "icon-resize-full";
           $("#navbar").show();
         }
-        for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          $(_this._boxTable[i]).hide();
-          $(_this._boxTable[i]).toggleClass("box-table-overlay");
-        }
+        $(_this._boxTable).hide();
+        $(_this._boxTable).toggleClass("box-table-overlay");
         _this._tableIcon.className = "icon-table";
         $(_this._container).toggleClass(_this.defaultClass);
         $(_this._container).toggleClass("box-overlay");
         $("body").toggleClass("body-overlay");
-        for (i = _j = 0, _ref1 = _this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          $(_this._boxContent[i]).toggleClass("content-overlay");
-          $(_this._boxTable[i]).toggleClass("content-overlay");
-          $(_this._boxContent[i]).hide();
-          $(_this._boxContent[i]).fadeToggle(500, "linear");
-        }
+        $(_this._boxContent).toggleClass("content-overlay");
+        $(_this._boxTable).toggleClass("content-overlay");
+        $(_this._boxContent).hide();
+        $(_this._boxContent).fadeToggle(500, "linear");
         return _this.drawChart();
       });
     };
@@ -430,13 +399,13 @@
     Container.prototype._loadScreen = function() {
       if (!$(this._boxLoad).is(':visible')) {
         $(this._boxLoad).show();
-        return $(this._boxContent[0]).hide();
+        return $(this._boxContent).hide();
       }
     };
 
     Container.prototype._chartScreen = function() {
       if (!$(this._boxContent).is(':visible')) {
-        $(this._boxContent[0]).show();
+        $(this._boxContent).show();
         return $(this._boxLoad).hide();
       }
     };
@@ -454,26 +423,14 @@
     }
 
     GoogleCharts.prototype.createDataTable = function() {
-      var i, _i, _ref, _results;
-      this.data = [];
-      _results = [];
-      for (i = _i = 0, _ref = this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        _results.push(this.data[i] = new google.visualization.DataTable());
-      }
-      return _results;
+      return this.data = new google.visualization.DataTable();
     };
 
     GoogleCharts.prototype.createChart = function() {
-      var i, _i, _j, _ref, _ref1;
-      this.chart = [];
       if (this.options.type === "Gauge") {
-        for (i = _i = 0, _ref = this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          this.chart[i] = new google.visualization.Gauge(this._boxContent[i]);
-        }
+        this.chart = new google.visualization.Gauge(this._boxContent);
       } else {
-        for (i = _j = 0, _ref1 = this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          this.chart[i] = new google.visualization[this.options.type + "Chart"](this._boxContent[i]);
-        }
+        this.chart = new google.visualization[this.options.type + "Chart"](this._boxContent);
       }
       return this._detectScreenChanges();
     };
@@ -484,7 +441,7 @@
       supportsOrientationChange = "onorientationchange" in window;
       orientationEvent = (supportsOrientationChange ? "orientationchange" : "resize");
       return window.addEventListener(orientationEvent, (function() {
-        if ($(_this._boxContent[0]).is(":visible") && !_this.options.resizing) {
+        if ($(_this._boxContent).is(":visible") && !_this.options.resizing) {
           _this.options.resizing = true;
           _this.drawChart();
           return _this.options.resizing = false;
@@ -495,38 +452,25 @@
     GoogleCharts.prototype._enableTable = function() {
       var _this = this;
       return $(this._tableBtn).on("click", function(event) {
-        var i, visualization, _i, _j, _k, _ref, _ref1, _ref2;
+        var visualization;
         event.preventDefault();
-        for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          if ($(_this._boxContent[i]).is(":hidden")) {
-            _this._minIcon.className = "icon-chevron-up";
-            $(_this._boxContent[i]).fadeToggle('fast', 'linear');
-          }
+        if ($(_this._boxContent).is(":hidden")) {
+          _this._minIcon.className = "icon-chevron-up";
+          $(_this._boxContent).fadeToggle('fast', 'linear');
         }
-        for (i = _j = 0, _ref1 = _this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-          $(_this._boxTable[i]).fadeToggle('fast', 'linear');
-        }
+        $(_this._boxTable).fadeToggle('fast', 'linear');
         if (_this._tableIcon.className === "icon-table") {
           _this._tableIcon.className = "icon-bar-chart";
-          for (i = _k = 0, _ref2 = _this.options.numberOfBox - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-            visualization = new google.visualization.Table(_this._boxTable[i]);
-            visualization.draw(_this.data[i], null);
-          }
+          visualization = new google.visualization.Table(_this._boxTable);
+          visualization.draw(_this.data, null);
         } else {
           _this._tableIcon.className = "icon-table";
         }
         return $(_this._leftBtn).add(_this._rightBtn).add(_this._addBtn).add(_this._delBtn).on("click", function(event) {
-          var _l, _ref3, _results;
-          _results = [];
-          for (i = _l = 0, _ref3 = _this.options.numberOfBox - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
-            if ($(_this._boxTable[i]).is(":visible")) {
-              visualization = new google.visualization.Table(_this._boxTable[i]);
-              _results.push(visualization.draw(_this.data, null));
-            } else {
-              _results.push(void 0);
-            }
+          if ($(_this._boxTable).is(":visible")) {
+            visualization = new google.visualization.Table(_this._boxTable);
+            return visualization.draw(_this.data, null);
           }
-          return _results;
         });
       });
     };
@@ -535,29 +479,19 @@
       var generateCSV,
         _this = this;
       generateCSV = function() {
-        var col, data, i, line, numberOfColumns, numberOfRows, row, str, title, value, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3;
+        var col, line, row, str, title, value, _i, _j, _k, _ref, _ref1, _ref2;
         str = "";
         line = "";
-        numberOfColumns = 0;
-        numberOfRows = 0;
-        for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          data = _this.data[i];
-          for (col = _j = 0, _ref1 = data.getNumberOfColumns(); 0 <= _ref1 ? _j < _ref1 : _j > _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
-            title = data.getColumnLabel(col);
-            line += "\"" + title + "\",";
-          }
-          if (data.getNumberOfRows() > numberOfRows) {
-            numberOfRows = data.getNumberOfRows();
-          }
+        for (col = _i = 0, _ref = _this.data.getNumberOfColumns(); 0 <= _ref ? _i < _ref : _i > _ref; col = 0 <= _ref ? ++_i : --_i) {
+          title = _this.data.getColumnLabel(col);
+          line += "\"" + title + "\",";
         }
         str += line + "\r\n";
-        for (row = _k = 0; 0 <= numberOfRows ? _k <= numberOfRows : _k >= numberOfRows; row = 0 <= numberOfRows ? ++_k : --_k) {
+        for (row = _j = 0, _ref1 = _this.data.getNumberOfRows(); 0 <= _ref1 ? _j < _ref1 : _j > _ref1; row = 0 <= _ref1 ? ++_j : --_j) {
           line = "";
-          for (i = _l = 0, _ref2 = _this.options.numberOfBox - 1; 0 <= _ref2 ? _l <= _ref2 : _l >= _ref2; i = 0 <= _ref2 ? ++_l : --_l) {
-            for (col = _m = 0, _ref3 = _this.data[i].getNumberOfColumns(); 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; col = 0 <= _ref3 ? ++_m : --_m) {
-              value = _this.data[i].getFormattedValue(row, col) ? _this.data[i].getFormattedValue(row, col) : '';
-              line += "\"" + value + "\",";
-            }
+          for (col = _k = 0, _ref2 = _this.data.getNumberOfColumns(); 0 <= _ref2 ? _k < _ref2 : _k > _ref2; col = 0 <= _ref2 ? ++_k : --_k) {
+            value = _this.data.getFormattedValue(row, col);
+            line += "\"" + value + "\",";
           }
           str += line + "\r\n";
         }

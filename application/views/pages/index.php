@@ -366,14 +366,10 @@
     <div id="charts" class="row-fluid" style="text-align: center">
       <div id="chart10" class="box" style="display:block"> </div>
       <div id="chart11" class="box" style="display:block"> </div>
-      <div id="chart12" class="box-double" style="display:block"> </div>
-      <!-- <div id="chart13" class="box" style="display:block"> </div> -->
-      <!-- <div id="chart14" class="box-double" style="display:block"> </div> -->
-      <!-- <div id="chart15" class="box" style="display:block"> </div> -->
-
-      <div id="chart_div"></div>
-      <div id="chart_div2"></div>
-      <div id="chart_div3"></div>
+      <div id="chart12" class="box" style="display:block"> </div>
+      <div id="chart13" class="box" style="display:block"> </div>
+      <div id="chart14" class="box" style="display:block"> </div>
+      <div id="chart15" class="box" style="display:block"> </div>
     </div>
   </div>
 </div>
