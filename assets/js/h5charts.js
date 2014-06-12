@@ -12,7 +12,7 @@
 
   H5.DB.dado_prodes_consolidado.table = "dado_prodes_consolidado";
 
-  H5.Data.state2 = "AC";
+  H5.Data.state2 = "brasil";
 
   H5.Data.statesProdes = ["AC", "AP", "AM", "PA", "RO", "RR", "TO", "MT", "MA"];
 
@@ -31,6 +31,8 @@
     sudeste: ["ES", "MG", "RJ", "SP"],
     centrooeste: ["DF", "GO", "MT", "MS"]
   };
+
+  H5.Data.years = ["2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005"];
 
   H5.Data.thisDate = new Date();
 
@@ -282,7 +284,7 @@
       }
       return this.states['brasil'] = {};
     },
-    populate: function(year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta) {
+    populate: function(year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta, dominio, uc_sustentavel_estadual, uc_integral_estadual) {
       var self;
       if (state && year) {
         self = this.states[state];
@@ -290,8 +292,11 @@
         self[year].terra_indigena = terra_indigena ? terra_indigena : 0;
         self[year].uc_sustentavel = uc_sustentavel;
         self[year].uc_integral = uc_integral;
+        self[year].uc_sustentavel_estadual = uc_sustentavel_estadual;
+        self[year].uc_integral_estadual = uc_integral_estadual;
         self[year].assentamento = assentamento;
         self[year].floresta = floresta;
+        self[year].dominio = dominio;
         self[year].year = year;
         if (this.lastValue) {
           if (this.lastValue.year < self[year].year) {
@@ -306,15 +311,21 @@
           self[year].terra_indigena = 0;
           self[year].uc_sustentavel = 0;
           self[year].uc_integral = 0;
+          self[year].uc_sustentavel_estadual = 0;
+          self[year].uc_integral_estadual = 0;
           self[year].assentamento = 0;
           self[year].floresta = 0;
+          self[year].dominio = 0;
           self[year].year = year;
         }
         self[year].terra_indigena += terra_indigena ? terra_indigena : 0;
         self[year].uc_sustentavel += uc_sustentavel;
         self[year].uc_integral += uc_integral;
+        self[year].uc_sustentavel_estadual += uc_sustentavel_estadual;
+        self[year].uc_integral_estadual += uc_integral_estadual;
         self[year].assentamento += assentamento;
         self[year].floresta += floresta;
+        self[year].dominio += dominio;
       }
     }
   };
@@ -329,7 +340,7 @@
   _ref5 = rest.data;
   for (i in _ref5) {
     properties = _ref5[i];
-    H5.DB.dado_prodes_consolidado.data.populate(properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel), parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica));
+    H5.DB.dado_prodes_consolidado.data.populate(properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel), parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica), parseFloat(properties.dominio_estadual), parseFloat(properties.unidades_de_conservacao_uso_sustentavel_estadual), parseFloat(properties.unidades_de_conservacao_protecao_integral_estadual));
   }
 
   H5.Data.thisDate = H5.DB.diary.data.lastValue.date;
@@ -390,13 +401,13 @@
           reg = _ref7[key];
           _fn(reg);
         }
-        _results.push(_this.data.setValue(day - 1, 1, Math.round((_this.data.getValue(day - 1, 1) + sum) * 100) / 100));
+        _results.push(_this.data[0].setValue(day - 1, 1, Math.round((_this.data[0].getValue(day - 1, 1) + sum) * 100) / 100));
       }
       return _results;
     };
     this.createDataTable();
-    this.data.addColumn("number", "Dia");
-    this.data.addColumn("number", "Área");
+    this.data[0].addColumn("number", "Dia");
+    this.data[0].addColumn("number", "Área");
     daysInMonth = new Date(H5.Data.selectedYear, H5.Data.selectedMonth + 1, 0).getDate();
     firstPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, 1);
     secondPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, daysInMonth);
@@ -404,7 +415,7 @@
     for (day = _k = 1; 1 <= daysInMonth ? _k <= daysInMonth : _k >= daysInMonth; day = 1 <= daysInMonth ? ++_k : --_k) {
       data[0] = day;
       data[1] = 0;
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     if (H5.Data.state === "brasil") {
       for (state in H5.DB.diary.data.states) {
@@ -453,7 +464,7 @@
       },
       animation: H5.Data.animate
     };
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart2 = new H5.Charts.GoogleCharts({
@@ -511,9 +522,9 @@
       return Math.round(sum * 100) / 100;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Mês");
+    this.data[0].addColumn("string", "Mês");
     for (i = _k = 0, _ref7 = this.options.period; 0 <= _ref7 ? _k < _ref7 : _k > _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
-      this.data.addColumn("number", H5.Data.periods[i]);
+      this.data[0].addColumn("number", H5.Data.periods[i]);
     }
     for (month in H5.Data.months) {
       data = [H5.Data.months[month]];
@@ -526,7 +537,7 @@
       for (i = _l = 1, _ref9 = this.options.period; 1 <= _ref9 ? _l <= _ref9 : _l >= _ref9; i = 1 <= _ref9 ? ++_l : --_l) {
         data[i] = sumValues(H5.Data.thisProdesYear - i + 1, month);
       }
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -548,11 +559,11 @@
     };
     this._addBtn.disabled = true;
     this._delBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._addBtn.disabled = _this.options.period > H5.Data.totalPeriods;
       return _this._delBtn.disabled = _this.options.period < 2;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart3 = new H5.Charts.GoogleCharts({
@@ -633,16 +644,16 @@
       return sumValues(firstPeriod, secondPeriod);
     };
     this.createDataTable();
-    this.data.addColumn("string", "Ano");
-    this.data.addColumn("number", "Parcial");
-    this.data.addColumn("number", "Diferença");
+    this.data[0].addColumn("string", "Ano");
+    this.data[0].addColumn("number", "Parcial");
+    this.data[0].addColumn("number", "Diferença");
     for (i = _k = 0, _ref7 = this.options.period; 0 <= _ref7 ? _k <= _ref7 : _k >= _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
       data = [H5.Data.periods[i]];
       sumTotal = sumTotalValues(H5.Data.thisProdesYear - i);
       sumAvg = sumAvgValues(H5.Data.thisProdesYear - i);
       data[1] = sumAvg;
       data[2] = Math.round((sumTotal - sumAvg) * 100) / 100;
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -671,11 +682,11 @@
     };
     this._addBtn.disabled = true;
     this._delBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._addBtn.disabled = _this.options.period > H5.Data.totalPeriods - 1;
       return _this._delBtn.disabled = _this.options.period < 2;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart4 = new H5.Charts.GoogleCharts({
@@ -720,9 +731,9 @@
       return Math.round(sum * 100) / 100;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Estado");
+    this.data[0].addColumn("string", "Estado");
     for (i = _k = 0, _ref7 = this.options.period; 0 <= _ref7 ? _k < _ref7 : _k > _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
-      this.data.addColumn("number", H5.Data.periods[i]);
+      this.data[0].addColumn("number", H5.Data.periods[i]);
     }
     if (H5.Data.state === "brasil") {
       _ref8 = H5.DB.diary.data.states;
@@ -732,14 +743,14 @@
         for (j = _l = 1, _ref9 = this.options.period; 1 <= _ref9 ? _l <= _ref9 : _l >= _ref9; j = 1 <= _ref9 ? ++_l : --_l) {
           data[j] = sumValues(name, H5.Data.thisProdesYear - j + 1);
         }
-        this.data.addRow(data);
+        this.data[0].addRow(data);
       }
     } else {
       data = [H5.Data.state];
       for (j = _m = 1, _ref10 = this.options.period; 1 <= _ref10 ? _m <= _ref10 : _m >= _ref10; j = 1 <= _ref10 ? ++_m : --_m) {
         data[j] = sumValues(H5.Data.state, H5.Data.thisProdesYear - j + 1);
       }
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -764,11 +775,11 @@
     };
     this._addBtn.disabled = true;
     this._delBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._addBtn.disabled = _this.options.period > H5.Data.totalPeriods;
       return _this._delBtn.disabled = _this.options.period < 2;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart5 = new H5.Charts.GoogleCharts({
@@ -831,15 +842,15 @@
       }
     };
     this.createDataTable();
-    this.data.addColumn("string", "Ano");
-    this.data.addColumn("number", "Alerta DETER");
-    this.data.addColumn("number", "Taxa PRODES");
+    this.data[0].addColumn("string", "Ano");
+    this.data[0].addColumn("number", "Alerta DETER");
+    this.data[0].addColumn("number", "Taxa PRODES");
     i = H5.Data.totalPeriods;
     while (i >= 0) {
       data = [H5.Data.periods[i]];
       data[1] = sumDeter(H5.Data.thisProdesYear - i);
       data[2] = sumProdes(H5.Data.periods[i]);
-      this.data.addRow(data);
+      this.data[0].addRow(data);
       i--;
     }
     options = {
@@ -863,7 +874,7 @@
       },
       animation: H5.Data.animate
     };
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart6 = new H5.Charts.GoogleCharts({
@@ -925,9 +936,9 @@
       return Math.round(sum * 100) / 100;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Estado");
-    this.data.addColumn("number", "Alerta DETER");
-    this.data.addColumn("number", "Taxa PRODES");
+    this.data[0].addColumn("string", "Estado");
+    this.data[0].addColumn("number", "Alerta DETER");
+    this.data[0].addColumn("number", "Taxa PRODES");
     if (H5.Data.state === "brasil") {
       _ref7 = H5.DB.diary.data.states;
       for (name in _ref7) {
@@ -935,13 +946,13 @@
         data = [name];
         data[1] = sumDeter(name, H5.Data.thisProdesYear - this.options.period);
         data[2] = sumProdes(name, H5.Data.thisProdesYear - this.options.period);
-        this.data.addRow(data);
+        this.data[0].addRow(data);
       }
     } else {
       data = [H5.Data.state];
       data[1] = sumDeter(H5.Data.state, H5.Data.thisProdesYear - this.options.period);
       data[2] = sumProdes(H5.Data.state, H5.Data.thisProdesYear - this.options.period);
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -967,11 +978,11 @@
     this.changeTitle("Taxa PRODES|Alerta DETER: UFs [" + H5.Data.periods[this.options.period] + "]");
     this._rightBtn.disabled = true;
     this._leftBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._rightBtn.disabled = _this.options.period < 2;
       return _this._leftBtn.disabled = _this.options.period >= H5.Data.totalPeriods;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart7 = new H5.Charts.GoogleCharts({
@@ -1017,13 +1028,13 @@
       return Math.round(sum * 100) / 100;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Mês");
-    this.data.addColumn("number", H5.Data.periods[this.options.period]);
+    this.data[0].addColumn("string", "Mês");
+    this.data[0].addColumn("number", H5.Data.periods[this.options.period]);
     for (i = _k = 0, _ref7 = H5.Data.states.length; 0 <= _ref7 ? _k < _ref7 : _k > _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
       estado = H5.Data.states[i];
       data = [estado];
       data[1] = sumValues(H5.Data.states[i], H5.Data.thisProdesYear - this.options.period);
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -1041,11 +1052,11 @@
     this.changeTitle(H5.Data.periods[this.options.period]);
     this._rightBtn.disabled = true;
     this._leftBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._rightBtn.disabled = _this.options.period < 1;
       return _this._leftBtn.disabled = _this.options.period >= H5.Data.totalPeriods;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart8 = new H5.Charts.GoogleCharts({
@@ -1079,8 +1090,8 @@
       }
     };
     this.createDataTable();
-    this.data.addColumn("string", "Estado");
-    this.data.addColumn("number", "Área Total");
+    this.data[0].addColumn("string", "Estado");
+    this.data[0].addColumn("number", "Área Total");
     daysInMonth = new Date(H5.Data.selectedYear, H5.Data.selectedMonth + 1, 0).getDate();
     firstPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, 1);
     secondPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, daysInMonth);
@@ -1095,7 +1106,7 @@
       estado = H5.Data.states[i];
       data = [estado];
       data[1] = sumValues(H5.Data.states[i]);
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     this.changeTitle(selectMonths.options[H5.Data.selectedMonth].label + ", " + H5.Data.selectedYear);
     options = {
@@ -1123,7 +1134,7 @@
       },
       animation: H5.Data.animate
     };
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart9 = new H5.Charts.GoogleCharts({
@@ -1176,9 +1187,9 @@
       return Math.round(percent * 100);
     };
     this.createDataTable();
-    this.data.addColumn("string", "Mês");
+    this.data[0].addColumn("string", "Mês");
     for (i = _k = 0, _ref7 = this.options.period; 0 <= _ref7 ? _k < _ref7 : _k > _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
-      this.data.addColumn("number", H5.Data.periods[i]);
+      this.data[0].addColumn("number", H5.Data.periods[i]);
     }
     for (month in H5.Data.months) {
       data = [H5.Data.months[month]];
@@ -1191,7 +1202,7 @@
       for (i = _l = 1, _ref9 = this.options.period; 1 <= _ref9 ? _l <= _ref9 : _l >= _ref9; i = 1 <= _ref9 ? ++_l : --_l) {
         data[i] = sumValues(H5.Data.thisProdesYear - i + 1, month);
       }
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -1213,11 +1224,11 @@
     };
     this._addBtn.disabled = true;
     this._delBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._addBtn.disabled = _this.options.period > H5.Data.totalPeriods - 4;
       return _this._delBtn.disabled = _this.options.period < 2;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   lastSelectedRegion = "";
@@ -1291,13 +1302,13 @@
             return false;
           }
         });
-        _results.push(_this.data.setValue(day - 1, 1, Math.round((_this.data.getValue(day - 1, 1) + sum) * 100) / 100));
+        _results.push(_this.data[0].setValue(day - 1, 1, Math.round((_this.data[0].getValue(day - 1, 1) + sum) * 100) / 100));
       }
       return _results;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Ano");
-    this.data.addColumn("number", "Área em km²");
+    this.data[0].addColumn("string", "Ano");
+    this.data[0].addColumn("number", "Área em km²");
     data = [];
     areaSelected = chart10._shapesSlct.value;
     rateSelected = chart10._ratesSlct.value;
@@ -1313,7 +1324,8 @@
       "uc_sustentavel": "Unidade de Conservação de uso sustentável",
       "uc_integral": "Unidade de Conservação de proteção integral",
       "assentamento": "Assentamento",
-      "floresta": "Floresta Pública"
+      "floresta": "Floresta Pública",
+      "dominio_publico": "Domínio Estadual"
     };
     rates = {
       "0": "DETER",
@@ -1327,8 +1339,8 @@
           for (_k = 0, _len = _ref7.length; _k < _len; _k++) {
             year = _ref7[_k];
             data[0] = year;
-            data[1] = stateData[year].terra_indigena;
-            this.data.addRow(data);
+            data[1] = parseFloat(stateData[year].terra_indigena.toFixed(2));
+            this.data[0].addRow(data);
           }
           break;
         case "assentamento":
@@ -1336,8 +1348,8 @@
           for (_l = 0, _len1 = _ref8.length; _l < _len1; _l++) {
             year = _ref8[_l];
             data[0] = year;
-            data[1] = stateData[year].assentamento;
-            this.data.addRow(data);
+            data[1] = parseFloat(stateData[year].assentamento.toFixed(2));
+            this.data[0].addRow(data);
           }
           break;
         case "floresta":
@@ -1345,8 +1357,8 @@
           for (_m = 0, _len2 = _ref9.length; _m < _len2; _m++) {
             year = _ref9[_m];
             data[0] = year;
-            data[1] = stateData[year].floresta;
-            this.data.addRow(data);
+            data[1] = parseFloat(stateData[year].floresta.toFixed(2));
+            this.data[0].addRow(data);
           }
           break;
         case "uc_integral":
@@ -1354,8 +1366,8 @@
           for (_n = 0, _len3 = _ref10.length; _n < _len3; _n++) {
             year = _ref10[_n];
             data[0] = year;
-            data[1] = stateData[year].uc_integral;
-            this.data.addRow(data);
+            data[1] = parseFloat(stateData[year].uc_integral.toFixed(2));
+            this.data[0].addRow(data);
           }
           break;
         case "uc_sustentavel":
@@ -1363,8 +1375,8 @@
           for (_o = 0, _len4 = _ref11.length; _o < _len4; _o++) {
             year = _ref11[_o];
             data[0] = year;
-            data[1] = stateData[year].uc_sustentavel;
-            this.data.addRow(data);
+            data[1] = parseFloat(stateData[year].uc_sustentavel.toFixed(2));
+            this.data[0].addRow(data);
           }
           break;
         case "dominio_publico":
@@ -1372,8 +1384,8 @@
           for (_p = 0, _len5 = _ref12.length; _p < _len5; _p++) {
             year = _ref12[_p];
             data[0] = year;
-            data[1] = stateData[year].uc_sustentavel;
-            this.data.addRow(data);
+            data[1] = parseFloat(stateData[year].uc_sustentavel.toFixed(2));
+            this.data[0].addRow(data);
           }
           break;
       }
@@ -1463,8 +1475,8 @@
       });
       $.each(rest.data[0], function(field, result) {
         data[0] = field.toString();
-        data[1] = result ? parseFloat(result) : 0;
-        return _this.data.addRow(data);
+        data[1] = result ? parseFloat(parseFloat(result).toFixed(2)) : 0;
+        return _this.data[0].addRow(data);
       });
     }
     this.changeTitle("Taxas de Desmatamento " + rates[rateSelected] + "  em " + shapes[areaSelected] + " - [2010 - 2013]");
@@ -1487,7 +1499,7 @@
       animation: H5.Data.animate
     };
     this._chartScreen();
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart11 = new H5.Charts.GoogleCharts({
@@ -1496,7 +1508,7 @@
     period: 1,
     title: "Taxa de desmatamento PRODES - [2010 - 2013]",
     buttons: {
-      minusplus: false,
+      minusplus: true,
       "export": true,
       table: true,
       minimize: true,
@@ -1504,47 +1516,61 @@
     }
   });
 
+  chart11._addBtn.onclick = function() {
+    chart11.options.period++;
+    return chart11.drawChart();
+  };
+
+  chart11._delBtn.onclick = function() {
+    chart11.options.period--;
+    return chart11.drawChart();
+  };
+
   chart11.drawChart = function() {
     var createTable, data, options,
       _this = this;
     createTable = function(states) {
-      var data, estado, rate, state, sum, year, _k, _l, _len, _len1, _len2, _m, _ref7, _ref8, _ref9, _results;
+      var data, estado, j, period, rate, state, sum, totalsum, year, _k, _l, _len, _len1, _len2, _m, _n, _ref7, _ref8, _ref9;
       sum = 0;
+      totalsum = 0;
       data = [];
       i = 1;
-      _ref7 = ["2010", "2011", "2012", "2013"];
-      _results = [];
-      for (_k = 0, _len = _ref7.length; _k < _len; _k++) {
-        year = _ref7[_k];
+      period = [];
+      for (j = _k = 0, _ref7 = _this.options.period + 3; 0 <= _ref7 ? _k <= _ref7 : _k >= _ref7; j = 0 <= _ref7 ? ++_k : --_k) {
+        period[j] = H5.Data.years[j];
+      }
+      for (_l = 0, _len = period.length; _l < _len; _l++) {
+        year = period[_l];
         data[0] = year;
         _ref8 = ["terra_indigena", "assentamento", "floresta", "uc_integral", "uc_sustentavel"];
-        for (_l = 0, _len1 = _ref8.length; _l < _len1; _l++) {
-          rate = _ref8[_l];
+        for (_m = 0, _len1 = _ref8.length; _m < _len1; _m++) {
+          rate = _ref8[_m];
           _ref9 = H5.Data.statesProdes;
-          for (_m = 0, _len2 = _ref9.length; _m < _len2; _m++) {
-            state = _ref9[_m];
+          for (_n = 0, _len2 = _ref9.length; _n < _len2; _n++) {
+            state = _ref9[_n];
             estado = H5.DB.dado_prodes_consolidado.data.states[state];
             sum += estado[year][rate];
           }
-          data[i] = sum;
+          data[i] = parseFloat(sum.toFixed(2));
           i++;
           sum = 0;
         }
         i = 1;
-        _results.push(_this.data.addRow(data));
+        _this.data[0].addRow(data);
+        _this.data[0].addRow([null, null, null, null, null, null]);
       }
-      return _results;
+      return _this.data[0].removeRow(_this.data[0].getNumberOfRows() - 1);
     };
     this.createDataTable();
-    this.data.addColumn("string", "Ano");
-    this.data.addColumn("number", "Terra indígena em km²");
-    this.data.addColumn("number", "Assentamento em km²");
-    this.data.addColumn("number", "Floresta Pública em km²");
-    this.data.addColumn("number", "UC Inegral em km²");
-    this.data.addColumn("number", "UC Sustentável em km²");
+    this.data[0].addColumn("string", "Ano");
+    this.data[0].addColumn("number", "Terra indígena em km²");
+    this.data[0].addColumn("number", "Assentamento em km²");
+    this.data[0].addColumn("number", "Terras Arrecadadas em km²");
+    this.data[0].addColumn("number", "UC Inegral em km²");
+    this.data[0].addColumn("number", "UC Sustentável em km²");
     data = [];
     createTable("nenhumEstado");
-    this.changeTitle("Taxas de Desmatamento PRODES  em áreas específicas - [2010 - 2013]");
+    this.changeTitle("Taxas de Desmatamento PRODES  em áreas específicas - [" + H5.Data.years[this.options.period + 3] + " - " + H5.Data.years[0] + "]");
     options = {
       title: "",
       titleTextStyle: {
@@ -1553,6 +1579,7 @@
       },
       backgroundColor: "transparent",
       focusTarget: "category",
+      connectSteps: "false",
       chartArea: {
         width: "70%",
         height: "80%"
@@ -1564,13 +1591,20 @@
       isStacked: true,
       animation: H5.Data.animate
     };
-    return this.chart.draw(this.data, options);
+    this._addBtn.disabled = true;
+    this._delBtn.disabled = true;
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
+      _this._delBtn.disabled = _this.options.period < 2;
+      return _this._addBtn.disabled = _this.options.period >= 5;
+    });
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chart12 = new H5.Charts.GoogleCharts({
     type: "Pie",
     container: "chart12",
     period: 0,
+    numberOfBox: 3,
     buttons: {
       arrows: true,
       "export": true,
@@ -1579,8 +1613,6 @@
       maximize: true
     }
   });
-
-  chart12.changeTitle("Taxas de desmatamento PRODES em 2012");
 
   chart12._leftBtn.onclick = function() {
     chart12.options.period++;
@@ -1592,18 +1624,18 @@
     return chart12.drawChart();
   };
 
-  years = ["2010", "2011", "2012", "2013"];
+  years = H5.Data.years;
 
   chart12.drawChart = function() {
-    var createTable, options,
+    var createTableCompetencias, createTableEstadual, createTableFederal, options, _k, _l, _ref7, _ref8, _results,
       _this = this;
-    createTable = function(states) {
+    createTableEstadual = function(graph) {
       var data, estado, rate, state, sum, year, _k, _l, _len, _len1, _ref7, _ref8, _results;
       data = [];
       sum = 0;
-      years = ["2010", "2011", "2012", "2013"];
+      years = H5.Data.years;
       year = years[chart12.options.period];
-      _ref7 = ["terra_indigena", "assentamento", "floresta", "uc_integral", "uc_sustentavel"];
+      _ref7 = ["terra_indigena", "floresta", "uc_integral", "uc_sustentavel"];
       _results = [];
       for (_k = 0, _len = _ref7.length; _k < _len; _k++) {
         rate = _ref7[_k];
@@ -1611,11 +1643,8 @@
           case "terra_indigena":
             data[0] = "Terras Indígenas";
             break;
-          case "assentamento":
-            data[0] = "Assentamentos";
-            break;
           case "floresta":
-            data[0] = "Floresta Pública";
+            data[0] = "Terras Arrecadadas";
             break;
           case "uc_integral":
             data[0] = "UC Integral";
@@ -1629,18 +1658,107 @@
           estado = H5.DB.dado_prodes_consolidado.data.states[state];
           sum += estado[year][rate];
         }
-        data[1] = sum;
+        data[1] = parseFloat(sum.toFixed(2));
         sum = 0;
-        _results.push(_this.data.addRow(data));
+        _results.push(_this.data[graph].addRow(data));
+      }
+      return _results;
+    };
+    createTableFederal = function(graph) {
+      var data, estado, partialSum, rate, state, sum, sumUC, year, _k, _l, _len, _len1, _ref7, _ref8, _results;
+      data = [];
+      sum = 0;
+      sumUC = 0;
+      years = H5.Data.years;
+      year = years[chart12.options.period];
+      _ref7 = ["assentamento", "uc_integral_estadual", "uc_sustentavel_estadual", "dominio"];
+      _results = [];
+      for (_k = 0, _len = _ref7.length; _k < _len; _k++) {
+        rate = _ref7[_k];
+        switch (rate) {
+          case "assentamento":
+            data[0] = "Assentamentos";
+            break;
+          case "uc_integral_estadual":
+            data[0] = "UC Integral";
+            break;
+          case "uc_sustentavel_estadual":
+            data[0] = "UC Sustentável";
+            break;
+          case "dominio":
+            data[0] = "Demais Territórios do Estado";
+        }
+        _ref8 = H5.Data.statesProdes;
+        for (_l = 0, _len1 = _ref8.length; _l < _len1; _l++) {
+          state = _ref8[_l];
+          estado = H5.DB.dado_prodes_consolidado.data.states[state];
+          sum += estado[year][rate];
+          if (rate === 'dominio') {
+            sumUC += estado[year]['uc_integral_estadual'] + estado[year]['uc_sustentavel_estadual'];
+          }
+        }
+        partialSum = parseFloat(sum.toFixed(2) - parseFloat(sumUC.toFixed(2)));
+        data[1] = partialSum > 0 ? partialSum : 0;
+        sum = 0;
+        sumUC = 0;
+        _results.push(_this.data[graph].addRow(data));
+      }
+      return _results;
+    };
+    createTableCompetencias = function(graph) {
+      var data, estado, rate, state, sumEstadual, sumFederal, territory, year, _k, _l, _len, _len1, _len2, _m, _ref7, _ref8, _ref9, _results;
+      data = [];
+      sumFederal = 0;
+      sumEstadual = 0;
+      years = H5.Data.years;
+      year = years[chart12.options.period];
+      _ref7 = H5.Data.statesProdes;
+      for (_k = 0, _len = _ref7.length; _k < _len; _k++) {
+        state = _ref7[_k];
+        _ref8 = ['uc_sustentavel', 'uc_integral', 'terra_indigena', 'floresta', 'assentamento', 'dominio'];
+        for (_l = 0, _len1 = _ref8.length; _l < _len1; _l++) {
+          territory = _ref8[_l];
+          switch (territory) {
+            case 'uc_sustentavel':
+            case 'uc_integral':
+            case 'terra_indigena':
+            case 'floresta':
+              estado = H5.DB.dado_prodes_consolidado.data.states[state];
+              sumFederal += estado[year][territory];
+              break;
+            case 'assentamento':
+            case 'dominio':
+              estado = H5.DB.dado_prodes_consolidado.data.states[state];
+              sumEstadual += estado[year][territory];
+          }
+        }
+      }
+      _ref9 = ["federal", "estadual"];
+      _results = [];
+      for (_m = 0, _len2 = _ref9.length; _m < _len2; _m++) {
+        rate = _ref9[_m];
+        if (rate === "federal") {
+          data[0] = "Territórios de Competência Federal";
+          data[1] = parseFloat(sumFederal.toFixed(2));
+        } else {
+          data[0] = "Territórios de Competência Estadual";
+          data[1] = parseFloat(sumEstadual.toFixed(2));
+        }
+        _results.push(_this.data[graph].addRow(data));
       }
       return _results;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Comparação");
-    this.data.addColumn("number", "Área em km²");
-    createTable("nenhumEstado");
+    for (i = _k = 0, _ref7 = this.options.numberOfBox - 1; 0 <= _ref7 ? _k <= _ref7 : _k >= _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
+      this.data[i].addColumn("string", "Comparação");
+      this.data[i].addColumn("number", "Área em km²");
+    }
+    createTableEstadual(0);
+    createTableCompetencias(1);
+    createTableFederal(2);
     options = {
       title: "",
+      pieStartAngle: 80,
       titleTextStyle: {
         color: "#333",
         fontSize: 13
@@ -1652,15 +1770,24 @@
       },
       colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A', '#FF5454', '#C7A258', '#CBE968', '#FABB3D', '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
     };
-    this.changeTitle("Taxas de desmatamento PRODES em " + years[this.options.period]);
+    this.changeTitle("Território de Competência Estadual x Distribuição de Detecções por Competência de Fiscalização x Território de Competência Federal em " + years[this.options.period]);
     this._rightBtn.disabled = true;
     this._leftBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._rightBtn.disabled = _this.options.period < 1;
-      return _this._leftBtn.disabled = _this.options.period >= 3;
+      return _this._leftBtn.disabled = _this.options.period >= 8;
     });
-    return this.chart.draw(this.data, options);
+    _results = [];
+    for (i = _l = 0, _ref8 = this.options.numberOfBox - 1; 0 <= _ref8 ? _l <= _ref8 : _l >= _ref8; i = 0 <= _ref8 ? ++_l : --_l) {
+      _results.push(this.chart[i].draw(this.data[i], options));
+    }
+    return _results;
   };
+
+  spark1 = new H5.Charts.Sparks({
+    container: "spark1",
+    title: "Total Mensal"
+  });
 
   spark1 = new H5.Charts.Sparks({
     container: "spark1",
@@ -1916,13 +2043,13 @@
         firstPeriod = new Date(year - 1, 7, 1);
         if (month > 6) {
           if (month === H5.Data.thisMonth) {
-            secondPeriod = new Date(year - 1, month, H5.Data.thisDay);
+            secondPeriod = new Date(year - 1, month + 1, 1 - 1);
           } else {
             secondPeriod = new Date(year - 1, month + 1, 0);
           }
         } else {
           if (month === H5.Data.thisMonth) {
-            secondPeriod = new Date(year, month, H5.Data.thisDay);
+            secondPeriod = new Date(year, month + 1, 1 - 1);
           } else {
             secondPeriod = new Date(year, month + 1, 0);
           }
@@ -1973,13 +2100,13 @@
           reg = _ref7[key];
           _fn(reg);
         }
-        _results.push(_this.data.setValue(day - 1, 1, Math.round((_this.data.getValue(day - 1, 1) + sum) * 100) / 100));
+        _results.push(_this.data[0].setValue(day - 1, 1, Math.round((_this.data[0].getValue(day - 1, 1) + sum) * 100) / 100));
       }
       return _results;
     };
     this.createDataTable();
-    this.data.addColumn("number", "Dia");
-    this.data.addColumn("number", "Área");
+    this.data[0].addColumn("number", "Dia");
+    this.data[0].addColumn("number", "Área");
     daysInMonth = new Date(H5.Data.selectedYear, H5.Data.selectedMonth + 1, 0).getDate();
     firstPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, 1);
     secondPeriod = new Date(H5.Data.selectedYear, H5.Data.selectedMonth, daysInMonth);
@@ -1987,7 +2114,7 @@
     for (day = _k = 1; 1 <= daysInMonth ? _k <= daysInMonth : _k >= daysInMonth; day = 1 <= daysInMonth ? ++_k : --_k) {
       data[0] = day;
       data[1] = 0;
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     if (H5.Data.state === "brasil") {
       for (name in H5.DB.embargo.data.states) {
@@ -2036,7 +2163,7 @@
       },
       animation: H5.Data.animate
     };
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chartMonthlyEmbargo = new H5.Charts.GoogleCharts({
@@ -2094,9 +2221,9 @@
       return Math.round(sum * 100) / 100;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Mês");
+    this.data[0].addColumn("string", "Mês");
     for (i = _k = 0, _ref7 = this.options.period; 0 <= _ref7 ? _k < _ref7 : _k > _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
-      this.data.addColumn("number", H5.Data.periods[i]);
+      this.data[0].addColumn("number", H5.Data.periods[i]);
     }
     for (month in H5.Data.months) {
       data = [H5.Data.months[month]];
@@ -2109,7 +2236,7 @@
       for (i = _l = 1, _ref9 = this.options.period; 1 <= _ref9 ? _l <= _ref9 : _l >= _ref9; i = 1 <= _ref9 ? ++_l : --_l) {
         data[i] = sumValues(H5.Data.thisProdesYear - i + 1, month);
       }
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -2131,11 +2258,11 @@
     };
     this._addBtn.disabled = true;
     this._delBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._addBtn.disabled = _this.options.period > H5.Data.totalPeriods;
       return _this._delBtn.disabled = _this.options.period < 2;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chartAnnualEmbargo = new H5.Charts.GoogleCharts({
@@ -2216,16 +2343,16 @@
       return sumValues(firstPeriod, secondPeriod);
     };
     this.createDataTable();
-    this.data.addColumn("string", "Ano");
-    this.data.addColumn("number", "Parcial");
-    this.data.addColumn("number", "Diferença");
+    this.data[0].addColumn("string", "Ano");
+    this.data[0].addColumn("number", "Parcial");
+    this.data[0].addColumn("number", "Diferença");
     for (i = _k = 0, _ref7 = this.options.period; 0 <= _ref7 ? _k <= _ref7 : _k >= _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
       data = [H5.Data.periods[i]];
       sumTotal = sumTotalValues(H5.Data.thisProdesYear - i);
       sumAvg = sumAvgValues(H5.Data.thisProdesYear - i);
       data[1] = sumAvg;
       data[2] = Math.round((sumTotal - sumAvg) * 100) / 100;
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -2254,11 +2381,11 @@
     };
     this._addBtn.disabled = true;
     this._delBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._addBtn.disabled = _this.options.period > H5.Data.totalPeriods - 1;
       return _this._delBtn.disabled = _this.options.period < 2;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   chartStatesEmbargo = new H5.Charts.GoogleCharts({
@@ -2303,9 +2430,9 @@
       return Math.round(sum * 100) / 100;
     };
     this.createDataTable();
-    this.data.addColumn("string", "Estado");
+    this.data[0].addColumn("string", "Estado");
     for (i = _k = 0, _ref7 = this.options.period; 0 <= _ref7 ? _k < _ref7 : _k > _ref7; i = 0 <= _ref7 ? ++_k : --_k) {
-      this.data.addColumn("number", H5.Data.periods[i]);
+      this.data[0].addColumn("number", H5.Data.periods[i]);
     }
     if (H5.Data.state === "brasil") {
       _ref8 = H5.DB.embargo.data.states;
@@ -2315,14 +2442,14 @@
         for (j = _l = 1, _ref9 = this.options.period; 1 <= _ref9 ? _l <= _ref9 : _l >= _ref9; j = 1 <= _ref9 ? ++_l : --_l) {
           data[j] = sumValues(name, H5.Data.thisProdesYear - j + 1);
         }
-        this.data.addRow(data);
+        this.data[0].addRow(data);
       }
     } else {
       data = [H5.Data.state];
       for (j = _m = 1, _ref10 = this.options.period; 1 <= _ref10 ? _m <= _ref10 : _m >= _ref10; j = 1 <= _ref10 ? ++_m : --_m) {
         data[j] = sumValues(H5.Data.state, H5.Data.thisProdesYear - j + 1);
       }
-      this.data.addRow(data);
+      this.data[0].addRow(data);
     }
     options = {
       title: "",
@@ -2347,11 +2474,11 @@
     };
     this._addBtn.disabled = true;
     this._delBtn.disabled = true;
-    google.visualization.events.addListener(this.chart, "ready", function() {
+    google.visualization.events.addListener(this.chart[0], "ready", function() {
       _this._addBtn.disabled = _this.options.period > H5.Data.totalPeriods;
       return _this._delBtn.disabled = _this.options.period < 2;
     });
-    return this.chart.draw(this.data, options);
+    return this.chart[0].draw(this.data[0], options);
   };
 
   sparkTVAAEmbargo = new H5.Charts.Knobs({
