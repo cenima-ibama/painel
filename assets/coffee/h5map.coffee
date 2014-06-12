@@ -1,3 +1,11 @@
+# OBJECT {{{
+H5.Map =
+  base: null
+  layer: {}
+  layerList: null
+
+H5.Leaflet = {}
+# }}}
 # LAYERS {{{
 bingKey = "AsyRHq25Hv8jQbrAIVSeZEifWbP6s1nq1RQfDeUf0ycdHogebEL7W2dxgFmPJc9h"
 bingaerial = new L.BingLayer(bingKey,
@@ -22,11 +30,17 @@ bingMini = new L.BingLayer(bingKey,
   maxZoom: 11
 )
 
-openstreetUrl = "http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png"
-openstreetSub = ['otile1','otile2','otile3','otile4']
+openstreetUrl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 openstreet = new L.TileLayer(openstreetUrl,
   maxZoom: 18
-  subdomains: openstreetSub
+  attribution: ""
+)
+
+openmapquestUrl = "http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png"
+openmapquestSub = ['otile1','otile2','otile3','otile4']
+openmapquest = new L.TileLayer(openmapquestUrl,
+  maxZoom: 18
+  subdomains: openmapquestSub
 )
 
 terrasIndigenas = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
@@ -44,6 +58,13 @@ ucFederais = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
 rapidEye = new L.TileLayer("http://geo1.ibama.gov.br/geo/tmstest/{z}/{x}/{y}.png",
   tms: true
 )
+
+nuvem = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
+  layers: "cemam:Daily_Cloud_With_Geometry"
+  format: "image/png"
+  transparent: true
+)
+
 # }}}
 # SCREEN SIZE {{{
 # update size of the map container
@@ -64,7 +85,7 @@ window.addEventListener orientationEvent, (->
 # MAP LAYER {{{
 H5.Map.base = new L.Map("map",
   center: new L.LatLng(-10.0, -58.0)
-  zoom: 6
+  zoom: 5
   layers: [binghybrid]
 )
 
@@ -121,7 +142,7 @@ new L.control.locate(
 # display stations
 H5.Data.restURL = "http://" + document.domain + "/painel/rest"
 
-H5.Map.layer.alerta = new H5.Leaflet.Postgis(
+H5.Map.layer.alerta = new L.VectorLayer.Postgis (
   url: H5.Data.restURL
   geotable: H5.DB.alert.table
   fields: "id_des, tipo, data_imagem, area_km2, dominio"
@@ -153,6 +174,11 @@ H5.Map.layer.alerta = new H5.Leaflet.Postgis(
 )
 H5.Map.layer.alerta.setMap H5.Map.base
 
+H5.Map.layer.heli_hist = {}
+H5.Map.layer.heli_atual = {}
+
+actualDate = new Date()
+
 customMarker = L.Icon.extend(
   options:
     iconUrl: "http://" + document.domain + "/painel/assets/img/ibama_marker.png"
@@ -164,7 +190,7 @@ customMarker = L.Icon.extend(
 )
 
 # display clusters
-H5.Map.layer.clusters = new H5.Leaflet.Postgis(
+H5.Map.layer.clusters = new L.VectorLayer.Postgis (
   url: H5.Data.restURL
   geotable: H5.DB.alert.table
   fields: "id_des"
@@ -174,7 +200,7 @@ H5.Map.layer.clusters = new H5.Leaflet.Postgis(
   cluster: true
   popupTemplate: null
   where: "ano = '2013'"
-  focus: true
+  # focus: true
   symbology:
     type: "single"
     vectorStyle:
@@ -182,23 +208,67 @@ H5.Map.layer.clusters = new H5.Leaflet.Postgis(
 )
 H5.Map.layer.clusters.setMap H5.Map.base
 
-new H5.Leaflet.LayerControl(
-  "OSM":
-    layer: openstreet
-  "Bing Aerial":
-    layer: bingaerial
-  "Bing Road":
-    layer: bingroad
-  "Bing Hybrid":
-    layer: binghybrid
-,
-  "DETER Indicadores":
-    layer: H5.Map.layer.clusters.layer
-    overlayControl: false
-  "DETER Polígonos":
-    layer: H5.Map.layer.alerta.layer
-  "RapidEye":
-    layer: rapidEye
-).addTo(H5.Map.base)
+if H5.DB.logged_in
+  new L.Control.Cleancontrol(
+    "OSM":
+      layer: openstreet
+    "Bing Aerial":
+      layer: bingaerial
+    "Bing Road":
+      layer: bingroad
+    "Bing Hybrid":
+      layer: binghybrid
+  ,
+    "DETER Alerta":
+      layer: H5.Map.layer.alerta.layer
+      vectorLayer:
+        layer: H5.Map.layer.alerta
+        clusters: H5.Map.layer.clusters
+        opacity: true
+        filters:
+          "Estado":
+            type: "select"
+            value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
+            reset: "Todos"
+            dbfield: "estado"
+          "Periodo":
+            type: "period"
+            placeholder: "dd/mm/aaaa"
+            dbfield: "data_imagem"
+    "RapidEye":
+      layer: rapidEye
+    "DETER Nuvem":
+      layer: nuvem
+  ).addTo(H5.Map.base)
+else
+  new L.Control.Cleancontrol(
+    "OSM":
+      layer: openstreet
+    "Bing Aerial":
+      layer: bingaerial
+    "Bing Road":
+      layer: bingroad
+    "Bing Hybrid":
+      layer: binghybrid
+  ,
+    "DETER Alerta":
+      layer: H5.Map.layer.alerta.layer
+      vectorLayer:
+        layer: H5.Map.layer.alerta
+        clusters: H5.Map.layer.clusters
+        opacity: true
+        filters:
+          "Estado":
+            type: "select"
+            value: ["Todos", "AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"]
+            reset: "Todos"
+            dbfield: "estado"
+          "Periodo":
+            type: "period"
+            placeholder: "dd/mm/aaaa"
+            dbfield: "data_imagem"
+    "RapidEye":
+      layer: rapidEye
+  ).addTo(H5.Map.base)
 
-# }}}
+# $(H5.Map.layer.heli_hist._vectors.length).on "change"

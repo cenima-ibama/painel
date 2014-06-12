@@ -1,6 +1,8 @@
 if document.getElementById("login")
   $("#login").load("http://" + document.domain + "/painel/index.php/login")
   $("#login").hide()
+  $("#configs").hide()
+  # $("#prodes").hide()
 
 $(document).ready ->
 
@@ -21,16 +23,18 @@ $(document).ready ->
     if $(@).prop("id") is "btn-map"
       $("#dash").hide()
       $("#login").hide()
+      $("#prodes").hide()
+      $("#configs").hide()
       $("#map").show()
 
       if H5.Data.changed
-        if H5.Data.state is "Todos"
-          where = "ano='" + H5.Data.selectedYear + "'"
+        if H5.Data.state is "brasil"
+          qry = "ano='" + H5.Data.selectedYear + "'"
         else
-          where = "estado='" + H5.Data.state + "' AND ano='" + H5.Data.selectedYear + "'"
+          qry = "estado='" + H5.Data.state + "' AND ano='" + H5.Data.selectedYear + "'"
 
-        H5.Map.layer.alerta.setOptions({where: where})
-        H5.Map.layer.clusters.setOptions({where: where})
+        H5.Map.layer.alerta.setOptions({where: qry})
+        H5.Map.layer.clusters.setOptions({where: qry})
         H5.Map.layer.alerta.redraw()
         H5.Map.layer.clusters.redraw()
 
@@ -39,11 +43,27 @@ $(document).ready ->
     else if $(@).prop("id") is "btn-charts"
       $("#login").hide()
       $("#map").hide()
+      $("#prodes").hide()
+      $("#configs").hide()
       $("#dash").show()
     else if $(@).prop("id") is "btn-login"
       $("#dash").hide()
-      $("#map").show()
       $("#login").show()
+      $("#prodes").hide()
+      $("#configs").hide()
+      $("#map").show()
+    else if $(@).prop("id") is "btn-charts2"
+      $("#dash").hide()
+      $("#map").hide()
+      $("#login").hide()
+      $("#configs").hide()
+      $("#prodes").show()
+    else if $(@).prop("id") is "btn-charts3"
+      $("#dash").hide()
+      $("#map").hide()
+      $("#login").hide()
+      $("#prodes").hide()
+      $("#configs").show()
 
     $('.nav-collapse').collapse('hide')
 
@@ -65,5 +85,17 @@ $(document).ready ->
     rndedNum
 
   # Animate load screen
-  $(".loading").fadeOut 700
+  $(".loading").fadeOut 2000
 
+  #-------------------------------------------------------------------------
+  # Aba 2
+  #-------------------------------------------------------------------------
+  # $('#newstats .input-append.date').datepicker({})
+  # $('#newstats .input-daterange').datepicker({format: "dd/mm/yyyy",language: "pt-BR"})
+
+  # $('.selectpicker').selectpicker()
+
+  $('#prodes .input-append.date').datepicker({format: "dd/mm/yyyy",language: "pt-BR", autoclose: true})
+  $('#prodes .input-daterange').datepicker({format: "dd/mm/yyyy",language: "pt-BR", autoclose: true, cleanbtn: true})
+
+  $('.selectpicker').selectpicker()

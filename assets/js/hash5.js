@@ -124,6 +124,8 @@
       defaultClass: "",
       selects: void 0,
       resizing: 0,
+      loadingImage: null,
+      numberOfBox: 1,
       buttons: {
         minusplus: false,
         arrows: false,
@@ -150,8 +152,7 @@
     };
 
     Container.prototype._createContainer = function() {
-      var addBtn, addIcon, boxContent, boxHeader, boxTable, boxTitle, closeBtn, closeIcon, delBtn, delIcon, exportBtn, exportIcon, formBtn, leftBtn, leftCtrl, leftIcon, maxBtn, maxIcon, minBtn, minIcon, pipeline, rightBtn, rightCtrl, rightIcon, tableBtn, tableIcon,
-        _this = this;
+      var addBtn, addIcon, boxContent, boxHeader, boxLoad, boxTable, boxTitle, closeBtn, closeIcon, data, delBtn, delIcon, exportBtn, exportIcon, formBtn, i, key, leftBtn, leftCtrl, leftIcon, maxBtn, maxIcon, minBtn, minIcon, name, options, pipeline, rightBtn, rightCtrl, rightIcon, select, tableBtn, tableIcon, value, width, _i, _j, _k, _ref, _ref1, _ref2, _ref3, _ref4;
       this._container = document.getElementById(this.options.container);
       boxHeader = document.createElement("div");
       boxHeader.className = "box-header";
@@ -165,17 +166,41 @@
       rightCtrl = document.createElement("div");
       rightCtrl.className = "btn-group chart-icon btn-right";
       this._rightCtrl = rightCtrl;
-      boxContent = document.createElement("div");
-      boxContent.id = "box-" + this.options.container;
-      boxContent.className = "box-content";
-      this._boxContent = boxContent;
+      this._boxContent = [];
+      width = 99.7 / this.options.numberOfBox;
+      for (i = _i = 0, _ref = this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        boxContent = document.createElement("div");
+        boxContent.id = "box-" + this.options.container + "-" + i;
+        boxContent.className = "box-content";
+        if (this.options.numberOfBox > 1) {
+          $(boxContent).attr('style', 'width:' + width + '%;border-' + (i === 0 ? 'right: 0; float: left' : i === parseInt(this.options.numberOfBox - 1) ? 'left: 0; float: left;' : 'right: 0; border-left:0; float:left;'));
+        }
+        this._boxContent[i] = boxContent;
+      }
+      if (this.options.loadingImage) {
+        boxLoad = document.createElement("div");
+        boxLoad.id = "box-" + this.options.container;
+        boxLoad.className = "box-content";
+        boxLoad.style.display = "none";
+        boxLoad.innerHTML = this.options.loadingImage ? this.options.loadingImage : "Loading...";
+        this._boxLoad = boxLoad;
+      }
       $(this._boxHeader).append(this._leftCtrl, this._boxTitle, this._rightCtrl);
-      $(this._container).append(this._boxHeader, this._boxContent);
+      this._box = document.createElement("div");
+      for (i = _j = 0, _ref1 = this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        this._box.appendChild(this._boxContent[i]);
+      }
+      if (this.options.loadingImage) {
+        $(this._container).append(this._boxHeader, this._box, this._boxLoad);
+      } else {
+        $(this._container).append(this._boxHeader, this._box);
+      }
       pipeline = "<span class=\"break\"></span>";
       if (this.options.buttons.minusplus) {
         $(this._boxTitle).prepend(pipeline);
         delBtn = document.createElement("button");
         delBtn.id = this.options.container + "-btn-minus";
+        delBtn.setAttribute('title', 'Remover último Período');
         delBtn.className = "btn";
         this._delBtn = delBtn;
         delIcon = document.createElement("i");
@@ -184,6 +209,7 @@
         $(this._delBtn).append(this._delIcon);
         addBtn = document.createElement("button");
         addBtn.id = this.options.container + "-btn-plus";
+        addBtn.setAttribute('title', 'Adicionar novo Período');
         addBtn.className = "btn";
         this._addBtn = addBtn;
         addIcon = document.createElement("i");
@@ -216,42 +242,55 @@
         formBtn.name = "form-" + this.options.container;
         formBtn.className = "form-inline";
         this._formBtn = formBtn;
-        $.each(this.options.selects, function(name, options) {
-          var select;
+        _ref2 = this.options.selects;
+        for (name in _ref2) {
+          options = _ref2[name];
           select = "<select id=\"" + name + "Slct\" class=\"input-mini\" name=\"" + name + "\">";
-          $.each(options, function(value, key) {
-            return select += "<option value=" + value + ">" + key + "</option>";
-          });
+          for (value in options) {
+            key = options[value];
+            select += "<option value=" + value + ">" + key + "</option>";
+          }
           select += "</select>";
-          return $(_this._formBtn).append(select);
-        });
+          $(this._formBtn).append(select);
+        }
         $(this._leftCtrl).append(this._formBtn);
         $(this._leftCtrl).removeClass("btn-group");
-        $.each(this.options.selects, function(name, data) {
-          _this["_" + name + "Slct"] = document["form-" + _this.options.container][name];
-          return _this._enableSelect("#" + name + "Slct");
-        });
+        _ref3 = this.options.selects;
+        for (name in _ref3) {
+          data = _ref3[name];
+          this["_" + name + "Slct"] = document["form-" + this.options.container][name];
+          this._enableSelect("#" + name + "Slct");
+        }
       }
       if (this.options.buttons.table) {
         tableBtn = document.createElement("button");
         tableBtn.id = this.options.container + "-btn-table";
         tableBtn.className = "btn";
+        tableBtn.setAttribute('title', 'Tabela de Dados');
         this._tableBtn = tableBtn;
         tableIcon = document.createElement("i");
         tableIcon.className = "icon-table";
         this._tableIcon = tableIcon;
         $(this._tableBtn).append(this._tableIcon);
         $(this._rightCtrl).append(this._tableBtn);
-        boxTable = document.createElement("div");
-        boxTable.id = "table-" + this.options.container;
-        boxTable.className = "box-content-table";
-        this._boxTable = boxTable;
-        $(this._container).append(this._boxTable);
+        this._boxTable = [];
+        width = 1384 / this.options.numberOfBox;
+        for (i = _k = 0, _ref4 = this.options.numberOfBox - 1; 0 <= _ref4 ? _k <= _ref4 : _k >= _ref4; i = 0 <= _ref4 ? ++_k : --_k) {
+          boxTable = document.createElement("div");
+          boxTable.id = "table-" + this.options.container;
+          boxTable.className = "box-content-table";
+          if (this.options.numberOfBox > 1) {
+            $(boxTable).attr('style', 'margin-left:' + parseFloat(width * i) + 'px;width: ' + width + 'px; border-' + (i === 0 ? 'right: 0; float: left' : 'left: 0; float: left;'));
+          }
+          this._boxTable[i] = boxTable;
+        }
+        $(this._box).append(this._boxTable);
         this._enableTable();
       }
       if (this.options.buttons["export"]) {
         exportBtn = document.createElement("button");
         exportBtn.id = this.options.container + "-btn-export";
+        exportBtn.setAttribute('title', 'Exportar Dados');
         exportBtn.className = "btn";
         this._exportBtn = exportBtn;
         exportIcon = document.createElement("i");
@@ -264,6 +303,7 @@
       if (this.options.buttons.minimize) {
         minBtn = document.createElement("button");
         minBtn.id = this.options.container + "-btn-minimize";
+        minBtn.setAttribute('title', 'Esconder/Mostrar Gráfico');
         minBtn.className = "btn";
         this._minBtn = minBtn;
         minIcon = document.createElement("i");
@@ -276,6 +316,7 @@
       if (this.options.buttons.maximize) {
         maxBtn = document.createElement("button");
         maxBtn.id = this.options.container + "-btn-maximize";
+        maxBtn.setAttribute('title', 'Ativar/Desativar Tela Cheia');
         maxBtn.className = "btn";
         this._maxBtn = maxBtn;
         maxIcon = document.createElement("i");
@@ -302,8 +343,9 @@
     Container.prototype._enableMinimize = function() {
       var _this = this;
       return $(this._minBtn).on("click", function(event) {
+        var i, _i, _j, _ref, _ref1, _results;
         event.preventDefault();
-        if ($(_this._boxContent).is(":visible")) {
+        if ($(_this._boxContent[0]).is(":visible")) {
           _this._minIcon.className = "icon-chevron-down";
           if (_this.options.buttons.minusplus) {
             $(_this._addBtn).prop("disabled", true);
@@ -322,16 +364,23 @@
             $(_this._rightBtn).prop("disabled", false);
           }
         }
-        if ($(_this._boxTable).is(":visible")) {
-          $(_this._boxTable).slideToggle("fast", "linear");
+        if ($(_this._boxTable[0]).is(":visible")) {
+          for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+            $(_this._boxTable[i]).slideToggle("fast", "linear");
+          }
         }
-        return $(_this._boxContent).slideToggle("fast", "linear");
+        _results = [];
+        for (i = _j = 0, _ref1 = _this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          _results.push($(_this._boxContent[i]).slideToggle("fast", "linear"));
+        }
+        return _results;
       });
     };
 
     Container.prototype._enableMaximize = function() {
       var _this = this;
       return $(this._maxBtn).on("click", function(event) {
+        var i, _i, _j, _ref, _ref1;
         event.preventDefault();
         if (_this._maxIcon.className === "icon-resize-full") {
           _this.defaultClass = _this._container.className;
@@ -345,16 +394,20 @@
           _this._maxIcon.className = "icon-resize-full";
           $("#navbar").show();
         }
-        $(_this._boxTable).hide();
-        $(_this._boxTable).toggleClass("box-table-overlay");
+        for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          $(_this._boxTable[i]).hide();
+          $(_this._boxTable[i]).toggleClass("box-table-overlay");
+        }
         _this._tableIcon.className = "icon-table";
         $(_this._container).toggleClass(_this.defaultClass);
         $(_this._container).toggleClass("box-overlay");
         $("body").toggleClass("body-overlay");
-        $(_this._boxContent).toggleClass("content-overlay");
-        $(_this._boxTable).toggleClass("content-overlay");
-        $(_this._boxContent).hide();
-        $(_this._boxContent).fadeToggle(500, "linear");
+        for (i = _j = 0, _ref1 = _this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          $(_this._boxContent[i]).toggleClass("content-overlay");
+          $(_this._boxTable[i]).toggleClass("content-overlay");
+          $(_this._boxContent[i]).hide();
+          $(_this._boxContent[i]).fadeToggle(500, "linear");
+        }
         return _this.drawChart();
       });
     };
@@ -374,6 +427,20 @@
       });
     };
 
+    Container.prototype._loadScreen = function() {
+      if (!$(this._boxLoad).is(':visible')) {
+        $(this._boxLoad).show();
+        return $(this._boxContent[0]).hide();
+      }
+    };
+
+    Container.prototype._chartScreen = function() {
+      if (!$(this._boxContent).is(':visible')) {
+        $(this._boxContent[0]).show();
+        return $(this._boxLoad).hide();
+      }
+    };
+
     return Container;
 
   })();
@@ -387,14 +454,26 @@
     }
 
     GoogleCharts.prototype.createDataTable = function() {
-      return this.data = new google.visualization.DataTable();
+      var i, _i, _ref, _results;
+      this.data = [];
+      _results = [];
+      for (i = _i = 0, _ref = this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        _results.push(this.data[i] = new google.visualization.DataTable());
+      }
+      return _results;
     };
 
     GoogleCharts.prototype.createChart = function() {
+      var i, _i, _j, _ref, _ref1;
+      this.chart = [];
       if (this.options.type === "Gauge") {
-        this.chart = new google.visualization.Gauge(this._boxContent);
+        for (i = _i = 0, _ref = this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          this.chart[i] = new google.visualization.Gauge(this._boxContent[i]);
+        }
       } else {
-        this.chart = new google.visualization[this.options.type + "Chart"](this._boxContent);
+        for (i = _j = 0, _ref1 = this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          this.chart[i] = new google.visualization[this.options.type + "Chart"](this._boxContent[i]);
+        }
       }
       return this._detectScreenChanges();
     };
@@ -405,7 +484,7 @@
       supportsOrientationChange = "onorientationchange" in window;
       orientationEvent = (supportsOrientationChange ? "orientationchange" : "resize");
       return window.addEventListener(orientationEvent, (function() {
-        if ($(_this._boxContent).is(":visible") && !_this.options.resizing) {
+        if ($(_this._boxContent[0]).is(":visible") && !_this.options.resizing) {
           _this.options.resizing = true;
           _this.drawChart();
           return _this.options.resizing = false;
@@ -416,25 +495,38 @@
     GoogleCharts.prototype._enableTable = function() {
       var _this = this;
       return $(this._tableBtn).on("click", function(event) {
-        var visualization;
+        var i, visualization, _i, _j, _k, _ref, _ref1, _ref2;
         event.preventDefault();
-        if ($(_this._boxContent).is(":hidden")) {
-          _this._minIcon.className = "icon-chevron-up";
-          $(_this._boxContent).fadeToggle('fast', 'linear');
+        for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          if ($(_this._boxContent[i]).is(":hidden")) {
+            _this._minIcon.className = "icon-chevron-up";
+            $(_this._boxContent[i]).fadeToggle('fast', 'linear');
+          }
         }
-        $(_this._boxTable).fadeToggle('fast', 'linear');
+        for (i = _j = 0, _ref1 = _this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          $(_this._boxTable[i]).fadeToggle('fast', 'linear');
+        }
         if (_this._tableIcon.className === "icon-table") {
           _this._tableIcon.className = "icon-bar-chart";
-          visualization = new google.visualization.Table(_this._boxTable);
-          visualization.draw(_this.data, null);
+          for (i = _k = 0, _ref2 = _this.options.numberOfBox - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+            visualization = new google.visualization.Table(_this._boxTable[i]);
+            visualization.draw(_this.data[i], null);
+          }
         } else {
           _this._tableIcon.className = "icon-table";
         }
         return $(_this._leftBtn).add(_this._rightBtn).add(_this._addBtn).add(_this._delBtn).on("click", function(event) {
-          if ($(_this._boxTable).is(":visible")) {
-            visualization = new google.visualization.Table(_this._boxTable);
-            return visualization.draw(_this.data, null);
+          var _l, _ref3, _results;
+          _results = [];
+          for (i = _l = 0, _ref3 = _this.options.numberOfBox - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
+            if ($(_this._boxTable[i]).is(":visible")) {
+              visualization = new google.visualization.Table(_this._boxTable[i]);
+              _results.push(visualization.draw(_this.data, null));
+            } else {
+              _results.push(void 0);
+            }
           }
+          return _results;
         });
       });
     };
@@ -443,19 +535,29 @@
       var generateCSV,
         _this = this;
       generateCSV = function() {
-        var col, line, row, str, title, value, _i, _j, _k, _ref, _ref1, _ref2;
+        var col, data, i, line, numberOfColumns, numberOfRows, row, str, title, value, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3;
         str = "";
         line = "";
-        for (col = _i = 0, _ref = _this.data.getNumberOfColumns(); 0 <= _ref ? _i < _ref : _i > _ref; col = 0 <= _ref ? ++_i : --_i) {
-          title = _this.data.getColumnLabel(col);
-          line += "\"" + title + "\",";
+        numberOfColumns = 0;
+        numberOfRows = 0;
+        for (i = _i = 0, _ref = _this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          data = _this.data[i];
+          for (col = _j = 0, _ref1 = data.getNumberOfColumns(); 0 <= _ref1 ? _j < _ref1 : _j > _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
+            title = data.getColumnLabel(col);
+            line += "\"" + title + "\",";
+          }
+          if (data.getNumberOfRows() > numberOfRows) {
+            numberOfRows = data.getNumberOfRows();
+          }
         }
         str += line + "\r\n";
-        for (row = _j = 0, _ref1 = _this.data.getNumberOfRows(); 0 <= _ref1 ? _j < _ref1 : _j > _ref1; row = 0 <= _ref1 ? ++_j : --_j) {
+        for (row = _k = 0; 0 <= numberOfRows ? _k <= numberOfRows : _k >= numberOfRows; row = 0 <= numberOfRows ? ++_k : --_k) {
           line = "";
-          for (col = _k = 0, _ref2 = _this.data.getNumberOfColumns(); 0 <= _ref2 ? _k < _ref2 : _k > _ref2; col = 0 <= _ref2 ? ++_k : --_k) {
-            value = _this.data.getFormattedValue(row, col);
-            line += "\"" + value + "\",";
+          for (i = _l = 0, _ref2 = _this.options.numberOfBox - 1; 0 <= _ref2 ? _l <= _ref2 : _l >= _ref2; i = 0 <= _ref2 ? ++_l : --_l) {
+            for (col = _m = 0, _ref3 = _this.data[i].getNumberOfColumns(); 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; col = 0 <= _ref3 ? ++_m : --_m) {
+              value = _this.data[i].getFormattedValue(row, col) ? _this.data[i].getFormattedValue(row, col) : '';
+              line += "\"" + value + "\",";
+            }
           }
           str += line + "\r\n";
         }
@@ -559,13 +661,13 @@
         height: 58,
         thickness: 0.5,
         displayInput: false,
-        color: "alert",
+        color: this.options.color,
         draw: function() {
           var color, value, _max, _min;
           value = this.val();
           _min = this.o.min;
           _max = this.o.max;
-          if (this.color === "coldtohot") {
+          if (this.o.color === "coldtohot") {
             if ((_min <= value && value <= _min * 0.3)) {
               color = pusher.color("#67C2EF");
             } else if ((_min * 0.3 < value && value <= _max * 0.3)) {
@@ -602,7 +704,6 @@
           value: total
         }, {
           duration: 2000,
-          easing: "easeOutSine",
           step: function() {
             return dial.val(Math.floor(this.value)).trigger("change");
           }
@@ -655,972 +756,5 @@
     return Sparks;
 
   })(H5.Charts.SmallContainer);
-
-  H5.Map = {
-    base: null,
-    layer: {},
-    layerList: null
-  };
-
-  H5.Leaflet = {};
-
-  H5.Leaflet.Layer = L.Class.extend({
-    options: {
-      scaleRange: null,
-      map: null,
-      cluster: false,
-      uniqueField: null,
-      visibleAtScale: true,
-      dynamic: false,
-      autoUpdate: false,
-      autoUpdateInterval: null,
-      popupTemplate: null,
-      popupOptions: {},
-      singlePopup: false,
-      symbology: null,
-      showAll: false,
-      focus: false,
-      above: false
-    },
-    initialize: function(options) {
-      return L.Util.setOptions(this, options);
-    },
-    setMap: function(map) {
-      var sr, z;
-      if (map && this.options.map) {
-        return;
-      }
-      if (map) {
-        this.options.map = map;
-        if (this.options.scaleRange && this.options.scaleRange instanceof Array && this.options.scaleRange.length === 2) {
-          z = this.options.map.getZoom();
-          sr = this.options.scaleRange;
-          this.options.visibleAtScale = z >= sr[0] && z <= sr[1];
-        }
-        return this._show();
-      } else if (this.options.map) {
-        this._hide();
-        return this.options.map = map;
-      }
-    },
-    getMap: function() {
-      return this.options.map;
-    },
-    setOptions: function(options) {
-      return L.Util.setOptions(this, options);
-    },
-    redraw: function() {
-      this._hide();
-      return this._show();
-    },
-    _show: function() {
-      var _this = this;
-      this._addIdleListener();
-      if (this.options.scaleRange && this.options.scaleRange instanceof Array && this.options.scaleRange.length === 2) {
-        this._addZoomChangeListener();
-      }
-      if (this.options.visibleAtScale) {
-        if (this.options.autoUpdate && this.options.autoUpdateInterval) {
-          this._autoUpdateInterval = setInterval(function() {
-            return _this._getFeatures();
-          }, this.options.autoUpdateInterval);
-        }
-        return this.options.map.fire("moveend").fire("zoomend");
-      }
-    },
-    _hide: function() {
-      if (this._idleListener) {
-        this.options.map.off("moveend", this._idleListener);
-      }
-      if (this._zoomChangeListener) {
-        this.options.map.off("zoomend", this._zoomChangeListener);
-      }
-      if (this._autoUpdateInterval) {
-        clearInterval(this._autoUpdateInterval);
-      }
-      this._lastQueriedBounds = null;
-      if (this._gotAll) {
-        this._gotAll = false;
-      }
-      return this._clearFeatures();
-    },
-    _hideVectors: function() {
-      return this.options.map.removeLayer(this.layer);
-    },
-    _showVectors: function() {
-      return this.layer.addTo(this.options.map);
-    },
-    _clearFeatures: function() {
-      this._vectors = [];
-      return this.layer.clearLayers();
-    },
-    _addZoomChangeListener: function() {
-      this._zoomChangeListener = this._zoomChangeListenerTemplate();
-      return this.options.map.on("zoomend", this._zoomChangeListener, this);
-    },
-    _zoomChangeListenerTemplate: function() {
-      var _this = this;
-      return function() {
-        return _this._checkLayerVisibility();
-      };
-    },
-    _idleListenerTemplate: function() {
-      var _this = this;
-      return function() {
-        if (_this.options.visibleAtScale) {
-          if (_this.options.showAll) {
-            if (!_this._gotAll) {
-              _this._getFeatures();
-              return _this._gotAll = true;
-            }
-          } else {
-            _this._hide();
-            return _this._getFeatures();
-          }
-        }
-      };
-    },
-    _addIdleListener: function() {
-      this._idleListener = this._idleListenerTemplate();
-      return this.options.map.on("moveend", this._idleListener, this);
-    },
-    _checkLayerVisibility: function() {
-      var sr, visibilityBefore, z;
-      visibilityBefore = this.options.visibleAtScale;
-      z = this.options.map.getZoom();
-      sr = this.options.scaleRange;
-      this.options.visibleAtScale = z >= sr[0] && z <= sr[1];
-      if (visibilityBefore !== this.options.visibleAtScale) {
-        this[(this.options.visibleAtScale ? "_showVectors" : "_hideVectors")]();
-      }
-      if (visibilityBefore && !this.options.visibleAtScale && this._autoUpdateInterval) {
-        return clearInterval(this._autoUpdateInterval);
-      } else if (!visibilityBefore && this.options.autoUpdate && this.options.autoUpdateInterval) {
-        return this._autoUpdateInterval = setInterval(function() {
-          return this._getFeatures();
-        }, this.options.autoUpdateInterval);
-      }
-    },
-    _setPopupContent: function(feature) {
-      var atts, popupContent, previousContent, prop, re;
-      previousContent = feature.popupContent;
-      atts = feature.properties;
-      popupContent = void 0;
-      if (typeof this.options.popupTemplate === "string") {
-        popupContent = this.options.popupTemplate;
-        for (prop in atts) {
-          re = new RegExp("{" + prop + "}", "g");
-          popupContent = popupContent.replace(re, atts[prop]);
-        }
-      } else if (typeof this.options.popupTemplate === "function") {
-        popupContent = this.options.popupTemplate(atts);
-      } else {
-        return;
-      }
-      feature.popupContent = popupContent;
-      if (feature.popup) {
-        if (feature.popupContent !== previousContent) {
-          return feature.popup.setContent(feature.popupContent);
-        }
-      } else if (this.popup && this.popup.associatedFeature === feature) {
-        if (feature.popupContent !== previousContent) {
-          return this.popup.setContent(feature.popupContent);
-        }
-      }
-    },
-    _showPopup: function(feature, event) {
-      var isLineOrPolygon, ownsPopup;
-      isLineOrPolygon = event.latlng;
-      if (!isLineOrPolygon) {
-        L.Util.extend(this.options.popupOptions, {
-          offset: event.target.options.icon.options.popupAnchor
-        });
-      }
-      ownsPopup = void 0;
-      if (!this.options.singlePopup) {
-        feature.popup = new L.Popup(this.options.popupOptions, feature.vector);
-        ownsPopup = feature;
-      } else {
-        if (this.popup) {
-          this.options.map.removeLayer(this.popup);
-          this.popup = null;
-        }
-        this.popup = new L.Popup(this.options.popupOptions, feature.vector);
-        this.popup.associatedFeature = feature;
-        ownsPopup = this;
-      }
-      ownsPopup.popup.setLatLng((isLineOrPolygon ? event.latlng : event.target.getLatLng()));
-      ownsPopup.popup.setContent(feature.popupContent);
-      return this.options.map.addLayer(ownsPopup.popup);
-    },
-    _fireClickEvent: function(feature, event) {
-      return this.options.clickEvent(feature, event);
-    },
-    _fireMouseoverEvent: function(feature, event) {
-      return this.options.mouseoverEvent(feature, event);
-    },
-    _fireMouseoutEvent: function(feature, event) {
-      return this.options.mouseoutEvent(feature, event);
-    },
-    _getFeatureVectorOptions: function(feature) {
-      var att, atts, i, key, prop, re, vectorStyle, _i, _j, _ref2, _ref3;
-      vectorStyle = {};
-      atts = feature.properties;
-      if (this.options.symbology) {
-        switch (this.options.symbology.type) {
-          case "single":
-            for (key in this.options.symbology.vectorStyle) {
-              vectorStyle[key] = this.options.symbology.vectorStyle[key];
-              if (vectorStyle.title) {
-                for (prop in atts) {
-                  re = new RegExp("{" + prop + "}", "g");
-                  vectorStyle.title = vectorStyle.title.replace(re, atts[prop]);
-                }
-              }
-            }
-            break;
-          case "unique":
-            att = this.options.symbology.property;
-            for (i = _i = 0, _ref2 = this.options.symbology.values.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-              if (atts[att] === this.options.symbology.values[i].value) {
-                for (key in this.options.symbology.values[i].vectorStyle) {
-                  vectorStyle[key] = this.options.symbology.values[i].vectorStyle[key];
-                  if (vectorStyle.title) {
-                    for (prop in atts) {
-                      re = new RegExp("{" + prop + "}", "g");
-                      vectorStyle.title = vectorStyle.title.replace(re, atts[prop]);
-                    }
-                  }
-                }
-              }
-            }
-            break;
-          case "range":
-            att = this.options.symbology.property;
-            for (i = _j = 0, _ref3 = this.options.symbology.ranges.length; 0 <= _ref3 ? _j < _ref3 : _j > _ref3; i = 0 <= _ref3 ? ++_j : --_j) {
-              if (atts[att] >= this.options.symbology.ranges[i].range[0] && atts[att] <= this.options.symbology.ranges[i].range[1]) {
-                for (key in this.options.symbology.ranges[i].vectorStyle) {
-                  vectorStyle[key] = this.options.symbology.ranges[i].vectorStyle[key];
-                  if (vectorStyle.title) {
-                    for (prop in atts) {
-                      re = new RegExp("{" + prop + "}", "g");
-                      vectorStyle.title = vectorStyle.title.replace(re, atts[prop]);
-                    }
-                  }
-                }
-              }
-            }
-        }
-      }
-      return vectorStyle;
-    },
-    _getPropertiesChanged: function(oldAtts, newAtts) {
-      var changed, key;
-      changed = false;
-      for (key in oldAtts) {
-        if (oldAtts[key] !== newAtts[key]) {
-          changed = true;
-        }
-      }
-      return changed;
-    },
-    _getPropertyChanged: function(oldAtts, newAtts, property) {
-      return oldAtts[property] !== newAtts[property];
-    },
-    _getGeometryChanged: function(oldGeom, newGeom) {
-      var changed;
-      changed = false;
-      if (oldGeom.coordinates[0] !== newGeom.coordinates[0] || oldGeom.coordinates[1] !== newGeom.coordinates[1]) {
-        changed = true;
-      }
-      return changed;
-    },
-    _makeJsonpRequest: function(url) {
-      var _this = this;
-      return $.ajax({
-        url: url,
-        type: "GET",
-        dataType: "jsonp",
-        crossDomain: true,
-        success: function(data) {
-          return _this._processRequest(data);
-        },
-        error: function(xhr, status, error) {
-          return console.log("Failed URL request: " + error);
-        }
-      });
-    },
-    _processRequest: function(json) {
-      var data, i, prop, _i, _ref2;
-      data = {};
-      data.features = [];
-      data.total = json.length;
-      data.type = "FeatureCollection";
-      for (i = _i = 0, _ref2 = json.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        data.features[i] = {};
-        data.features[i].type = "Feature";
-        data.features[i].properties = {};
-        for (prop in json[i]) {
-          if (prop === "geojson") {
-            data.features[i].geometry = JSON.parse(json[i].geojson);
-          } else {
-            if (prop !== "properties") {
-              data.features[i].properties[prop] = json[i][prop];
-            }
-          }
-        }
-      }
-      json = null;
-      return this._processFeatures(data);
-    },
-    _processFeatures: function(data) {
-      var bounds, feature, geometry, geometryOptions, i, j, k, me, onMap, propertiesChanged, symbologyPropertyChanged, vector_or_vectors, _i, _j, _k, _l, _ref2, _ref3, _ref4, _ref5;
-      if (!this.options.map) {
-        return;
-      }
-      bounds = this.options.map.getBounds();
-      if (this._lastQueriedBounds && this._lastQueriedBounds.equals(bounds) && !this.options.autoUpdate) {
-        return;
-      }
-      this._lastQueriedBounds = bounds;
-      this.layer.addTo(this.options.map);
-      if (data && data.features && data.features.length) {
-        for (i = _i = 0, _ref2 = data.features.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-          onMap = false;
-          if (this.options.uniqueField) {
-            for (j = _j = 0, _ref3 = this._vectors.length; 0 <= _ref3 ? _j < _ref3 : _j > _ref3; j = 0 <= _ref3 ? ++_j : --_j) {
-              if (data.features[i].properties[this.options.uniqueField] === this._vectors[j].properties[this.options.uniqueField]) {
-                onMap = true;
-                if (this.options.dynamic) {
-                  if (this._getGeometryChanged(this._vectors[j].geometry, data.features[i].geometry)) {
-                    if (!isNaN(data.features[i].geometry.coordinates[0]) && !isNaN(data.features[i].geometry.coordinates[1])) {
-                      this._vectors[j].geometry = data.features[i].geometry;
-                      this._vectors[j].vector.setLatLng(new L.LatLng(this._vectors[j].geometry.coordinates[1], this._vectors[j].geometry.coordinates[0]));
-                    }
-                  }
-                  propertiesChanged = this._getPropertiesChanged(this._vectors[j].properties, data.features[i].properties);
-                  if (propertiesChanged) {
-                    symbologyPropertyChanged = this._getPropertyChanged(this._vectors[j].properties, data.features[i].properties, this.options.symbology.property);
-                    this._vectors[j].properties = data.features[i].properties;
-                    if (this.options.popupTemplate) {
-                      this._setPopupContent(this._vectors[j]);
-                    }
-                    if (this.options.symbology && this.options.symbology.type !== "single" && symbologyPropertyChanged) {
-                      if (this._vectors[j].vectors) {
-                        for (k = _k = 0, _ref4 = this._vectors[j].vectors.length; 0 <= _ref4 ? _k < _ref4 : _k > _ref4; k = 0 <= _ref4 ? ++_k : --_k) {
-                          if (this._vectors[j].vectors[k].setStyle) {
-                            this._vectors[j].vectors[k].setStyle(this._getFeatureVectorOptions(this._vectors[j]));
-                          } else {
-                            if (this._vectors[j].vectors[k].setIcon) {
-                              this._vectors[j].vectors[k].setIcon(this._getFeatureVectorOptions(this._vectors[j]).icon);
-                            }
-                          }
-                        }
-                      } else if (this._vectors[j].vector) {
-                        if (this._vectors[j].vector.setStyle) {
-                          this._vectors[j].vector.setStyle(this._getFeatureVectorOptions(this._vectors[j]));
-                        } else {
-                          if (this._vectors[j].vector.setIcon) {
-                            this._vectors[j].vector.setIcon(this._getFeatureVectorOptions(this._vectors[j]).icon);
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-          if (!onMap || !this.options.uniqueField) {
-            geometry = data.features[i].geometry;
-            geometryOptions = this._getFeatureVectorOptions(data.features[i]);
-            vector_or_vectors = this._geoJsonGeometryToLeaflet(geometry, geometryOptions);
-            data.features[i][(vector_or_vectors instanceof Array ? "vectors" : "vector")] = vector_or_vectors;
-            this._vectors.push(data.features[i]);
-            if (this._vectors[i].vector) {
-              this.layer.addLayer(this._vectors[i].vector);
-            } else if (this._vectors[i].vectors && this._vectors[i].vectors.length) {
-              for (k = _l = 0, _ref5 = this._vectors[i].vectors.length; 0 <= _ref5 ? _l < _ref5 : _l > _ref5; k = 0 <= _ref5 ? ++_l : --_l) {
-                this.layer.addLayer(this._vectors[i].vectors[k]);
-              }
-            }
-            if (this.options.popupTemplate) {
-              me = this;
-              feature = data.features[i];
-              this._setPopupContent(feature);
-              (function(feature) {
-                var _m, _ref6, _results;
-                if (feature.vector) {
-                  return feature.vector.on("click", function(event) {
-                    return me._showPopup(feature, event);
-                  });
-                } else if (feature.vectors) {
-                  _results = [];
-                  for (k = _m = 0, _ref6 = feature.vectors.length; 0 <= _ref6 ? _m < _ref6 : _m > _ref6; k = 0 <= _ref6 ? ++_m : --_m) {
-                    _results.push(feature.vectors[k].on("click", function(event) {
-                      return me._showPopup(feature, event);
-                    }));
-                  }
-                  return _results;
-                }
-              })(feature);
-            }
-            if (this.options.clickEvent) {
-              me = this;
-              feature = data.features[i];
-              (function(feature) {
-                var _m, _ref6, _results;
-                if (feature.vector) {
-                  return feature.vector.on("click", function(event) {
-                    return me._fireClickEvent(feature, event);
-                  });
-                } else if (feature.vectors) {
-                  _results = [];
-                  for (k = _m = 0, _ref6 = feature.vectors.length; 0 <= _ref6 ? _m < _ref6 : _m > _ref6; k = 0 <= _ref6 ? ++_m : --_m) {
-                    _results.push(feature.vectors[k].on("click", function(event) {
-                      return me._fireClickEvent(feature, event);
-                    }));
-                  }
-                  return _results;
-                }
-              })(feature);
-            }
-            if (this.options.mouseoverEvent) {
-              me = this;
-              feature = data.features[i];
-              (function(feature) {
-                var _m, _ref6, _results;
-                if (feature.vector) {
-                  return feature.vector.on("mouseover", function(event) {
-                    return me._fireMouseoverEvent(feature, event);
-                  });
-                } else if (feature.vectors) {
-                  _results = [];
-                  for (k = _m = 0, _ref6 = feature.vectors.length; 0 <= _ref6 ? _m < _ref6 : _m > _ref6; k = 0 <= _ref6 ? ++_m : --_m) {
-                    _results.push(feature.vectors[k].on("mouseover", function(event) {
-                      return me._fireMouseoverEvent(feature, event);
-                    }));
-                  }
-                  return _results;
-                }
-              })(feature);
-            }
-            if (this.options.mouseoutEvent) {
-              me = this;
-              feature = data.features[i];
-              (function(feature) {
-                var _m, _ref6, _results;
-                if (feature.vector) {
-                  return feature.vector.on("mouseout", function(event) {
-                    return me._fireMouseoutEvent(feature, event);
-                  });
-                } else if (feature.vectors) {
-                  _results = [];
-                  for (k = _m = 0, _ref6 = feature.vectors.length; 0 <= _ref6 ? _m < _ref6 : _m > _ref6; k = 0 <= _ref6 ? ++_m : --_m) {
-                    _results.push(feature.vectors[k].on("mouseout", function(event) {
-                      return me._fireMouseoutEvent(feature, event);
-                    }));
-                  }
-                  return _results;
-                }
-              })(feature);
-            }
-          }
-        }
-      }
-      if (this.options.above) {
-        this.layer.eachLayer(function(layer) {
-          if (layer.setZIndexOffset) {
-            return layer.setZIndexOffset(1000);
-          }
-        });
-      }
-      if (this.options.focus) {
-        this.options.map.fitBounds(this.layer.getBounds());
-      }
-      return data = null;
-    }
-  });
-
-  H5.Leaflet.GeoJSONLayer = H5.Leaflet.Layer.extend({
-    _geoJsonGeometryToLeaflet: function(geometry, opts) {
-      var i, j, k, latlngs, latlngss, vector, vectors, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
-      vector = void 0;
-      vectors = void 0;
-      switch (geometry.type) {
-        case "Point":
-          if (opts.circleMarker) {
-            vector = new L.CircleMarker(new L.LatLng(geometry.coordinates[1], geometry.coordinates[0]), opts);
-          } else {
-            vector = new L.Marker(new L.LatLng(geometry.coordinates[1], geometry.coordinates[0]), opts);
-          }
-          break;
-        case "MultiPoint":
-          vectors = [];
-          for (i = _i = 0, _ref2 = geometry.coordinates.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-            vectors.push(new L.Marker(new L.LatLng(geometry.coordinates[i][1], geometry.coordinates[i][0]), opts));
-          }
-          break;
-        case "LineString":
-          latlngs = [];
-          for (i = _j = 0, _ref3 = geometry.coordinates.length; 0 <= _ref3 ? _j < _ref3 : _j > _ref3; i = 0 <= _ref3 ? ++_j : --_j) {
-            latlngs.push(new L.LatLng(geometry.coordinates[i][1], geometry.coordinates[i][0]));
-          }
-          vector = new L.Polyline(latlngs, opts);
-          break;
-        case "MultiLineString":
-          vectors = [];
-          for (i = _k = 0, _ref4 = geometry.coordinates.length; 0 <= _ref4 ? _k < _ref4 : _k > _ref4; i = 0 <= _ref4 ? ++_k : --_k) {
-            latlngs = [];
-            for (j = _l = 0, _ref5 = geometry.coordinates[i].length; 0 <= _ref5 ? _l < _ref5 : _l > _ref5; j = 0 <= _ref5 ? ++_l : --_l) {
-              latlngs.push(new L.LatLng(geometry.coordinates[i][j][1], geometry.coordinates[i][j][0]));
-            }
-            vectors.push(new L.Polyline(latlngs, opts));
-          }
-          break;
-        case "Polygon":
-          latlngss = [];
-          for (i = _m = 0, _ref6 = geometry.coordinates.length; 0 <= _ref6 ? _m < _ref6 : _m > _ref6; i = 0 <= _ref6 ? ++_m : --_m) {
-            latlngs = [];
-            for (j = _n = 0, _ref7 = geometry.coordinates[i].length; 0 <= _ref7 ? _n < _ref7 : _n > _ref7; j = 0 <= _ref7 ? ++_n : --_n) {
-              latlngs.push(new L.LatLng(geometry.coordinates[i][j][1], geometry.coordinates[i][j][0]));
-            }
-            latlngss.push(latlngs);
-          }
-          vector = new L.Polygon(latlngss, opts);
-          break;
-        case "MultiPolygon":
-          vectors = [];
-          for (i = _o = 0, _ref8 = geometry.coordinates.length; 0 <= _ref8 ? _o < _ref8 : _o > _ref8; i = 0 <= _ref8 ? ++_o : --_o) {
-            latlngss = [];
-            for (j = _p = 0, _ref9 = geometry.coordinates[i].length; 0 <= _ref9 ? _p < _ref9 : _p > _ref9; j = 0 <= _ref9 ? ++_p : --_p) {
-              latlngs = [];
-              for (k = _q = 0, _ref10 = geometry.coordinates[i][j].length; 0 <= _ref10 ? _q < _ref10 : _q > _ref10; k = 0 <= _ref10 ? ++_q : --_q) {
-                latlngs.push(new L.LatLng(geometry.coordinates[i][j][k][1], geometry.coordinates[i][j][k][0]));
-              }
-              latlngss.push(latlngs);
-            }
-            vectors.push(new L.Polygon(latlngss, opts));
-          }
-          break;
-        case "GeometryCollection":
-          vectors = [];
-          for (i = _r = 0, _ref11 = geometry.coordinates.length; 0 <= _ref11 ? _r < _ref11 : _r > _ref11; i = 0 <= _ref11 ? ++_r : --_r) {
-            vectors.push(this._geoJsonGeometryToLeaflet(geometry.geometries[i], opts));
-          }
-      }
-      return vector || vectors;
-    }
-  });
-
-  H5.Leaflet.Postgis = H5.Leaflet.GeoJSONLayer.extend({
-    initialize: function(options) {
-      var i, sr, z, _i, _ref2;
-      for (i = _i = 0, _ref2 = this._requiredParams.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        if (!options[this._requiredParams[i]]) {
-          throw new Error("No \"" + this._requiredParams[i] + "\" parameter found.");
-        }
-      }
-      if (options.url.substr(options.url.length - 1, 1) !== "/") {
-        options.url += "/";
-      }
-      H5.Leaflet.Layer.prototype.initialize.call(this, options);
-      this._globalPointer = "Postgis_" + this.options.geotable + "_" + this.options.geomFieldName;
-      window[this._globalPointer] = this;
-      this._vectors = [];
-      if (this.options.cluster) {
-        this.layer = new L.MarkerClusterGroup();
-      } else {
-        this.layer = new L.featureGroup();
-      }
-      if (this.options.map) {
-        if (this.options.scaleRange && this.options.scaleRange instanceof Array && this.options.scaleRange.length === 2) {
-          z = this.options.map.getZoom();
-          sr = this.options.scaleRange;
-          this.options.visibleAtScale = z >= sr[0] && z <= sr[1];
-        }
-        return this._show();
-      }
-    },
-    options: {
-      geotable: null,
-      srid: null,
-      geomFieldName: "the_geom",
-      fields: null,
-      where: null,
-      limit: 5000,
-      uniqueField: null
-    },
-    _requiredParams: ["url", "geotable"],
-    _getFeatures: function() {
-      var bounds, fields, ne, sw, url, where;
-      where = (this.options.where ? "&parameters=" + encodeURIComponent(this.options.where) : null);
-      if (!this.options.showAll) {
-        bounds = this.options.map.getBounds();
-        sw = bounds.getSouthWest();
-        ne = bounds.getNorthEast();
-        where += (where.length ? " AND " : "");
-        if (this.options.srid) {
-          where += encodeURIComponent("st_setsrid(" + this.options.geomFieldName + "," + this.options.srid + ") && st_setsrid(st_makebox2d(st_point(" + sw.lng + "," + sw.lat + "),st_point(" + ne.lng + "," + ne.lat + "))," + this.options.srid + ")");
-        } else {
-          where += encodeURIComponent("" + this.options.geomFieldName + " && st_setsrid(st_makebox2d(st_point(" + sw.lng + "," + sw.lat + "),st_point(" + ne.lng + "," + ne.lat + "))");
-        }
-      }
-      fields = (this.options.fields ? this.options.fields : "*") + ", st_asgeojson(" + this.options.geomFieldName + "" + (this.options.geomPrecision ? "," + this.options.geomPrecision : "") + ") as geojson";
-      url = this.options.url + "v1/ws_geo_attributequery.php" + "?table=" + this.options.geotable + "&fields=" + encodeURIComponent(fields) + where + "&limit=" + this.options.limit;
-      return this._makeJsonpRequest(url);
-    }
-  });
-
-  H5.Leaflet.Geoserver = H5.Leaflet.GeoJSONLayer.extend({
-    initialize: function(options) {
-      var i, len, sr, z;
-      i = 0;
-      len = this._requiredParams.length;
-      while (i < len) {
-        if (!options[this._requiredParams[i]]) {
-          throw new Error("No \"" + this._requiredParams[i] + "\" parameter found.");
-        }
-        i++;
-      }
-      lvector.Layer.prototype.initialize.call(this, options);
-      this._globalPointer = "Geoserver_" + Math.floor(Math.random() * 100000);
-      window[this._globalPointer] = this;
-      this._vectors = [];
-      if (this.options.map) {
-        if (this.options.scaleRange && this.options.scaleRange instanceof Array && this.options.scaleRange.length === 2) {
-          z = this.options.map.getZoom();
-          sr = this.options.scaleRange();
-          this.options.visibleAtScale = z >= sr[0] && z <= sr[1];
-        }
-        return this._show();
-      }
-    },
-    options: {
-      baseUrl: null,
-      typeName: null,
-      uniqueField: null
-    },
-    _requiredParams: ["baseUrl", "typeName", "uniqueField"],
-    _getFeatures: function() {
-      var url;
-      url = this.options.baseUrl.replace(/\?$/, "") + "?service=WFS&version=1.1.0&request=GetFeature&typeName=" + this.options.typeName + "&outputFormat=json&format_options=callback:" + this._globalPointer + "._processRequest";
-      if (!this.options.showAll) {
-        url += "&bbox=" + this.options.map.getBounds().toBBoxString();
-      }
-      return this._makeJsonpRequest(url);
-    }
-  });
-
-  H5.Leaflet.RapidEyeTMS = (function() {
-    RapidEyeTMS.prototype.options = {
-      url: null,
-      table: null,
-      numberOfLayers: 4
-    };
-
-    function RapidEyeTMS(options) {
-      this.listLayers = [];
-      this.layers = {};
-      this.layerGroup = [];
-      this.count = 1;
-      L.setOptions(this, options);
-      this._createTMSLayers();
-      this._loadGeoJSON();
-      this._addToLayerControl();
-    }
-
-    RapidEyeTMS.prototype._onEachFeature = function(feature, layer) {
-      var popupContent;
-      popupContent = "<p>I started out as a GeoJSON " + feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
-      if (feature.properties && feature.properties.popupContent) {
-        popupContent += feature.properties.popupContent;
-      }
-      layer.bindPopup(popupContent);
-      layer.on("mouseover click", function(e) {
-        var tmsUrl;
-        tmsUrl = feature.properties.url_tiles + "{z}/{x}/{y}.png";
-        layer.setStyle({
-          fillColor: "transparent",
-          stroke: false
-        });
-        if (this._checkLayer(layer._leaflet_id)) {
-          this.layers[this.count].setUrl(tmsUrl);
-          this.layers[this.count].redraw();
-          this.listLayers.push(layer._leaflet_id);
-          if (this.listLayers.length > this.options.numberOfLayers) {
-            this.listLayers.shift();
-          }
-          this.count++;
-          if (this.count > this.options.numberOfLayers) {
-            return this.count = 1;
-          }
-        }
-      });
-      return layer.on("mouseout", function(e) {
-        return layer.setStyle({
-          stroke: true
-        });
-      });
-    };
-
-    RapidEyeTMS.prototype._createTMSLayers = function() {
-      var i, _results;
-      i = 1;
-      _results = [];
-      while (i <= this.options.numberOfLayers) {
-        this.layers[i] = new L.TileLayer("", {
-          minZoom: 3,
-          maxZoom: 17,
-          tms: true
-        });
-        this.layerGroup.push(this.layers[i]);
-        _results.push(i++);
-      }
-      return _results;
-    };
-
-    RapidEyeTMS.prototype._checkLayer = function(layerId) {
-      var i, _i, _ref2;
-      for (i = _i = 0, _ref2 = this.listLayers.length; 0 <= _ref2 ? _i < _ref2 : _i > _ref2; i = 0 <= _ref2 ? ++_i : --_i) {
-        if (layerId === this.listLayers[i]) {
-          return false;
-        }
-      }
-      return true;
-    };
-
-    RapidEyeTMS.prototype._loadGeoJSON = function() {
-      var rest;
-      rest = new H5.PgRest({
-        url: this.options.url,
-        table: this.options.table
-      });
-      return this._vectors = L.geoJson(rest.request(), {
-        style: {
-          fillColor: "transparent",
-          color: "purple",
-          weight: 4
-        },
-        onEachFeature: this._onEachFeature
-      });
-    };
-
-    RapidEyeTMS.prototype._addToLayerControl = function() {
-      var rapidEyeLayer;
-      rapidEyeLayer = new L.LayerGroup(this.layerGroup);
-      rapidEyeLayer.addLayer(this._vectors);
-      if (H5.Map.layerList) {
-        return H5.Map.layerList.addLayer(rapidEyeLayer, "RapidEye");
-      }
-    };
-
-    return RapidEyeTMS;
-
-  })();
-
-  H5.Leaflet.LayerControl = L.Control.extend({
-    options: {
-      collapsed: true,
-      position: "topright",
-      autoZIndex: true
-    },
-    initialize: function(baseLayers, overlayers, options) {
-      var _this = this;
-      L.setOptions(this, options);
-      this._layers = {};
-      this._lastZIndex = 0;
-      this._handlingClick = false;
-      $.each(baseLayers, function(name, obj) {
-        return _this._addLayer(obj.layer, name, false, false);
-      });
-      return $.each(overlayers, function(name, obj) {
-        var control;
-        control = typeof obj.overlayControl === "boolean" ? obj.overlayControl : true;
-        return _this._addLayer(obj.layer, name, true, control);
-      });
-    },
-    onAdd: function(map) {
-      this._initLayout();
-      this._update();
-      map.on("layeradd", this._onLayerChange, this).on("layerremove", this._onLayerChange, this);
-      return this._container;
-    },
-    onRemove: function(map) {
-      return map.off("layeradd", this._onLayerChange).off("layerremove", this._onLayerChange);
-    },
-    addBaseLayer: function(layer, name) {
-      this._addLayer(layer, name);
-      this._update();
-      return this;
-    },
-    addOverLayer: function(layer, name, overlayControl) {
-      this._addLayer(layer, name, true, overlayControl);
-      this._update();
-      return this;
-    },
-    removeLayer: function(layer) {
-      var id;
-      id = L.stamp(layer);
-      delete this._layers[id];
-      this._update();
-      return this;
-    },
-    _initLayout: function() {
-      var className, container, form, link;
-      className = "switch-control-layers";
-      container = this._container = L.DomUtil.create("div", "leaflet-bar " + className);
-      container.setAttribute('aria-haspopup', true);
-      if (!L.Browser.touch) {
-        L.DomEvent.disableClickPropagation(container);
-        L.DomEvent.on(container, "mousewheel", L.DomEvent.stopPropagation);
-      } else {
-        L.DomEvent.on(container, "click", L.DomEvent.stopPropagation);
-      }
-      form = this._form = L.DomUtil.create("form", className + "-list form-layer-list");
-      if (this.options.collapsed) {
-        L.DomEvent.on(container, "mouseover", this._expand, this).on(container, "mouseout", this._collapse, this);
-        link = this._layersLink = L.DomUtil.create("a", className + "-toggle", container);
-        link.href = "#";
-        link.title = "Layers";
-        if (L.Browser.touch) {
-          L.DomEvent.on(link, "click", L.DomEvent.stop).on(link, "click", this._expand, this);
-        } else {
-          L.DomEvent.on(link, "focus", this._expand, this);
-        }
-        this._map.on("click", this._collapse, this);
-      } else {
-        this._expand();
-      }
-      this._baseLayersList = L.DomUtil.create('div', className + '-base', form);
-      this._separator = L.DomUtil.create('div', className + '-separator', form);
-      this._overlayersList = L.DomUtil.create('div', className + '-overlayers', form);
-      return $(container).append(form);
-    },
-    _addLayer: function(layer, name, overlayer, overlayControl) {
-      var id;
-      id = L.stamp(layer);
-      this._layers[id] = {
-        layer: layer,
-        name: name,
-        overlayer: overlayer,
-        overlayControl: overlayControl
-      };
-      if (this.options.autoZIndex && layer.setZIndex) {
-        this._lastZIndex++;
-        return layer.setZIndex(this._lastZIndex);
-      }
-    },
-    _update: function() {
-      var baseLayersPresent, i, obj, overlayersPresent, _results;
-      if (!this._container) {
-        return;
-      }
-      this._baseLayersList.innerHTML = "";
-      this._overlayersList.innerHTML = "";
-      baseLayersPresent = false;
-      overlayersPresent = false;
-      _results = [];
-      for (i in this._layers) {
-        obj = this._layers[i];
-        this._addItem(obj);
-        overlayersPresent = overlayersPresent || obj.overlayer;
-        baseLayersPresent = baseLayersPresent || !obj.overlayer;
-        _results.push(this._separator.style.display = (overlayersPresent && baseLayersPresent ? "" : "none"));
-      }
-      return _results;
-    },
-    _onLayerChange: function(e) {
-      var obj, type;
-      obj = this._layers[L.stamp(e.layer)];
-      if (!obj) {
-        return;
-      }
-      if (!this._handlingClick) {
-        this._update();
-      }
-      type = (obj.overlayer ? (e.type === "layeradd" ? "overlayeradd" : "overlayerremove") : (e.type === "layeradd" ? "baselayerchange" : null));
-      if (type) {
-        return this._map.fire(type, obj);
-      }
-    },
-    _addItem: function(obj) {
-      var checked, container, control, controlgroup, input, label, name, slider, toggle,
-        _this = this;
-      container = (obj.overlayer ? this._overlayersList : this._baseLayersList);
-      controlgroup = L.DomUtil.create("div", "control-group", container);
-      checked = this._map.hasLayer(obj.layer);
-      label = L.DomUtil.create("label", "control-label", controlgroup);
-      if (H5.isMobile.any() || obj.name.length < 12) {
-        label.innerHTML = obj.name;
-      } else {
-        name = obj.name.substr(0, 12) + "…";
-        label.innerHTML = "<abbr title=\"" + obj.name + "\">" + name + "</abbr>";
-      }
-      control = L.DomUtil.create("div", "control", controlgroup);
-      toggle = L.DomUtil.create("div", "switch-small", control);
-      if (!obj.overlayer) {
-        $(toggle).addClass("baseLayers");
-      }
-      input = L.DomUtil.create("input", "", toggle);
-      if (!H5.isMobile.any() && obj.overlayer) {
-        input.type = "checkbox";
-        $(input).addClass("switch-control-layers-selector");
-        if (obj.overlayControl) {
-          slider = L.DomUtil.create("div", "", controlgroup);
-          $(slider).addClass("switch-control-layers-slider");
-          $(slider).slider({
-            min: 0,
-            max: 100,
-            value: 100,
-            range: "min",
-            slide: function(event, ui) {
-              var _this = this;
-              return obj.layer.eachLayer(function(layer) {
-                if (layer.setOpacity) {
-                  return layer.Opacity(ui.value / 100);
-                } else {
-                  return layer.setStyle({
-                    fillOpacity: ui.value / 100,
-                    opacity: ui.value / 100
-                  });
-                }
-              });
-            }
-          });
-        }
-      } else {
-        input.type = "radio";
-        $(input).attr("name", "leaflet-base-layers");
-      }
-      input.defaultChecked = checked;
-      input.layerId = L.stamp(obj.layer);
-      $(toggle).bootstrapSwitch();
-      $(toggle).on("switch-change", function(e, data) {
-        if (!obj.overlayer) {
-          $('.baseLayers').bootstrapSwitch('toggleRadioState');
-        }
-        return _this._onInputClick(input, obj);
-      });
-      return controlgroup;
-    },
-    _onInputClick: function(input, obj) {
-      this._handlingClick = true;
-      if (input.checked && !this._map.hasLayer(obj.layer)) {
-        this._map.addLayer(obj.layer);
-      } else {
-        if (!(input.checked && this._map.hasLayer(obj.layer))) {
-          this._map.removeLayer(obj.layer);
-        }
-      }
-      return this._handlingClick = false;
-    },
-    _expand: function() {
-      return L.DomUtil.addClass(this._form, "switch-control-layers-expanded");
-    },
-    _collapse: function() {
-      return this._form.className = this._form.className.replace(" switch-control-layers-expanded", "");
-    }
-  });
 
 }).call(this);

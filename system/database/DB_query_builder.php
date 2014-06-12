@@ -1138,7 +1138,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	 * ORDER BY
 	 *
 	 * @param	string	$orderby
-	 * @param	string	$direction	ASC or DESC
+	 * @param	string	$direction	ASC, DESC or RANDOM
 	 * @param	bool	$escape
 	 * @return	CI_DB_query_builder
 	 */
@@ -1152,7 +1152,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 
 			// Do we have a seed value?
 			$orderby = ctype_digit((string) $orderby)
-				? $orderby = sprintf($this->_random_keyword[1], $orderby)
+				? sprintf($this->_random_keyword[1], $orderby)
 				: $this->_random_keyword[0];
 		}
 		elseif (empty($orderby))
@@ -2291,7 +2291,12 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 		{
 			for ($i = 0, $c = count($this->$qb_key); $i < $c; $i++)
 			{
-				if ($this->{$qb_key}[$i]['escape'] === FALSE)
+				// Is this condition already compiled?
+				if (is_string($this->{$qb_key}[$i]))
+				{
+					continue;
+				}
+				elseif ($this->{$qb_key}[$i]['escape'] === FALSE)
 				{
 					$this->{$qb_key}[$i] = $this->{$qb_key}[$i]['condition'];
 					continue;
@@ -2361,6 +2366,12 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 		{
 			for ($i = 0, $c = count($this->qb_groupby); $i < $c; $i++)
 			{
+				// Is it already compiled?
+				if (is_string($this->qb_groupby))
+				{
+					continue;
+				}
+
 				$this->qb_groupby[$i] = ($this->qb_groupby[$i]['escape'] === FALSE OR $this->_is_literal($this->qb_groupby[$i]['field']))
 					? $this->qb_groupby[$i]['field']
 					: $this->protect_identifiers($this->qb_groupby[$i]['field']);
@@ -2551,11 +2562,13 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 			$qb_variable	= 'qb_'.$val;
 			$qb_cache_var	= 'qb_cache_'.$val;
 
-			if (count($this->$qb_cache_var) === 0)
+			if (count($this->$qb_cache_var) > 0)
 			{
-				continue;
+				foreach ($this->$qb_cache_var as &$cache_var)
+				{
+					in_array($cache_var, $this->$qb_variable, TRUE) OR $this->{$qb_variable}[] = $cache_var;
+				}
 			}
-			$this->$qb_variable = array_merge($this->$qb_variable, array_diff($this->$qb_cache_var, $this->$qb_variable));
 		}
 
 		// If we are "protecting identifiers" we need to examine the "from"

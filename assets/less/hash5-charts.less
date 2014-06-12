@@ -120,6 +120,45 @@
     position: relative;
   }
 }
+.box-large {
+  width: 90%;
+  margin: 10px auto;
+  .box-content {
+    background: none repeat scroll 0 0 #fcfcfc;
+    border: 1px solid #ddd;border-radius:0 0 2px 2px;
+    -moz-box-shadow: 0 1px 0 rgba(255,255,255,0.6);
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.6);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6);
+    margin-top: -1px;
+    height: 680px;
+  }
+}
+.box-double {
+  float: left;
+  width: 97%;
+  margin: 10px;
+  @media (max-width: 979px) {
+    width: 100%;
+    margin: 0 0 15px;
+  }
+  .box-content {
+    background: none repeat scroll 0 0 #FCFCFC;
+    border: 1px solid #DDDDDD;
+    border-radius: 0 0 2px 2px;
+    .box-shadow;
+    margin-top: -1px;
+    height: 220px;
+  }
+  .box-content-table {
+    display: none;
+    background: none repeat scroll 0 0 #FCFCFC;
+    border-radius: 0 0 2px 2px;
+    margin-top: -222px;
+    height: 222px;
+    overflow: auto;
+    position: relative;
+  }
+}
 .sparks {
   margin:0;
   display: inline-block;
@@ -248,20 +287,223 @@
     }
   }
 }
+
+/*.quick-btn {
+  background-color:#fcfcfc 0;
+  background-image:-moz-linear-gradient(top, #fcfcfc 0, #efefef 100%);
+  background-image:-webkit-linear-gradient(top, #fcfcfc 0, #efefef 100%);
+  background-image:linear-gradient(to bottom, #fcfcfc 0, #efefef 100%);
+  border-top:1px solid #d3d3d3;
+  border-left:1px solid #d3d3d3;
+  border-radius:4px 4px 4px 4px;
+  box-shadow:0 1px 0 0 #fff inset,0 1px 0 rgba(255,255,255,0.4);
+  display:inline-block;
+  line-height:18px;
+  margin:0 10px;
+  padding:0;
+  @media (max-width:979px){
+    margin-top:40px;
+  }
+  .item {
+    border-right:1px solid #d3d3d3;
+    border-bottom:1px solid #d3d3d3;
+    box-shadow:1px 1px 0 0 #fff;
+    font-weight:bold;
+    margin:0;
+    padding:25px 15px 20px;
+    float:left;
+    @media (max-width:979px) {
+      width:15.65%;
+    }
+    @media (max-width:639px) {
+      width:41%;
+    }
+    @media (max-height:360px) {
+      width:14.75%;
+    }
+    @media (max-width:479px) {
+      width:40.2%;
+    }
+    @media (max-width:320px) {
+      width:39%;
+    }
+    @media (max-height:320px) {
+      width:12.85%;
+    }
+    &:first-child {
+      border-radius:4px 0 0 4px;
+      @media (max-width:979px) {
+        border-radius:4px 0 0 0;
+      }
+      @media (max-width:767px) {
+      }
+      @media (max-height:360px) {
+      }
+    }
+    &:last-child {
+      border-radius:0 4px 4px 0;
+      @media (max-width:979px) {
+        border-radius:0 0 4px 0;
+      }
+      @media (max-width:767px) {
+      }
+      @media (max-height:360px){
+      }
+    }
+    a {
+      outline:none;
+      text-decoration:none;
+    }
+    &:hover {
+      background:#fcfcfc;
+      text-decoration:none;
+      transition:all .2s ease 0;
+    }
+    i {
+      background-color:transparent;
+      background-position:center;
+      background-repeat:no-repeat;
+      padding:32px;
+      vertical-align:middle;
+    }
+    span {
+      display:block;
+      font-size:12px;
+      font-weight:bold;
+      position:relative;
+      bottom:-12px;
+      color:#333;
+    }
+    &.active, &:active {
+      background:#fcfcfc;
+      -moz-box-shadow:0 2px 4px rgba(0,0,0,0.15) inset,0 1px 2px rgba(0,0,0,0.05);
+      -webkit-box-shadow:0 2px 4px rgba(0,0,0,0.15) inset,0 1px 2px rgba(0,0,0,0.05);
+      box-shadow:0 2px 4px rgba(0,0,0,0.15) inset,0 1px 2px rgba(0,0,0,0.05);
+    }
+    i.icon-ac {
+      background-image: url("../img/states/AC.png");
+    }
+    i.icon-al {
+      background-image: url("../img/states/AL.png");
+    }
+    i.icon-ap {
+      background-image: url("../img/states/AP.png");
+    }
+    i.icon-am {
+      background-image: url("../img/states/AM.png");
+    }
+    i.icon-ba {
+      background-image: url("../img/states/BA.png");
+    }
+    i.icon-ce {
+      background-image: url("../img/states/CE.png");
+    }
+    i.icon-df {
+      background-image: url("../img/states/DF.png");
+    }
+    i.icon-es {
+      background-image: url("../img/states/ES.png");
+    }
+    i.icon-go {
+      background-image: url("../img/states/GO.png");
+    }
+    i.icon-ma {
+      background-image: url("../img/states/MA.png");
+    }
+    i.icon-mt {
+      background-image: url("../img/states/MT.png");
+    }
+    i.icon-ms {
+      background-image: url("../img/states/MS.png");
+    }
+    i.icon-mg {
+      background-image: url("../img/states/MG.png");
+    }
+    i.icon-pa {
+      background-image: url("../img/states/PA.png");
+    }
+    i.icon-pb {
+      background-image: url("../img/states/PB.png");
+    }
+    i.icon-pe {
+      background-image: url("../img/states/PE.png");
+    }
+    i.icon-pi {
+      background-image: url("../img/states/PI.png");
+    }
+    i.icon-pr {
+      background-image: url("../img/states/PR.png");
+    }
+    i.icon-rj {
+      background-image: url("../img/states/RJ.png");
+    }
+    i.icon-rn {
+      background-image: url("../img/states/RN.png");
+    }
+    i.icon-rs {
+      background-image: url("../img/states/RS.png");
+    }
+    i.icon-ro {
+      background-image: url("../img/states/RO.png");
+    }
+    i.icon-rr {
+      background-image: url("../img/states/RR.png");
+    }
+    i.icon-sc {
+      background-image: url("../img/states/SC.png");
+    }
+    i.icon-se {
+      background-image: url("../img/states/SE.png");
+    }
+    i.icon-sp {
+      background-image: url("../img/states/SP.png");
+    }
+    i.icon-to {
+      background-image: url("../img/states/TO.png");
+    }
+    i.icon-norte {
+      background-image: url("../img/states/Norte.png");
+    }
+    i.icon-nordeste {
+      background-image: url("../img/states/Nordeste.png");
+    }
+    i.icon-sul {
+      background-image: url("../img/states/Sul.png");
+    }
+    i.icon-sudeste {
+      background-image: url("../img/states/Sudeste.png");
+    }
+    i.icon-centrooeste {
+      background-image: url("../img/states/Centro-Oeste.png");
+    }
+    i.icon-brasil{
+      background-image: url("../img/states/Brasil.png");
+    }
+  }
+}*/
+
+
+
 .quick-btn{
   .background(#FCFCFC 0%; #EFEFEF 100%);
   border-top: 1px solid lightgrey;
   border-left: 1px solid lightgrey;
   border-radius: 4px 4px 4px 4px;
   box-shadow: 0 1px 0 0 #FFFFFF inset, 0 1px 0 rgba(255, 255, 255, 0.4);
-  display: inline-block;
+  display: flex;
+  &.new-stats {
+    display: inline-flex;
+  }
   line-height: 18px;
-  margin: 0 10px;
+  margin: 0 8.5%;
   padding: 0;
   @media (max-width: 979px) {
+    display: inline-block;
     margin-top: 40px;
+    width: 80%;
   }
   .item {
+    outline:0;
     border-right: 1px solid lightgrey;
     border-bottom: 1px solid lightgrey;
     box-shadow: 1px 1px 0 0 #FFFFFF;
@@ -269,8 +511,9 @@
     margin: 0;
     padding: 25px 15px 20px;
     float: left;
+    width: 100%;
     @media (max-width: 979px) {
-      width: 15.65%;
+      width: 19.65%;
     }
     @media (max-width: 639px) {
       width: 41%;
@@ -336,56 +579,155 @@
       .box-shadow-both(0; 2px; 4px; 0; 0; 0; 0.15; 0; 1px; 2px; 0; 0; 0; 0.05);
     }
     i.icon-ac {
-      background-image: url("../img/icons/AC.png");
+      background-image: url("../img/states/AC.png");
+    }
+    i.icon-al {
+      background-image: url("../img/states/AL.png");
     }
     i.icon-ap {
-      background-image: url("../img/icons/AP.png");
-    }
-    i.icon-br {
-      background-image: url("../img/icons/BR.png");
-    }
-    i.icon-to {
-      background-image: url("../img/icons/TO.png");
-    }
-    i.icon-pa {
-      background-image: url("../img/icons/PA.png");
-    }
-    i.icon-mt {
-      background-image: url("../img/icons/MT.png");
-    }
-    i.icon-ro {
-      background-image: url("../img/icons/RO.png");
-    }
-    i.icon-ma {
-      background-image: url("../img/icons/MA.png");
-    }
-    i.icon-rr {
-      background-image: url("../img/icons/RR.png");
+      background-image: url("../img/states/AP.png");
     }
     i.icon-am {
-      background-image: url("../img/icons/AM.png");
+      background-image: url("../img/states/AM.png");
+    }
+    i.icon-ba {
+      background-image: url("../img/states/BA.png");
+    }
+    i.icon-ce {
+      background-image: url("../img/states/CE.png");
+    }
+    i.icon-df {
+      background-image: url("../img/states/DF.png");
+    }
+    i.icon-es {
+      background-image: url("../img/states/ES.png");
+    }
+    i.icon-go {
+      background-image: url("../img/states/GO.png");
+    }
+    i.icon-ma {
+      background-image: url("../img/states/MA.png");
+    }
+    i.icon-mt {
+      background-image: url("../img/states/MT.png");
+    }
+    i.icon-ms {
+      background-image: url("../img/states/MS.png");
+    }
+    i.icon-mg {
+      background-image: url("../img/states/MG.png");
+    }
+    i.icon-pa {
+      background-image: url("../img/states/PA.png");
+    }
+    i.icon-pb {
+      background-image: url("../img/states/PB.png");
+    }
+    i.icon-pe {
+      background-image: url("../img/states/PE.png");
+    }
+    i.icon-pi {
+      background-image: url("../img/states/PI.png");
+    }
+    i.icon-pr {
+      background-image: url("../img/states/PR.png");
+    }
+    i.icon-rj {
+      background-image: url("../img/states/RJ.png");
+    }
+    i.icon-rn {
+      background-image: url("../img/states/RN.png");
+    }
+    i.icon-rs {
+      background-image: url("../img/states/RS.png");
+    }
+    i.icon-ro {
+      background-image: url("../img/states/RO.png");
+    }
+    i.icon-rr {
+      background-image: url("../img/states/RR.png");
+    }
+    i.icon-sc {
+      background-image: url("../img/states/SC.png");
+    }
+    i.icon-se {
+      background-image: url("../img/states/SE.png");
+    }
+    i.icon-sp {
+      background-image: url("../img/states/SP.png");
+    }
+    i.icon-to {
+      background-image: url("../img/states/TO.png");
+    }
+    i.icon-norte {
+      background-image: url("../img/states/Norte.png");
+    }
+    i.icon-nordeste {
+      background-image: url("../img/states/Nordeste.png");
+    }
+    i.icon-sul {
+      background-image: url("../img/states/Sul.png");
+    }
+    i.icon-sudeste {
+      background-image: url("../img/states/Sudeste.png");
+    }
+    i.icon-centrooeste {
+      background-image: url("../img/states/Centro-Oeste.png");
+    }
+    i.icon-brasil{
+      background-image: url("../img/states/Brasil.png");
+    }
+    i.icon-br{
+      background-image: url("../img/icons/BR.png");
     }
   }
 }
+
 .quick-slct{
-  display: inline-block;
-  margin: -10px 10px;
-  padding: 0;
-  label {
-    font-weight: bold;
-    color: #666666;
-    font-size: 14px;
+  display:inline-flex;
+  &.new-stats {
+    margin:-10px 10px;
   }
-  .item {
+  padding:0px 30px;
+  label{
+    font-weight:bold;
+    color:#666;
+    font-size:14px;
+  }
+  .item{
     float: left;
-    @media (min-width: 1024px) {
-      margin: 0 10px 20px;
+    &.prodes {
+      float: none;
     }
-    @media (max-width: 1023px) {
-      margin: 25px 10px -20px;
+    // display: inline-block;
+    // margin: -10px 0;
+    @media (min-width:1024px){
+      margin:0 10px 20px;
+    }
+    @media (max-width:1023px){
+      margin:25px 10px -20px;
     }
   }
 }
+
+// .quick-slct{
+//   padding: 0;
+//   label {
+//     font-weight: bold;
+//     color: #666666;
+//     font-size: 14px;
+//   }
+//   .item {
+//     display: inline-block;
+//     margin: -10px 0;
+//     @media (min-width: 1024px) {
+//       margin: 0 10px 20px;
+//     }
+//     @media (max-width: 1023px) {
+//       margin: 25px 10px -20px;
+//     }
+//   }
+// }
 
 #loading {
   position: fixed;

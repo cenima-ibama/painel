@@ -19,6 +19,8 @@ class H5.Charts.Container
     defaultClass: ""
     selects: undefined
     resizing: 0
+    loadingImage: null
+    numberOfBox: 1
     buttons:
       minusplus: false
       arrows: false
@@ -58,13 +60,42 @@ class H5.Charts.Container
     rightCtrl.className = "btn-group chart-icon btn-right"
     @_rightCtrl = rightCtrl
 
-    boxContent = document.createElement("div")
-    boxContent.id = "box-" + @options.container
-    boxContent.className = "box-content"
-    @_boxContent = boxContent
+    @._boxContent = []
+    width = 99.7 / @options.numberOfBox
+    for i in [0..@options.numberOfBox-1]
+      boxContent = document.createElement("div")
+      boxContent.id = "box-" + @options.container + "-" + i
+      boxContent.className = "box-content"
+      # boxContent.style.width = width
+      # TODO: Alter logic
+      if @options.numberOfBox > 1
+        $(boxContent).attr('style', 'width:' + width + '%;border-' + if i is 0 then 'right: 0; float: left' else if i is parseInt(@options.numberOfBox - 1) then 'left: 0; float: left;' else 'right: 0; border-left:0; float:left;')
+      @_boxContent[i] = boxContent
+
+    if @options.loadingImage
+      boxLoad = document.createElement("div")
+      boxLoad.id = "box-" + @options.container
+      boxLoad.className = "box-content"
+      boxLoad.style.display = "none"
+      boxLoad.innerHTML = if @options.loadingImage then @options.loadingImage else "Loading..."
+      @_boxLoad = boxLoad
 
     $(@_boxHeader).append @_leftCtrl, @_boxTitle, @_rightCtrl
-    $(@_container).append @_boxHeader, @_boxContent
+
+    @_box = document.createElement("div")
+
+    for i in [0..@options.numberOfBox-1]
+      @_box.appendChild @_boxContent[i]
+
+    # if @options.loadingImage
+    #   $(@_container).append @_boxHeader, @_boxContent[0], @_boxLoad
+    # else
+    #   $(@_container).append @_boxHeader, @_boxContent[0]
+
+    if @options.loadingImage
+      $(@_container).append @_boxHeader, @_box, @_boxLoad
+    else
+      $(@_container).append @_boxHeader, @_box
 
     pipeline = "<span class=\"break\"></span>"
     # add minus and plus controllers
@@ -74,6 +105,7 @@ class H5.Charts.Container
       # add buttons
       delBtn = document.createElement("button")
       delBtn.id = @options.container + "-btn-minus"
+      delBtn.setAttribute 'title', 'Remover último Período'
       delBtn.className = "btn"
       @_delBtn = delBtn
 
@@ -84,6 +116,7 @@ class H5.Charts.Container
 
       addBtn = document.createElement("button")
       addBtn.id = @options.container + "-btn-plus"
+      addBtn.setAttribute 'title', 'Adicionar novo Período'
       addBtn.className = "btn"
       @_addBtn = addBtn
 
@@ -129,9 +162,9 @@ class H5.Charts.Container
       formBtn.className = "form-inline"
       @_formBtn = formBtn
 
-      $.each @options.selects, (name, options) =>
+      for name, options of @options.selects
         select = "<select id=\"" + name + "Slct\" class=\"input-mini\" name=\"" + name + "\">"
-        $.each options, (value, key) ->
+        for value, key of options
           select += "<option value=" + value + ">" + key + "</option>"
         select += "</select>"
         $(@_formBtn).append select
@@ -139,7 +172,7 @@ class H5.Charts.Container
       $(@_leftCtrl).append @_formBtn
       $(@_leftCtrl).removeClass "btn-group"
 
-      $.each @options.selects, (name, data) =>
+      for name, data of @options.selects
         @["_" + name + "Slct"] = document["form-" + @options.container][name]
         @_enableSelect("#" + name + "Slct")
 
@@ -149,6 +182,7 @@ class H5.Charts.Container
       tableBtn = document.createElement("button")
       tableBtn.id = @options.container + "-btn-table"
       tableBtn.className = "btn"
+      tableBtn.setAttribute 'title', 'Tabela de Dados'
       @_tableBtn = tableBtn
 
       tableIcon = document.createElement("i")
@@ -158,11 +192,18 @@ class H5.Charts.Container
 
       $(@_rightCtrl).append @_tableBtn
 
-      boxTable = document.createElement("div")
-      boxTable.id = "table-" + @options.container
-      boxTable.className = "box-content-table"
-      @_boxTable = boxTable
-      $(@_container).append @_boxTable
+
+      @._boxTable = []
+      width = 1384 / @options.numberOfBox
+
+      for i in [0..@options.numberOfBox-1]
+        boxTable = document.createElement("div")
+        boxTable.id = "table-" + @options.container
+        boxTable.className = "box-content-table"
+        if @options.numberOfBox > 1
+          $(boxTable).attr('style', 'margin-left:' + parseFloat(width * i) + 'px;width: ' + width + 'px; border-' + if i is 0 then 'right: 0; float: left' else 'left: 0; float: left;')
+        @_boxTable[i] = boxTable
+      $(@_box).append @_boxTable
 
       @_enableTable()
 
@@ -171,6 +212,7 @@ class H5.Charts.Container
       # add export button
       exportBtn = document.createElement("button")
       exportBtn.id = @options.container + "-btn-export"
+      exportBtn.setAttribute 'title', 'Exportar Dados'
       exportBtn.className = "btn"
       @_exportBtn = exportBtn
 
@@ -188,6 +230,7 @@ class H5.Charts.Container
       # add minimize button
       minBtn = document.createElement("button")
       minBtn.id = @options.container + "-btn-minimize"
+      minBtn.setAttribute 'title', 'Esconder/Mostrar Gráfico'
       minBtn.className = "btn"
       @_minBtn = minBtn
 
@@ -205,6 +248,7 @@ class H5.Charts.Container
       # add minimize button
       maxBtn = document.createElement("button")
       maxBtn.id = @options.container + "-btn-maximize"
+      maxBtn.setAttribute 'title', 'Ativar/Desativar Tela Cheia'
       maxBtn.className = "btn"
       @_maxBtn = maxBtn
 
@@ -238,7 +282,7 @@ class H5.Charts.Container
     $(@_minBtn).on "click", (event) =>
       event.preventDefault()
 
-      if $(@_boxContent).is(":visible")
+      if $(@_boxContent[0]).is(":visible")
         @_minIcon.className = "icon-chevron-down"
         if @options.buttons.minusplus
           $(@_addBtn).prop "disabled", true
@@ -255,10 +299,12 @@ class H5.Charts.Container
           $(@_leftBtn).prop "disabled", false
           $(@_rightBtn).prop "disabled", false
 
-      if $(@_boxTable).is(":visible")
-        $(@_boxTable).slideToggle("fast", "linear")
+      if $(@_boxTable[0]).is(":visible")
+        for i in [0..@options.numberOfBox-1]
+          $(@_boxTable[i]).slideToggle("fast", "linear")
 
-      $(@_boxContent).slideToggle("fast", "linear")
+      for i in [0..@options.numberOfBox-1]
+        $(@_boxContent[i]).slideToggle("fast", "linear")
 
   _enableMaximize: ->
     $(@_maxBtn).on "click", (event) =>
@@ -277,18 +323,20 @@ class H5.Charts.Container
         $("#navbar").show()
 
       # always hide the charttable div
-      $(@_boxTable).hide()
-      $(@_boxTable).toggleClass "box-table-overlay"
+      for i in [0..@options.numberOfBox-1]
+        $(@_boxTable[i]).hide()
+        $(@_boxTable[i]).toggleClass "box-table-overlay"
       @_tableIcon.className = "icon-table"
 
       $(@_container).toggleClass @defaultClass
       $(@_container).toggleClass "box-overlay"
       $("body").toggleClass "body-overlay"
 
-      $(@_boxContent).toggleClass "content-overlay"
-      $(@_boxTable).toggleClass "content-overlay"
-      $(@_boxContent).hide()
-      $(@_boxContent).fadeToggle(500, "linear")
+      for i in [0..@options.numberOfBox-1]
+        $(@_boxContent[i]).toggleClass "content-overlay"
+        $(@_boxTable[i]).toggleClass "content-overlay"
+        $(@_boxContent[i]).hide()
+        $(@_boxContent[i]).fadeToggle(500, "linear")
 
       @drawChart()
 
@@ -301,6 +349,16 @@ class H5.Charts.Container
     $(select).on "change", (event) =>
       @drawChart()
 
+  _loadScreen: ()->
+    if !$(@_boxLoad).is ':visible'
+      $(@_boxLoad).show()
+      $(@_boxContent[0]).hide()
+
+  _chartScreen: ()->
+    if !$(@_boxContent).is ':visible'
+      $(@_boxContent[0]).show()
+      $(@_boxLoad).hide()
+
 class H5.Charts.GoogleCharts extends H5.Charts.Container
 
   constructor: ->
@@ -308,18 +366,23 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
     @createChart()
 
   createDataTable: ->
-    @data = new google.visualization.DataTable()
+    @data = []
+    for i in [0..@options.numberOfBox-1]
+      @data[i] = new google.visualization.DataTable()
 
   createChart: ->
     # setup new chart
+    @chart = []
     if @options.type is "Gauge"
-      @chart = new google.visualization.Gauge(
-        @_boxContent
-      )
+      for i in [0..@options.numberOfBox-1]
+        @chart[i] = new google.visualization.Gauge(
+          @_boxContent[i]
+        )
     else
-      @chart = new google.visualization[@options.type + "Chart"](
-        @_boxContent
-      )
+      for i in [0..@options.numberOfBox-1]
+        @chart[i] = new google.visualization[@options.type + "Chart"](
+          @_boxContent[i]
+        )
     @_detectScreenChanges()
 
   _detectScreenChanges: ->
@@ -330,7 +393,7 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
 
     # update chart if orientation or the size of the screen changed
     window.addEventListener orientationEvent, (=>
-      if $(@_boxContent).is(":visible") and not @options.resizing
+      if $(@_boxContent[0]).is(":visible") and not @options.resizing
         @options.resizing = true
         @drawChart()
         @options.resizing = false
@@ -341,29 +404,34 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
     $(@_tableBtn).on "click", (event) =>
       event.preventDefault()
 
-      if $(@_boxContent).is(":hidden")
-        @_minIcon.className = "icon-chevron-up"
-        $(@_boxContent).fadeToggle('fast', 'linear')
+      for i in [0..@options.numberOfBox-1]
+        if $(@_boxContent[i]).is(":hidden")
+          @_minIcon.className = "icon-chevron-up"
+          $(@_boxContent[i]).fadeToggle('fast', 'linear')
 
-      $(@_boxTable).fadeToggle('fast', 'linear')
+      for i in [0..@options.numberOfBox-1]
+        $(@_boxTable[i]).fadeToggle('fast', 'linear')
 
       # update values
       if @_tableIcon.className is "icon-table"
         @_tableIcon.className = "icon-bar-chart"
-        visualization = new google.visualization.Table(
-          @_boxTable
-        )
-        visualization.draw @data, null
+
+        for i in [0..@options.numberOfBox-1]
+          visualization = new google.visualization.Table(
+            @_boxTable[i]
+          )
+          visualization.draw @data[i], null
       else
         @_tableIcon.className = "icon-table"
 
       $(@_leftBtn).add(@_rightBtn).add(@_addBtn).add(@_delBtn).on "click", (event) =>
-        if $(@_boxTable).is(":visible")
-          # Create and draw the visualization.
-          visualization = new google.visualization.Table(
-            @_boxTable
-          )
-          visualization.draw @data, null
+        for i in [0..@options.numberOfBox-1]
+          if $(@_boxTable[i]).is(":visible")
+            # Create and draw the visualization.
+            visualization = new google.visualization.Table(
+              @_boxTable[i]
+            )
+            visualization.draw @data, null
 
   _enableExport: ->
 
@@ -372,22 +440,46 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
 
       str = ""
       line = ""
+      numberOfColumns = 0
+      numberOfRows = 0
 
       # get the title of table
-      for col in [0...@data.getNumberOfColumns()]
-        title = @data.getColumnLabel(col)
-        line += "\"" + title + "\","
 
-      # create a new line
+      for i in [0..@options.numberOfBox-1]
+        data = @data[i]
+
+        for col in [0...data.getNumberOfColumns()]
+          title = data.getColumnLabel(col)
+          line += "\"" + title + "\","
+
+        if data.getNumberOfRows() > numberOfRows
+          numberOfRows = data.getNumberOfRows()
+
+        # create a new line
       str += line + "\r\n"
 
-      # get data for the rows
-      for row in [0...@data.getNumberOfRows()]
+      for row in [0..numberOfRows]
         line = ""
-        for col in [0...@data.getNumberOfColumns()]
-          value = @data.getFormattedValue(row, col)
-          line += "\"" + value + "\","
+
+        for i in [0..@options.numberOfBox-1]
+
+          for col in [0..@data[i].getNumberOfColumns()]
+            value = if @data[i].getFormattedValue(row, col) then @data[i].getFormattedValue(row,col) else ''
+            line += "\"" + value + "\","
+
         str += line + "\r\n"
+
+
+      # for i in [0..@options.numberOfBox-1]
+      #   data = @data[i]
+
+      #   # get data for the rows
+      #   for row in [0...data.getNumberOfRows()]
+      #     line = ""
+      #     for col in [0...data.getNumberOfColumns()]
+      #       value = data.getFormattedValue(row, col)
+      #       line += "\"" + value + "\","
+      #     str += line + "\r\n"
 
       return str
 
@@ -492,7 +584,6 @@ class H5.Charts.Knobs extends H5.Charts.SmallContainer
       $(value: dial.val()).animate
         value: total,
           duration: 2000
-          easing: "easeOutBounce"
           step: ->
             dial.val(Math.floor @value).trigger "change"
     else

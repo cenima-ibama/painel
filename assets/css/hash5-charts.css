@@ -110,6 +110,36 @@
   overflow: auto;
   position: relative;
 }
+.box-double {
+  float: left;
+  width: 200%;
+  margin: 10px;
+}
+@media (max-width: 979px) {
+  .box-double {
+    width: 100%;
+    margin: 0 0 15px;
+  }
+}
+.box-double .box-content {
+  background: none repeat scroll 0 0 #FCFCFC;
+  border: 1px solid #DDDDDD;
+  border-radius: 0 0 2px 2px;
+  -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  margin-top: -1px;
+  height: 220px;
+}
+.box-double .box-content-table {
+  display: none;
+  background: none repeat scroll 0 0 #FCFCFC;
+  border-radius: 0 0 2px 2px;
+  margin-top: -222px;
+  height: 222px;
+  overflow: auto;
+  position: relative;
+}
 .sparks {
   margin: 0;
   display: inline-block;

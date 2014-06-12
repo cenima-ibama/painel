@@ -8,7 +8,7 @@
   <script src="<?= base_url()?>assets/js/jquery.maskedinput.min.js"></script>
   <!-- Leaflet -->
   <script src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-  <!-- <script src="<?= base_url()?>assets/js/leaflet.draw.js"></script> -->
+  <!-- <script src="https://siscom.ibama.gov.br/painel/assets/js/leaflet.draw.js"></script> -->
   <!-- Bootstrap -->
   <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
   <!-- Charts -->

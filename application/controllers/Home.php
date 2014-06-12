@@ -18,7 +18,7 @@ class Home extends CI_Controller {
         // $this->firephp->log($this->session->userdata('logged_in'));
 
         if($this->session->userdata('logged_in')) {
-            $data['name'] = $this->session->userdata('cn');
+            $data['name'] = $this->session->userdata('name');
             $data['username'] = $this->session->userdata('username');
             $data['logged_in'] = TRUE;
         } else {
