@@ -507,7 +507,7 @@ chart2.drawChart = ->
     backgroundColor: "transparent"
     focusTarget: "category"
     chartArea:
-      width: "70%"
+      width: "67%"
       height: "80%"
     colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
              '#67C2EF', '#FF5454', '#CBE968', '#FABB3D',
@@ -696,7 +696,7 @@ chart4.drawChart = ->
     backgroundColor: "transparent"
     focusTarget: "category"
     chartArea:
-      width: "70%"
+      width: "67%"
       height: "76%"
     colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
              '#67C2EF', '#FF5454', '#CBE968', '#FABB3D',
@@ -1099,7 +1099,7 @@ chart9.drawChart = ->
     backgroundColor: "transparent"
     focusTarget: "category"
     chartArea:
-      width: "70%"
+      width: "67%"
       height: "80%"
     colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
              '#67C2EF', '#FF5454', '#CBE968', '#FABB3D',
@@ -1386,7 +1386,7 @@ chart10.drawChart = ->
 
 
 
-  @changeTitle "Taxas de Desmatamento " + rates[rateSelected] + "  em " + shapes[areaSelected] + " - [2010 - 2013]"
+  @changeTitle "Taxas de Desmatamento " + rates[rateSelected] + "  em " + shapes[areaSelected] + " [2010 - 2013]"
 
   options =
     title: ""
@@ -1466,7 +1466,7 @@ chart11.drawChart = ->
   @data[0].addColumn "number", "Terra indígena em km²"
   @data[0].addColumn "number", "Assentamento em km²"
   @data[0].addColumn "number", "Terras Arrecadadas em km²"
-  @data[0].addColumn "number", "UC Inegral em km²"
+  @data[0].addColumn "number", "UC Integral em km²"
   @data[0].addColumn "number", "UC Sustentável em km²"
 
   data = []
@@ -1474,7 +1474,7 @@ chart11.drawChart = ->
   # populate table with real data
   createTable "nenhumEstado"
 
-  @changeTitle "Taxas de Desmatamento PRODES  em áreas específicas - [" + H5.Data.years[@options.period + 3] + " - " + H5.Data.years[0] + "]"
+  @changeTitle "Taxas de Desmatamento PRODES  em áreas específicas [" + H5.Data.years[@options.period + 3] + " - " + H5.Data.years[0] + "]"
 
   options =
     title: ""
@@ -1485,7 +1485,7 @@ chart11.drawChart = ->
     focusTarget: "category"
     connectSteps: "false"
     chartArea:
-      width: "70%"
+      width: "55%"
       height: "80%"
     colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
              '#FF5454', '#C7A258', '#CBE968', '#FABB3D',

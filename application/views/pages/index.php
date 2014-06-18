@@ -56,6 +56,7 @@
             <option value="9">Out</option>
             <option value="10">Nov</option>
             <option value="11">Dez</option>
+
           </select>
         </div>
         <div class="item">
@@ -212,8 +213,8 @@
           <span>SP</span>
         </a>
         <a id="brasil" href="#" class="item active">
-          <i class="icon-brasil"></i>
-          <span>Brasil</span>
+          <i class="icon-br"></i>
+          <span>Amazônia Legal</span>
         </a>
       </div>
     </div>

@@ -68,8 +68,13 @@ nuvem = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
 # }}}
 # SCREEN SIZE {{{
 # update size of the map container
+###
 $( '#map' ).width( $( window ).width() )
 $( '#map' ).height( $( window ).height() - $('#navbar').height())
+###
+
+$( '#dash' ).width("100%" )
+$( '#dash' ).height("100%")
 
 # Detect whether device supports orientationchange event,
 # otherwise fall back to the resize event.
@@ -78,8 +83,13 @@ orientationEvent = (if supportsOrientationChange then "orientationchange" else "
 
 # update chart if orientation or the size of the screen changed
 window.addEventListener orientationEvent, (->
+  ###
   $( '#map' ).width( $( window ).width() )
   $( '#map' ).height( $( window ).height() - $('#navbar').height())
+  ###
+  $( '#dash' ).width("100%" )
+  $( '#dash' ).height("100%")   
+
 ), false
 # }}}
 # MAP LAYER {{{

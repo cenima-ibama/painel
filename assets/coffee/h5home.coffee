@@ -98,4 +98,10 @@ $(document).ready ->
   $('#prodes .input-append.date').datepicker({format: "dd/mm/yyyy",language: "pt-BR", autoclose: true})
   $('#prodes .input-daterange').datepicker({format: "dd/mm/yyyy",language: "pt-BR", autoclose: true, cleanbtn: true})
 
+  $("#dash").hide()
+  $("#map").show()
+
+  $("#dash").show()
+  $("#map").hide()
+  
   $('.selectpicker').selectpicker()
