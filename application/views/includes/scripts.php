@@ -39,7 +39,8 @@
 
   <script>
       <?php
-        if($this->session->userdata('logged_in')) {
+
+        if($this->session->userdata('logged_in') and in_array($this->session->userdata('username'), $this->userEnableList)) {
             echo "H5.DB.addDB({name:'alert', table:'daily_alert'});\n";
             echo "H5.DB.addDB({name:'cloud', table:'daily_cloud'});\n";
             echo "H5.DB.addDB({name:'diary', table:'daily_diary'});\n";
