@@ -12,15 +12,6 @@
     $(".dropdown-menu input, .dropdown-menu label").click(function(e) {
       return e.stopPropagation();
     });
-    $("#close-btn-login").on("click", function(event) {
-      $("#login").hide();
-      $(".navbar a").on("click", function(event) {
-        return $(this).each(function() {
-          return $("a").parent().removeClass("active");
-        });
-      });
-      return $(this).parent().addClass("active");
-    });
     $(".navbar a").on("click", function(event) {
       var qry;
       $(this).each(function() {

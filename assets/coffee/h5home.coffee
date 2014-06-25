@@ -13,15 +13,6 @@ $(document).ready ->
   $(".dropdown-menu input, .dropdown-menu label").click (e) ->
     e.stopPropagation()
 
-  $("#close-btn-login").on "click", (event) ->
-    $("#login").hide()
-    $(".navbar a").on "click", (event) ->
-    # clean all selection
-      $(@).each ->
-        $("a").parent().removeClass("active")
-      # mark selected option
-    $(@).parent().addClass("active")
-
   $(".navbar a").on "click", (event) ->
     # clean all selection
     $(@).each ->

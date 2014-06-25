@@ -1,6 +1,6 @@
 <div class="container">
     <div class="form-login">
-    <button id="close-btn-login" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <a id="close-btn-login" name="close-btn-login" class="close" onclick="$('#login').hide(); $('#btn-map').click()">×</a>
         <?php echo form_fieldset('<img src="' . base_url() . '/assets/img/ibama_inv.png"> <span class="label label-inverse">Login</span>'); ?>
         <?php
             if (validation_errors()) {
