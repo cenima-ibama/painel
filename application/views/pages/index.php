@@ -56,7 +56,6 @@
             <option value="9">Out</option>
             <option value="10">Nov</option>
             <option value="11">Dez</option>
-
           </select>
         </div>
         <div class="item">
@@ -274,50 +273,100 @@
     </div> -->
     <div class="row-fluid">
       <div  class="quick-slct">
-        <div class="row-fluid input-daterange date" id="datepicker" style="display: inline-flex;">
-          <div class="item" style="margin:0;">
-            <label>Data inicial</label>
-            <div class="input-append date">
-              <input id="dateBegin" type="text" class="input-small" name="start" /><span class="add-on"><i class="icon-th"></i></span>
-            </div>
-          </div>
-          <div class="add-on" style="font-family:helvetica; color:#666666; font-size:20px; margin: 0% 3% 0% 6%;padding-top:30px; border: none; background-color:inherit;">
-            <span >até</span>
-          </div>
-          <div class="item" style="margin:0;">
-            <label>Data final</label>
-            <div class="input-append date">
-              <input id="dateFinish" type="text" class="input-small" name="end" /><span class="add-on"><i class="icon-th"></i></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div  class="quick-slct">
         <div class="row-fluid" id="compare" class="row-fluid"  style="display: inline-flex;">
-          <div class="item" style="margin:0;">
-            <label>Taxas de Desmatamento</label>
-            <select id="ratesSlct" data-width="140px" data-size="6" name="rates">
-              <option value="0">DETER</option>
-              <option value="1" selected="selected">PRODES</option>
-            </select
->          </div>
-          <div style="padding-top:30px;font-family:helvetica; color:#666666; font-size:20px; margin: 0% 3% 0px 6%;">
+
+          <div class="quick-slct">
+            <div class="row-fluid">
+              <div class="item" style="margin:0;">
+                <label>Taxas de Desmatamento</label>
+                <select id="ratesSlct" data-width="140px" data-size="6" name="rates">
+                  <option value="0">DETER</option>
+                  <option value="1" selected="selected">PRODES</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-slct" id="periodo_deter">
+            <div class="row-fluid input-daterange date" id="datepicker" style="display: inline-flex;">
+              <div class="item" style="margin:0;">
+                <label>Data inicial</label>
+                <div class="input-append date">
+                  <input id="dateBegin" type="text" class="input-small" name="start" /><span class="add-on"><i class="icon-th"></i></span>
+                </div>
+              </div>
+              <div class="add-on" style="font-family:helvetica; color:#666666; font-size:20px; margin: 0% 3% 0% 9%;padding-top:30px; border: none; background-color:inherit;">
+                <span >até</span>
+              </div>
+              <div class="item" style="margin:0;">
+                <label>Data final</label>
+                <div class="input-append date">
+                  <input id="dateFinish" type="text" class="input-small" name="end" /><span class="add-on"><i class="icon-th"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-slct" id="ano_prodes">
+            <div class="row-fluid">
+              <div class="item" style="margin:0;">
+                <label>Ano</label>
+                <select id="yearsSlctCrossingData" class="input-small" name="years">
+                  <option value="2005">2005</option>
+                  <option value="2006">2006</option>
+                  <option value="2007">2007</option>
+                  <option value="2008">2008</option>
+                  <option value="2009">2009</option>
+                  <option value="2010">2010</option>
+                  <option value="2011">2011</option>
+                  <option value="2012">2012</option>
+                  <option value="2013">2013</option>
+                  <option value="2014">2014</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding-top:30px;font-family:helvetica; color:#666666; font-size:20px;">
             em
           </div>
-          <div class="item" style="margin:0;">
-            <label>Áreas de Comparação</label>
-            <select id="shapesSlct" data-width="140px" data-size="6" name="shapes">
-              <option value="terra_indigena">Terras Indígenas</option>
-              <option value="uc_sustentavel">Unidade de Conservação de uso sustentável</option>
-              <option value="uc_integral">Unidades de Conservação de proteção integral</option>
-              <option value="assentamento">Assentamentos</option>
-              <option value="floresta">Floresta Pública</option>
-              <option value="dominio_publico">Domínio Estadual</option>
-            </select>
+
+          <div class="quick-slct">
+            <div class="row-fluid">
+              <div class="item" style="margin:0;">
+                <label>Áreas de Comparação</label>
+                <select id="shapesSlct" data-width="140px" data-size="6" name="shapes">
+                  <option value="terra_indigena">Terras Indígenas</option>
+                  <option value="uc_sustentavel">UC de uso sustentável</option>
+                  <option value="uc_integral">UC de proteção integral</option>
+                  <option value="assentamento">Assentamentos</option>
+                  <option value="floresta">Terras Arrecadadas</option>
+                  <!-- <option value="dominio_publico">Domínio Estadual</option> -->
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="button" style="margin:25px 0 0 55px;">
-            <input type="button" id="consultBtn" value="Cruzar Dados" class="btn"/>
+
+          <div class="quick-slct">
+            <div class="row-fluid">
+              <div class="item" style="margin:0;">
+                <label>Domínio</label>
+                <select id="domainSlct" data-width="140px" data-size="6" name="domain">
+                  <option value="0">Federal</option>
+                  <option value="1" selected="selected">Estadual</option>
+                </select>
+              </div>
+            </div>
           </div>
+
+          <div class="quick-slct">
+            <div class="row-fluid">
+              <div class="button" style="margin:25px 0 0;">
+                <input type="button" id="consultBtn" value="Cruzar Dados" class="btn"/>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
       <div id="quick2" class="quick-btn">
@@ -368,7 +417,7 @@
       <div id="chart10" class="box" style="display:block"> </div>
       <div id="chart11" class="box" style="display:block"> </div>
       <div id="chart12" class="box-double" style="display:block"> </div>
-      <!-- <div id="chart13" class="box" style="display:block"> </div> -->
+      <div id="chart13" class="box" style="display:block"> </div>
       <!-- <div id="chart14" class="box-double" style="display:block"> </div> -->
       <!-- <div id="chart15" class="box" style="display:block"> </div> -->
 

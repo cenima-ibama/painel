@@ -5,6 +5,21 @@ H5.Data.domanin = "http://" + document.domain + "/painel"
 H5.Data.changed = false
 H5.DB.dado_prodes_consolidado = {}
 H5.DB.dado_prodes_consolidado.table = "dado_prodes_consolidado"
+H5.DB.rankings = {}
+H5.DB.rankings.ranking_assentamento = {}
+H5.DB.rankings.ranking_assentamento.table = "ranking_assentamento"
+H5.DB.rankings.ranking_assentamento_estadual = {}
+H5.DB.rankings.ranking_assentamento_estadual.table = "ranking_assentamento_estadual"
+H5.DB.rankings.ranking_terra_indigena = {}
+H5.DB.rankings.ranking_terra_indigena.table = "ranking_terra_indigena"
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral = {}
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral.table = "ranking_unidades_de_conservacao_protecao_integral"
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral_estadual = {}
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral_estadual.table = "ranking_unidades_de_conservacao_protecao_integral_estadual"
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel = {}
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel.table = "ranking_unidades_de_conservacao_uso_sustentavel"
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel_estadual = {}
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel_estadual.table = "ranking_unidades_de_conservacao_uso_sustentavel_estadual"
 H5.Data.state2 = "brasil"
 H5.Data.statesProdes = ["AC", "AP", "AM", "PA", "RO", "RR", "TO", "MT", "MA"]
 
@@ -286,6 +301,191 @@ for i, properties of rest.data
   H5.DB.dado_prodes_consolidado.data.populate(
     properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel),parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica), parseFloat(properties.dominio_estadual), parseFloat(properties.unidades_de_conservacao_uso_sustentavel_estadual), parseFloat(properties.unidades_de_conservacao_protecao_integral_estadual)
   )
+
+
+# Calling ranking assentamento rest and getting data
+H5.DB.rankings.ranking_assentamento.data =
+  init: ->
+    @ranking = {}
+
+  populate: (year, nome, area, id) ->
+    self = @ranking
+    self[id] = {}
+    self[id].id = id
+    self[id].year = year
+    self[id].nome = nome
+    self[id].area = area
+
+    return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.rankings.ranking_assentamento.table
+)
+
+H5.DB.rankings.ranking_assentamento.data.init()
+for i, properties of rest.data
+  H5.DB.rankings.ranking_assentamento.data.populate(
+    properties.ano, properties.nome, parseFloat(properties.area), properties.id_ranking_assentamento
+  )
+
+# Calling ranking assentamento estadual rest and getting data
+H5.DB.rankings.ranking_assentamento_estadual.data =
+  init: ->
+    @ranking = {}
+
+  populate: (year, nome, area, id) ->
+    self = @ranking
+    self[id] = {}
+    self[id].id = id
+    self[id].year = year
+    self[id].nome = nome
+    self[id].area = area
+
+    return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.rankings.ranking_assentamento_estadual.table
+)
+
+H5.DB.rankings.ranking_assentamento_estadual.data.init()
+for i, properties of rest.data
+  H5.DB.rankings.ranking_assentamento_estadual.data.populate(
+    properties.ano, properties.nome, parseFloat(properties.area), properties.id_ranking_assentamento_estadual
+  )
+
+# Calling ranking terra indigena rest and getting data
+H5.DB.rankings.ranking_terra_indigena.data =
+  init: ->
+    @ranking = {}
+
+  populate: (year, nome, area, id) ->
+    self = @ranking
+    self[id] = {}
+    self[id].id = id
+    self[id].year = year
+    self[id].nome = nome
+    self[id].area = area
+
+    return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.rankings.ranking_terra_indigena.table
+)
+
+H5.DB.rankings.ranking_terra_indigena.data.init()
+for i, properties of rest.data
+  H5.DB.rankings.ranking_terra_indigena.data.populate(
+    properties.ano, properties.nome, parseFloat(properties.area), properties.id_ranking_terra_indigena
+  )
+
+# Calling ranking unidades de conservacao protecao integral and getting data
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral.data =
+  init: ->
+    @ranking = {}
+
+  populate: (year, nome, area, id) ->
+    self = @ranking
+    self[id] = {}
+    self[id].id = id
+    self[id].year = year
+    self[id].nome = nome
+    self[id].area = area
+
+    return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral.table
+)
+
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral.data.init()
+for i, properties of rest.data
+  H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral.data.populate(
+    properties.ano, properties.nome, parseFloat(properties.area), properties.id_ranking_unidades_de_conservacao_protecao_integral
+  )
+
+# Calling ranking unidades de conservacao protecao integral estadual rest and getting data
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral_estadual.data =
+  init: ->
+    @ranking = {}
+
+  populate: (year, nome, area, id) ->
+    self = @ranking
+    self[id] = {}
+    self[id].id = id
+    self[id].year = year
+    self[id].nome = nome
+    self[id].area = area
+
+    return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral_estadual.table
+)
+
+H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral_estadual.data.init()
+for i, properties of rest.data
+  H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral_estadual.data.populate(
+    properties.ano, properties.nome, parseFloat(properties.area), properties.id_ranking_unidades_de_conservacao_protecao_integral_estadual
+  )
+
+# Calling ranking unidades de conservacao uso sustentavel rest and getting data
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel.data =
+  init: ->
+    @ranking = {}
+
+  populate: (year, nome, area, id) ->
+    self = @ranking
+    self[id] = {}
+    self[id].id = id
+    self[id].year = year
+    self[id].nome = nome
+    self[id].area = area
+
+    return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel.table
+)
+
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel.data.init()
+for i, properties of rest.data
+  H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel.data.populate(
+    properties.ano, properties.nome, parseFloat(properties.area), properties.id_ranking_unidades_de_conservacao_uso_sustentavel
+  )
+
+# Calling ranking unidades de conservacao uso sustentavel estadual rest and getting data
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel_estadual.data =
+  init: ->
+    @ranking = {}
+
+  populate: (year, nome, area, id) ->
+    self = @ranking
+    self[id] = {}
+    self[id].id = id
+    self[id].year = year
+    self[id].nome = nome
+    self[id].area = area
+
+    return
+
+rest = new H5.Rest (
+  url: H5.Data.restURL
+  table: H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel_estadual.table
+)
+
+H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel_estadual.data.init()
+for i, properties of rest.data
+  H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel_estadual.data.populate(
+    properties.ano, properties.nome, parseFloat(properties.area), properties.id_ranking_unidades_de_conservacao_uso_sustentavel_estadual
+  )
+
+
 
 #   terra_indigena_sum += properties.terra_indigena
 #   uc_sustentavel_sum += properties.unidades_de_conservacao_uso_sustentavel
@@ -1153,27 +1353,50 @@ chart10 = new H5.Charts.GoogleCharts  (
 )
 
 
-chart10._consultBtn = document.getElementById('consultBtn')
+# Bind of variables triggered on the on click event when "Cruzar Dados" is pressed
+charts_content = {}
+charts_content._consultBtn = document.getElementById('consultBtn')
 
-chart10._shapesSlct = document.getElementById('shapesSlct')
-chart10._shapesSlct.options[0].selected = true
-chart10._ratesSlct = document.getElementById('ratesSlct')
-chart10._shapesSlct.options[0].selected = true
+charts_content._shapesSlct = document.getElementById('shapesSlct')
+charts_content._shapesSlct.options[0].selected = true
+charts_content._ratesSlct = document.getElementById('ratesSlct')
+# charts_content._ratesSlct.options[0].selected = true
 
-chart10._dateBegin = document.getElementById('dateBegin')
-chart10._dateEnd = document.getElementById('dateFinish')
+charts_content._dateBegin = document.getElementById('dateBegin')
+charts_content._dateEnd = document.getElementById('dateFinish')
 
-chart10._stateGroup = document.getElementById('quick2').children
-chart10._state = 'Brasil'
+charts_content._yearsSlctCrossingData = document.getElementById('yearsSlctCrossingData')
+charts_content._domainSlct = document.getElementById('domainSlct')
+
+charts_content._stateGroup = document.getElementById('quick2').children
+charts_content._state = 'Brasil'
+
+$(charts_content._ratesSlct).on "change", (event) ->
+  if charts_content._ratesSlct.value is "0"
+    $("#ano_prodes").hide()
+    $("#periodo_deter").show()
+  else
+    $("#ano_prodes").show()
+    $("#periodo_deter").hide()
+
+$(charts_content._shapesSlct).on "change", (event) ->
+  charts_content._domainSlct.options["0"].selected = true
+  if charts_content._shapesSlct.value is "terra_indigena"
+    charts_content._domainSlct.disabled = true
+  else
+    charts_content._domainSlct.disabled = false
 
 
-$(chart10._consultBtn).on "click", (event) ->
+$(charts_content._consultBtn).on "click", (event) ->
   chart10.drawChart()
+  if charts_content._ratesSlct.value is "1"
+    chart13.drawChart()
+  else
+    $("#chart13").hide()
 
-$.each chart10._stateGroup, ()->
+$.each charts_content._stateGroup, ()->
   $(@).on "click", (event) ->
-    chart10._state = $(@).children('span').html() ? 'Brasil'
-    # chart10.drawChart()
+    charts_content._state = $(@).children('span').html() ? 'Brasil'
 
 chart10.drawChart = ->
   createTable = (state) =>
@@ -1192,12 +1415,12 @@ chart10.drawChart = ->
 
   data = []
 
-  areaSelected = chart10._shapesSlct.value
-  rateSelected = chart10._ratesSlct.value
-  dateBegin = chart10._dateBegin.value
-  dateEnd = chart10._dateEnd.value
-  if chart10._state isnt 'Brasil'
-    state = "'" + chart10._state + "',"
+  areaSelected = charts_content._shapesSlct.value
+  rateSelected = charts_content._ratesSlct.value
+  dateBegin = charts_content._dateBegin.value
+  dateEnd = charts_content._dateEnd.value
+  if charts_content._state isnt 'Brasil'
+    state = "'" + charts_content._state + "',"
   else
     state = ''
 
@@ -1208,7 +1431,7 @@ chart10.drawChart = ->
     "uc_integral": "Unidade de Conservação de proteção integral"
     "assentamento": "Assentamento"
     "floresta": "Floresta Pública"
-    "dominio_publico": "Domínio Estadual"
+    # "dominio_publico": "Domínio Estadual"
 
   rates =
     "0": "DETER"
@@ -1657,6 +1880,126 @@ chart12.drawChart = ->
   for i in [0..@options.numberOfBox-1]
     @chart[i].draw @data[i], options
 #}}}
+
+
+# CHART13 {{{
+chart13 = new H5.Charts.GoogleCharts  (
+  type: "Table"
+  container: "chart13"
+  period: 1
+  title: "Ranking da Taxa de desmatamento PRODES"
+  buttons:
+    minusplus: false
+    export: true
+    table: false
+    minimize: true
+    maximize: true
+)
+
+
+chart13.drawChart = ->
+  createTable = (states) =>
+    # sum = 0
+    data = []
+    i = 1
+
+
+    yearSelected = charts_content._yearsSlctCrossingData.value
+    areaSelected = charts_content._shapesSlct.value
+    domainSelected = charts_content._domainSlct.value
+
+    if $("#chart13").css("display") == "none"
+      $("#chart13").show()
+    switch areaSelected
+      when "terra_indigena"
+          ranking = H5.DB.rankings.ranking_terra_indigena.data.ranking
+      when "uc_sustentavel"
+        if domainSelected is "0"
+          ranking = H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel.data.ranking
+        else
+          ranking = H5.DB.rankings.ranking_unidades_de_conservacao_uso_sustentavel_estadual.data.ranking
+      when "uc_integral"
+        if domainSelected is "0"
+          ranking = H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral.data.ranking
+        else
+          ranking = H5.DB.rankings.ranking_unidades_de_conservacao_protecao_integral_estadual.data.ranking
+      when "assentamento"
+        if domainSelected is "0"
+          ranking = H5.DB.rankings.ranking_assentamento.data.ranking
+        else
+          ranking = H5.DB.rankings.ranking_assentamento_estadual.data.ranking
+      when "floresta"
+        $("#chart13").hide()
+
+    for key, reg of ranking
+
+    # key = 2
+    # while key <= 10
+    #   reg = H5.DB.ranking_terra_indigena.data.ranking[key]
+      # do (reg) ->
+      if reg.year is yearSelected
+        data[0] = i
+        data[1] = reg.nome
+        data[2] = reg.area
+          # key++
+          # return false
+        @data[0].addRow data
+        i++
+    # for year in ["2010", "2011", "2012", "2013"]
+    #   data[0] = year
+    #   for rate in ["terra_indigena" , "assentamento", "floresta", "uc_integral", "uc_sustentavel"]
+    #     for state in H5.Data.statesProdes
+    #       estado = H5.DB.dado_prodes_consolidado.data.states[state]
+    #       sum += estado[year][rate]
+    #     data[i] = sum
+    #     i++
+    #     sum = 0
+    #     # @data.setValue year, 1, sum
+    #   i = 1
+    #   @data.addRow data
+
+  # create an empty table
+  @createDataTable()
+
+  for i in [0..@options.numberOfBox-1]
+    @data[0].addColumn "number", "Ranking"
+    @data[0].addColumn "string", "Nome"
+    @data[0].addColumn "number", "Área"
+
+  # data = []
+
+  # populate table with real data
+  createTable "nenhumEstado"
+
+  yearSelected = charts_content._yearsSlctCrossingData.value
+  areaSelected = charts_content._shapesSlct.options[charts_content._shapesSlct.options.selectedIndex.toString()].label
+
+  @changeTitle "Ranking das taxas de Desmatamento PRODES em " + areaSelected + " em " + yearSelected
+
+  options =
+    title: ""
+    titleTextStyle:
+      color: "#333"
+      fontSize: 13
+    backgroundColor: "transparent"
+    focusTarget: "category"
+    # chartArea:
+    width: "100%"
+    height: "220"
+    colors: ['#3ABCFC', '#FC2121', '#D0FC3F', '#FCAC0A',
+             '#FF5454', '#C7A258', '#CBE968', '#FABB3D',
+             '#77A4BD', '#CC6C6C', '#A6B576', '#C7A258']
+    vAxis:
+      title: "Área em km2"
+    isStacked: true
+    animation: H5.Data.animate
+    pageSize: 10
+    page: 'enable'
+
+  @chart[0].draw @data[0], options
+#}}}
+
+
 # SPARK1 {{{
 spark1 = new H5.Charts.Sparks(
   container: "spark1"
@@ -2737,6 +3080,7 @@ $(document).ready ->
   chart10.drawChart()
   chart11.drawChart()
   chart12.drawChart()
+  chart13.drawChart()
   # BOOTSTRAP
   $("[rel=tooltip]").tooltip placement: "bottom"
   $(".alert").alert()
@@ -2752,4 +3096,17 @@ $(document).ready ->
       duration: 1000
 
   $("#prodes").hide()
+
+  if charts_content._ratesSlct.value is "0"
+    $("#ano_prodes").hide()
+    $("#periodo_deter").show()
+  else
+    $("#ano_prodes").show()
+    $("#periodo_deter").hide()
+
+  if charts_content._shapesSlct.value is "terra_indigena" or charts_content._shapesSlct.value is "floresta"
+    charts_content._domainSlct.options["0"].selected = true
+    charts_content._domainSlct.disabled = true
+  else
+    charts_content._domainSlct.disabled = false
 # }}}

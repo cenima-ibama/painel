@@ -378,6 +378,11 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
         @chart[i] = new google.visualization.Gauge(
           @_boxContent[i]
         )
+    else if @options.type is "Table"
+      for i in [0..@options.numberOfBox-1]
+        @chart[i] = new google.visualization.Table(
+          @_boxContent[i]
+        )
     else
       for i in [0..@options.numberOfBox-1]
         @chart[i] = new google.visualization[@options.type + "Chart"](
@@ -483,9 +488,26 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
 
       return str
 
+    getTitle = =>
+      return @options.title
+
+
     $(@_exportBtn).click ->
       csv = generateCSV()
-      window.open "data:text/csv;charset=utf-8," + escape(csv)
+
+      uri = 'data:text/csv;charset=iso-8859-1,' + escape(csv);
+
+      downloadLink = document.createElement("a");
+      downloadLink.href = uri;
+      downloadLink.download = getTitle();
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+    # $(@_exportBtn).click ->
+    #   csv = generateCSV()
+    #   window.open "data:text/csv;charset=utf-8," + escape(csv)
 
 class H5.Charts.SmallContainer
 

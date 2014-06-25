@@ -466,14 +466,18 @@
     };
 
     GoogleCharts.prototype.createChart = function() {
-      var i, _i, _j, _ref, _ref1;
+      var i, _i, _j, _k, _ref, _ref1, _ref2;
       this.chart = [];
       if (this.options.type === "Gauge") {
         for (i = _i = 0, _ref = this.options.numberOfBox - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
           this.chart[i] = new google.visualization.Gauge(this._boxContent[i]);
         }
-      } else {
+      } else if (this.options.type === "Table") {
         for (i = _j = 0, _ref1 = this.options.numberOfBox - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+          this.chart[i] = new google.visualization.Table(this._boxContent[i]);
+        }
+      } else {
+        for (i = _k = 0, _ref2 = this.options.numberOfBox - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
           this.chart[i] = new google.visualization[this.options.type + "Chart"](this._boxContent[i]);
         }
       }
@@ -534,6 +538,7 @@
     };
 
     GoogleCharts.prototype._enableExport = function() {
+<<<<<<< HEAD
       var generateCSV,
         _this = this;
       generateCSV = function() {
@@ -554,6 +559,13 @@
         }
         str += line + "\r\n";
         for (row = _k = 0; 0 <= numberOfRows ? _k <= numberOfRows : _k >= numberOfRows; row = 0 <= numberOfRows ? ++_k : --_k) {
+=======
+      var generateCSV, getTitle;
+      generateCSV = (function(_this) {
+        return function() {
+          var col, data, i, line, numberOfColumns, numberOfRows, row, str, title, value, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3;
+          str = "";
+>>>>>>> 5dc653608d885b9bf023816bdb9e71df727a070b
           line = "";
           for (i = _l = 0, _ref2 = _this.options.numberOfBox - 1; 0 <= _ref2 ? _l <= _ref2 : _l >= _ref2; i = 0 <= _ref2 ? ++_l : --_l) {
             for (col = _m = 0, _ref3 = _this.data[i].getNumberOfColumns(); 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; col = 0 <= _ref3 ? ++_m : --_m) {
@@ -562,13 +574,40 @@
             }
           }
           str += line + "\r\n";
+<<<<<<< HEAD
         }
         return str;
       };
+=======
+          for (row = _k = 0; 0 <= numberOfRows ? _k <= numberOfRows : _k >= numberOfRows; row = 0 <= numberOfRows ? ++_k : --_k) {
+            line = "";
+            for (i = _l = 0, _ref2 = _this.options.numberOfBox - 1; 0 <= _ref2 ? _l <= _ref2 : _l >= _ref2; i = 0 <= _ref2 ? ++_l : --_l) {
+              for (col = _m = 0, _ref3 = _this.data[i].getNumberOfColumns(); 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; col = 0 <= _ref3 ? ++_m : --_m) {
+                value = _this.data[i].getFormattedValue(row, col) ? _this.data[i].getFormattedValue(row, col) : '';
+                line += "\"" + value + "\",";
+              }
+            }
+            str += line + "\r\n";
+          }
+          return str;
+        };
+      })(this);
+      getTitle = (function(_this) {
+        return function() {
+          return _this.options.title;
+        };
+      })(this);
+>>>>>>> 5dc653608d885b9bf023816bdb9e71df727a070b
       return $(this._exportBtn).click(function() {
-        var csv;
+        var csv, downloadLink, uri;
         csv = generateCSV();
-        return window.open("data:text/csv;charset=utf-8," + escape(csv));
+        uri = 'data:text/csv;charset=iso-8859-1,' + escape(csv);
+        downloadLink = document.createElement("a");
+        downloadLink.href = uri;
+        downloadLink.download = getTitle();
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        return document.body.removeChild(downloadLink);
       });
     };
 
