@@ -1,5 +1,6 @@
 <div class="container">
     <div class="form-login">
+    <button id="close-btn-login" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <?php echo form_fieldset('<img src="' . base_url() . '/assets/img/ibama_inv.png"> <span class="label label-inverse">Login</span>'); ?>
         <?php
             if (validation_errors()) {

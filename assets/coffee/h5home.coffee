@@ -13,6 +13,15 @@ $(document).ready ->
   $(".dropdown-menu input, .dropdown-menu label").click (e) ->
     e.stopPropagation()
 
+  $("#close-btn-login").on "click", (event) ->
+    $("#login").hide()
+    $(".navbar a").on "click", (event) ->
+    # clean all selection
+      $(@).each ->
+        $("a").parent().removeClass("active")
+      # mark selected option
+    $(@).parent().addClass("active")
+
   $(".navbar a").on "click", (event) ->
     # clean all selection
     $(@).each ->
@@ -51,7 +60,7 @@ $(document).ready ->
       $("#login").show()
       $("#prodes").hide()
       $("#configs").hide()
-      $("#map").show()
+      $("#map").show()  
     else if $(@).prop("id") is "btn-charts2"
       $("#dash").hide()
       $("#map").hide()
