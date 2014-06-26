@@ -314,7 +314,7 @@
       }
       return this.states['brasil'] = {};
     },
-    populate: function(year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta, dominio, uc_sustentavel_estadual, uc_integral_estadual, assentamento_estadual, floresta_estadual) {
+    populate: function(year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta, dominio, uc_sustentavel_estadual, uc_integral_estadual, assentamento_estadual, terra_arrecadada_estadual) {
       var self;
       if (state && year) {
         self = this.states[state];
@@ -327,7 +327,7 @@
         self[year].assentamento = assentamento;
         self[year].assentamento_estadual = assentamento_estadual;
         self[year].floresta = floresta;
-        self[year].floresta_estadual = floresta_estadual;
+        self[year].terra_arrecadada_estadual = terra_arrecadada_estadual;
         self[year].dominio = dominio;
         self[year].year = year;
         if (this.lastValue) {
@@ -348,7 +348,7 @@
           self[year].assentamento = 0;
           self[year].assentamento_estadual = 0;
           self[year].floresta = 0;
-          self[year].floresta_estadual = 0;
+          self[year].terra_arrecadada_estadual = 0;
           self[year].dominio = 0;
           self[year].year = year;
         }
@@ -360,7 +360,7 @@
         self[year].assentamento += assentamento;
         self[year].assentamento_estadual += assentamento_estadual;
         self[year].floresta += floresta;
-        self[year].floresta_estadual += floresta_estadual;
+        self[year].terra_arrecadada_estadual += terra_arrecadada_estadual;
         self[year].dominio += dominio;
       }
     }
@@ -376,7 +376,7 @@
   _ref5 = rest.data;
   for (i in _ref5) {
     properties = _ref5[i];
-    H5.DB.dado_prodes_consolidado.data.populate(properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel), parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica), parseFloat(properties.dominio_estadual), parseFloat(properties.unidades_de_conservacao_uso_sustentavel_estadual), parseFloat(properties.unidades_de_conservacao_protecao_integral_estadual), parseFloat(properties.assentamento_estadual), parseFloat(properties.floresta_publica_estadual));
+    H5.DB.dado_prodes_consolidado.data.populate(properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel), parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica), parseFloat(properties.dominio_estadual), parseFloat(properties.unidades_de_conservacao_uso_sustentavel_estadual), parseFloat(properties.unidades_de_conservacao_protecao_integral_estadual), parseFloat(properties.assentamento_estadual), parseFloat(properties.terra_arrecadada_estadual));
   }
 
   H5.DB.rankings.ranking_assentamento.data = {
@@ -1647,7 +1647,7 @@
             for (_o = 0, _len4 = _ref18.length; _o < _len4; _o++) {
               year = _ref18[_o];
               data[0] = year;
-              data[1] = parseFloat(stateData[year].floresta_estadual.toFixed(2));
+              data[1] = parseFloat(stateData[year].terra_arrecadada_estadual.toFixed(2));
               this.data[0].addRow(data);
             }
             break;

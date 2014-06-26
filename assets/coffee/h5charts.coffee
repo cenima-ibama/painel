@@ -241,7 +241,7 @@ H5.DB.dado_prodes_consolidado.data =
       @states[state] = {}
     @states['brasil'] = {}
 
-  populate: (year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta, dominio, uc_sustentavel_estadual, uc_integral_estadual, assentamento_estadual, floresta_estadual) ->
+  populate: (year, state, terra_indigena, uc_sustentavel, uc_integral, assentamento, floresta, dominio, uc_sustentavel_estadual, uc_integral_estadual, assentamento_estadual, terra_arrecadada_estadual) ->
     # convert string into date
     if state and year
 
@@ -256,7 +256,7 @@ H5.DB.dado_prodes_consolidado.data =
       self[year].assentamento = assentamento
       self[year].assentamento_estadual = assentamento_estadual
       self[year].floresta = floresta
-      self[year].floresta_estadual = floresta_estadual
+      self[year].terra_arrecadada_estadual = terra_arrecadada_estadual
       self[year].dominio = dominio
       self[year].year = year
 
@@ -278,7 +278,7 @@ H5.DB.dado_prodes_consolidado.data =
         self[year].assentamento = 0
         self[year].assentamento_estadual = 0
         self[year].floresta = 0
-        self[year].floresta_estadual = 0
+        self[year].terra_arrecadada_estadual = 0
         self[year].dominio = 0
         self[year].year = year
 
@@ -290,7 +290,7 @@ H5.DB.dado_prodes_consolidado.data =
       self[year].assentamento += assentamento
       self[year].assentamento_estadual += assentamento_estadual
       self[year].floresta += floresta
-      self[year].floresta_estadual += floresta_estadual
+      self[year].terra_arrecadada_estadual += terra_arrecadada_estadual
       self[year].dominio += dominio
 
       return
@@ -305,7 +305,7 @@ rest = new H5.Rest (
 H5.DB.dado_prodes_consolidado.data.init()
 for i, properties of rest.data
   H5.DB.dado_prodes_consolidado.data.populate(
-    properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel),parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica), parseFloat(properties.dominio_estadual), parseFloat(properties.unidades_de_conservacao_uso_sustentavel_estadual), parseFloat(properties.unidades_de_conservacao_protecao_integral_estadual), parseFloat(properties.assentamento_estadual), parseFloat(properties.floresta_publica_estadual)
+    properties.ano, properties.uf, parseFloat(properties.terra_indigena), parseFloat(properties.unidades_de_conservacao_uso_sustentavel),parseFloat(properties.unidades_de_conservacao_protecao_integral), parseFloat(properties.assentamento), parseFloat(properties.floresta_publica), parseFloat(properties.dominio_estadual), parseFloat(properties.unidades_de_conservacao_uso_sustentavel_estadual), parseFloat(properties.unidades_de_conservacao_protecao_integral_estadual), parseFloat(properties.assentamento_estadual), parseFloat(properties.terra_arrecadada_estadual)
   )
 
 
@@ -1478,7 +1478,7 @@ chart10.drawChart = ->
         else
           for year in ["2010", "2011", "2012", "2013"]
             data[0] = year
-            data[1] = parseFloat stateData[year].floresta_estadual.toFixed(2)
+            data[1] = parseFloat stateData[year].terra_arrecadada_estadual.toFixed(2)
             @data[0].addRow data
           break
       when "uc_integral"
