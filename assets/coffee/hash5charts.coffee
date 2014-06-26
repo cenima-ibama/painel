@@ -463,12 +463,12 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
         # create a new line
       str += line + "\r\n"
 
-      for row in [0..numberOfRows]
+      for row in [0..numberOfRows-1]
         line = ""
 
         for i in [0..@options.numberOfBox-1]
 
-          for col in [0..@data[i].getNumberOfColumns()]
+          for col in [0..@data[i].getNumberOfColumns()-1]
             value = if @data[i].getFormattedValue(row, col) then @data[i].getFormattedValue(row,col) else ''
             line += "\"" + value + "\","
 
