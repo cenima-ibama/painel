@@ -1349,7 +1349,7 @@ $("#quick2 a").on "click", (e) ->
 chart10 = new H5.Charts.GoogleCharts  (
   type: "Line"
   container: "chart10"
-  title: "Taxa de desmatamento PRODES em Terras Indígenas"
+  title: "PRODES em Terras Indígenas"
   loadingImage: '<img src="' + H5.Data.domanin  + '/assets/img/spinner.gif" id="loading_spinner" style="display: inline; padding-top:90px;" title="">'
   buttons:
     export: true
@@ -1644,7 +1644,7 @@ chart10.drawChart = ->
 
 
 
-  @changeTitle "Taxas de Desmatamento " + rates[rateSelected] + "  em " + shapes[areaSelected] + " [2010 - 2013]"
+  @changeTitle rates[rateSelected] + "  em " + shapes[areaSelected] + " [2010 - 2013]"
 
   options =
     title: ""
@@ -1732,7 +1732,7 @@ chart11.drawChart = ->
   # populate table with real data
   createTable "nenhumEstado"
 
-  @changeTitle "Taxas de Desmatamento PRODES  em áreas específicas [" + H5.Data.years[@options.period + 3] + " - " + H5.Data.years[0] + "]"
+  @changeTitle "PRODES em [" + H5.Data.years[@options.period + 3] + " - " + H5.Data.years[0] + "]"
 
   options =
     title: ""
@@ -1922,7 +1922,7 @@ chart13 = new H5.Charts.GoogleCharts  (
   type: "Table"
   container: "chart13"
   period: 1
-  title: "Ranking da Taxa de desmatamento PRODES"
+  title: "Ranking PRODES"
   buttons:
     minusplus: false
     export: true
@@ -2009,7 +2009,7 @@ chart13.drawChart = ->
   yearSelected = charts_content._yearsSlctCrossingData.value
   areaSelected = charts_content._shapesSlct.options[charts_content._shapesSlct.options.selectedIndex.toString()].label
 
-  @changeTitle "Ranking das taxas de Desmatamento PRODES em " + areaSelected + " em " + yearSelected
+  @changeTitle "Ranking PRODES em " + areaSelected + " em " + yearSelected
 
   options =
     title: ""

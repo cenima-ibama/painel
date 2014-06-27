@@ -1487,7 +1487,7 @@
   chart10 = new H5.Charts.GoogleCharts({
     type: "Line",
     container: "chart10",
-    title: "Taxa de desmatamento PRODES em Terras Indígenas",
+    title: "PRODES em Terras Indígenas",
     loadingImage: '<img src="' + H5.Data.domanin + '/assets/img/spinner.gif" id="loading_spinner" style="display: inline; padding-top:90px;" title="">',
     buttons: {
       "export": true,
@@ -1787,7 +1787,7 @@
         };
       })(this));
     }
-    this.changeTitle("Taxas de Desmatamento " + rates[rateSelected] + "  em " + shapes[areaSelected] + " [2010 - 2013]");
+    this.changeTitle(rates[rateSelected] + "  em " + shapes[areaSelected] + " [2010 - 2013]");
     options = {
       title: "",
       titleTextStyle: {
@@ -1879,7 +1879,7 @@
     this.data[0].addColumn("number", "UC Sustentável em km²");
     data = [];
     createTable("nenhumEstado");
-    this.changeTitle("Taxas de Desmatamento PRODES  em áreas específicas [" + H5.Data.years[this.options.period + 3] + " - " + H5.Data.years[0] + "]");
+    this.changeTitle("PRODES em [" + H5.Data.years[this.options.period + 3] + " - " + H5.Data.years[0] + "]");
     options = {
       title: "",
       titleTextStyle: {
@@ -2106,7 +2106,7 @@
     type: "Table",
     container: "chart13",
     period: 1,
-    title: "Ranking da Taxa de desmatamento PRODES",
+    title: "Ranking PRODES",
     buttons: {
       minusplus: false,
       "export": true,
@@ -2182,7 +2182,7 @@
     createTable("nenhumEstado");
     yearSelected = charts_content._yearsSlctCrossingData.value;
     areaSelected = charts_content._shapesSlct.options[charts_content._shapesSlct.options.selectedIndex.toString()].label;
-    this.changeTitle("Ranking das taxas de Desmatamento PRODES em " + areaSelected + " em " + yearSelected);
+    this.changeTitle("Ranking PRODES em " + areaSelected + " em " + yearSelected);
     options = {
       title: "",
       titleTextStyle: {

@@ -469,7 +469,7 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
         for i in [0..@options.numberOfBox-1]
 
           for col in [0..@data[i].getNumberOfColumns()-1]
-            value = if @data[i].getFormattedValue(row, col) then @data[i].getFormattedValue(row,col) else ''
+            value = if row < @data[i].getNumberOfRows() then @data[i].getFormattedValue(row,col) else ''
             line += "\"" + value + "\","
 
         str += line + "\r\n"
@@ -489,7 +489,12 @@ class H5.Charts.GoogleCharts extends H5.Charts.Container
       return str
 
     getTitle = =>
-      return @options.title
+      if @_boxHeader.childNodes["1"].childNodes["0"].data
+        return @_boxHeader.childNodes["1"].childNodes["0"].data + ".csv"
+      else if @_boxHeader.childNodes["1"].childNodes["1"].data
+        return @_boxHeader.childNodes["1"].childNodes["1"].data + ".csv"
+      else
+        return @options.title + ".csv"
 
 
     $(@_exportBtn).click ->

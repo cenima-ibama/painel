@@ -564,7 +564,7 @@
             line = "";
             for (i = _l = 0, _ref3 = _this.options.numberOfBox - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
               for (col = _m = 0, _ref4 = _this.data[i].getNumberOfColumns() - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; col = 0 <= _ref4 ? ++_m : --_m) {
-                value = _this.data[i].getFormattedValue(row, col) ? _this.data[i].getFormattedValue(row, col) : '';
+                value = row < _this.data[i].getNumberOfRows() ? _this.data[i].getFormattedValue(row, col) : '';
                 line += "\"" + value + "\",";
               }
             }
@@ -575,7 +575,13 @@
       })(this);
       getTitle = (function(_this) {
         return function() {
-          return _this.options.title;
+          if (_this._boxHeader.childNodes["1"].childNodes["0"].data) {
+            return _this._boxHeader.childNodes["1"].childNodes["0"].data + ".csv";
+          } else if (_this._boxHeader.childNodes["1"].childNodes["1"].data) {
+            return _this._boxHeader.childNodes["1"].childNodes["1"].data + ".csv";
+          } else {
+            return _this.options.title + ".csv";
+          }
         };
       })(this);
       return $(this._exportBtn).click(function() {
