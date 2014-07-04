@@ -339,6 +339,17 @@
                   qry += filter.dbfield + " = '" + input.value + "'";
                 }
                 break;
+              case "date":
+                filter = obj.vectorLayer.filters[key];
+                input = obj.vectorLayer.inputs[key];
+                if (inputRange.start.value) {
+                  start = input.start.value.split("/");                  
+                  if (qry) {
+                    qry += " AND ";
+                  }
+                  qry += filter.dbfield + " = '" + start[2] + "-" + start[1] + "-" + start[0] + "'";
+                }                
+                break;
               case "period":
                 filter = obj.vectorLayer.filters[key];
                 input = obj.vectorLayer.inputs[key];
@@ -445,6 +456,95 @@
                   }
                 }
               });
+              _results.push(obj.vectorLayer.inputs[key] = inputRange);
+              break;
+            case "date":
+              inputRange = L.DomUtil.create('div', 'input-daterange pull-right', container);
+              $(inputRange).attr('id', "switch" + key);
+              inputRange.start = L.DomUtil.create('input', 'input-small', inputRange);
+              
+              $(inputRange.start).attr('name', 'start');
+              $(inputRange.start).attr('type', 'text');
+              $(inputRange.start).attr('id', 'dateStart');
+              $(inputRange.start).attr('placeholder', data.placeholder);              
+
+              datesDeterNuvem = "";                           
+
+              H5.Data.restURL = "http://" + document.domain + "/painel/rest"
+
+              rest = new H5.Rest ({
+                url: H5.Data.restURL,
+                table: "nuvem_deter",                
+                order: "data_src desc",
+                fields: "objectid,data_src,to_char(data_src,'MM-DD-YYYY') as date"
+              })
+              
+              $.each(rest.data, function(index,dt){
+                  
+                  if (datesDeterNuvem.length > 0)
+                    datesDeterNuvem += ",";
+
+                  datesDeterNuvem += dt.date;                                
+              });             
+
+              deterDatesArray = datesDeterNuvem.split(",");
+
+               $(inputRange).datepicker({
+                format: "dd/mm/yyyy",
+                language: "pt-BR",
+                autoclose: true,
+                orientation: "auto right",
+                clearBtn: true,
+                startView: 1,
+                startDate: "01/07/2004",
+                endDate: "today",
+                beforeShowDay: function(d)
+                {
+                    var dmy = (d.getMonth()+1); 
+
+                    if(d.getMonth()<9) 
+                      dmy="0"+dmy; 
+
+                    dmy+= "-"; 
+        
+                    if(d.getDate()<10) 
+                      dmy+="0"; 
+
+                    dmy+=d.getDate() + "-" + d.getFullYear(); 
+                    
+
+                    if ($.inArray(dmy, deterDatesArray) != -1)
+                      return {enabled: true, tooltip: "Esta data possui registro."};
+                    else
+                      return { enabled: false, tooltip: "Não há registro nesta data."}; 
+                
+                  return;    
+                    
+                }             
+
+              });
+              
+              $(inputRange).on("changeDate", function(e) {
+                if (!inputRange.start.value) {
+                  return;
+                }
+                return updateQuery();
+              });
+             
+              $(document).click(function(e) {
+                if (e.target.id !== "dateStart") {
+
+                  if ($(".datepicker").is(":visible")) {
+
+                    if (!$(e.target).hasClass("day") && !$(e.target).hasClass("month") && !$(e.target).hasClass("year") && !$(e.target).hasClass("datepicker-switch") && !$(e.target).hasClass("prev") && !$(e.target).hasClass("next") && !$(e.target).parents(".datepicker").hasClass("datepicker")) {
+                                            
+                      return $(inputRange.start).datepicker("hide");
+
+                    }
+                  }
+                }
+              });
+
               _results.push(obj.vectorLayer.inputs[key] = inputRange);
               break;
             default:

@@ -52,7 +52,8 @@ class Home extends CI_Controller {
             "37099167120",
             "03361709806",
             "01433540355",   // DEVELOPER'S CPF
-            "02203779101"   // DEVELOPER'S CPF
+            "02203779101",   // DEVELOPER'S CPF
+            "02539550177"   // DEVELOPER'S CPF
         ];
 
 
