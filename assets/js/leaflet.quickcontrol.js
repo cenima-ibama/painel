@@ -123,12 +123,16 @@
       className = this._className = "switch-control-layers";
       container = this._container = L.DomUtil.create("div", "leaflet-bar " + className);
       this._container.setAttribute('aria-haspopup', true);
+
       if (!L.Browser.touch) {
         L.DomEvent.disableClickPropagation(this._container);
         L.DomEvent.on(this._container, "mousewheel", L.DomEvent.stopPropagation);
       } else {
+        //disable propagation from map if touch -- Modify 01/08/2014 -- Dagnaldo da Silva
+        L.DomEvent.disableClickPropagation(this._container);
         L.DomEvent.on(this._container, "click", L.DomEvent.stopPropagation);
       }
+
       if (this.options.collapsed) {
         L.DomEvent.on(this._container, "click", this._expand, this);
         link = this._link = L.DomUtil.create("a", className + "-toggle", this._container);
@@ -338,6 +342,39 @@
                 if (input.value !== filter.reset) {
                   qry += filter.dbfield + " = '" + input.value + "'";
                 }
+
+                //function returns coords of map to zoom in a locate choosed in input.value
+                //added by Dagnaldo Silva - 08/14
+                getBoundingBox = function(State){
+                  array = [];
+                  switch(State){
+                    case 'AC':
+                      return State = [[-11.162, -74.590],[-6.622, -66.395]];
+                    case 'AP':
+                      return State = [[-1.432, -54.499],[5.02, -50.046]];
+                    case 'AM':
+                      return State = [[-10.669, -73.59358],[3.000, -56.8590]];                    
+                    case 'MA':
+                      return State = [[-8.605, -50.6194],[-1.2639, -41.27105]];
+                    case 'MT':
+                      return State = [[-9.782, -51.119],[-18.7, -56.125]];
+                    case 'PA':
+                      return State = [[-9.444, -58.699],[-0.751, -47.224]];
+                    case 'TO':
+                      return State = [[-12.827, -53.880],[-5.797, -42.28380]];
+                    case 'RO':
+                      return State = [[-13.162, -65.590],[-8.399, -59.125]];
+                    case 'RR':
+                      return State = [[-2.024, -64.950],[6.265, -58.125]];
+                    default:
+                     return State = [[-34.3848,  -70.6921], [8.2450, -33.1274]];
+
+                  }
+                }
+                //zoom in on map to locates that input.file returns
+                boundingBox = getBoundingBox(input.value);
+                H5.Map.base.fitBounds(L.latLngBounds(L.latLng(boundingBox[0]), L.latLng(boundingBox[1])));
+                 
                 break;
               case "date":
                 filter = obj.vectorLayer.filters[key];
@@ -348,6 +385,9 @@
                     qry += " AND ";
                   }
                   qry += filter.dbfield + " = '" + start[2] + "-" + start[1] + "-" + start[0] + "'";
+                }
+                else {
+                  qry == null;
                 }                
                 break;
               case "period":
@@ -361,6 +401,7 @@
                   }
                   qry += filter.dbfield + " BETWEEN '" + start[2] + "-" + start[1] + "-" + start[0] + "' AND '" + end[2] + "-" + end[1] + "-" + parseInt(parseInt(end[0]) + 1) + "'";
                 }
+                
             }
           }
           obj.vectorLayer.layer.setOptions({
@@ -396,6 +437,7 @@
               }
               _results.push($(select).on("change", function(e) {
                 return updateQuery();
+                
               }));
               break;
             case "input":
@@ -439,7 +481,7 @@
                 startDate: "01/07/2004",
                 endDate: "today"
               });
-              $(inputRange.start).datepicker('update', '-5d');
+              $(inputRange.start).datepicker('update', '-1y');
               $(inputRange.end).datepicker('update', 'today');
               $(inputRange).on("changeDate", function(e) {
                 if (!inputRange.start.value || !inputRange.end.value) {
@@ -1069,6 +1111,46 @@
       this._separator = L.DomUtil.create('div', this._className + '-separator', this._form);
       return this._overlayersList = L.DomUtil.create('div', this._className + '-overlayers', this._form);
     };
+    // updateQuery = function(field) {
+    //       var data, end, filter, input, param, start, _ref1;
+    //       param = "";
+    //       _ref1 = obj.filters;
+    //       for (key in _ref1) {
+    //         data = _ref1[key];
+    //         switch (data.type) {
+    //           case "select" || "input":
+    //             filter = obj.filters[key];
+    //             input = obj.inputs[key];
+    //             if (param && (input.value !== filter.reset)) {
+    //               param += " AND ";
+    //             }
+    //             if (input.value !== filter.reset) {
+
+    //               param += filter.dbfield + " = '" + input.value + "'";
+    //             break;
+    //           case "period":
+    //             filter = obj.vectorLayer.filters[key];
+    //             input = obj.vectorLayer.inputs[key];
+    //             if (inputRange.start.value && inputRange.end.value) {
+    //               start = input.start.value.split("/");
+    //               end = input.end.value.split("/");
+    //               if (param) {
+    //                 param += " AND ";
+    //               }
+    //               param += filter.dbfield + " BETWEEN '" + start[2] + "-" + start[1] + "-" + start[0] + "' AND '" + end[2] + "-" + end[1] + "-" + end[0] + "'";
+    //             }
+    //         }
+    //       }
+    //       if (param) {
+    //         obj.layer.setParams({
+    //           cql_filter: param
+    //         });
+    //       } else {
+    //         delete obj.layer.wmsParams.cql_filter
+    //         obj.layer._map.setView(new L.LatLng(-37, -61),4);
+    //       }
+    //       obj.layer.redraw();
+    //     };
 
     Cleancontrol.prototype._addLayer = function(layer, name, overlayer, vectorLayer) {
       var id;
