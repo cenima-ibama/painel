@@ -46,7 +46,7 @@ footer a {
 #navbar {
   z-index: 1030;
   margin: 0 auto;
-  position: absolute;
+  position: relative;
   .brand {
     padding: 8px 30px;
   }
