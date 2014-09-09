@@ -59,11 +59,13 @@ rapidEye = new L.TileLayer("http://geo1.ibama.gov.br/geo/tmstest/{z}/{x}/{y}.png
   tms: true
 )
 
+###
 nuvem = new L.TileLayer.WMS("http://siscom.ibama.gov.br/geo-srv/cemam/wms",
   layers: "cemam:Daily_Cloud_With_Geometry"
   format: "image/png"
   transparent: true
 )
+###
 
 # }}}
 # SCREEN SIZE {{{
@@ -184,6 +186,34 @@ H5.Map.layer.alerta = new L.VectorLayer.Postgis (
 )
 H5.Map.layer.alerta.setMap H5.Map.base
 
+H5.Map.layer.nuvem = new L.VectorLayer.Postgis (
+  url: H5.Data.restURL
+  geotable: "nuvem_deter"
+  fields: "objectid, data_src,to_char(data_src,'DD/MM/YYYY') as data_f,percent "
+  srid: 4326
+  geomFieldName: "shape"
+  popupTemplate: (properties) ->
+    html = '<div class="iw-content"><h4>' + properties.objectid + '</h4>'
+    html += '<table class="condensed-table bordered-table zebra-striped"><tbody>'
+    html += '<tr><th>Data de Registro: </th><td>' + properties.data_f+ '</td></tr>'    
+    html += '<tr><th>Território(%): </th><td>' + (parseFloat(properties.percent)*100).toFixed(2)+ '</td></tr>'
+    html += '</tbody></table></div>'
+    return html
+  singlePopup: true
+  where: "data_src = '2014-06-22'"  
+  #order: "data_src asc"
+  #limit: 1    
+  showAll: true  
+  #scaleRange: [9, 20]
+  symbology:
+    type: "single"
+    vectorStyle:
+      fillColor: "#63B0FF"
+      fillOpacity: 0.6      
+      color: "#007CFB"
+      opacity: 0.6
+)
+
 H5.Map.layer.heli_hist = {}
 H5.Map.layer.heli_atual = {}
 
@@ -219,6 +249,9 @@ H5.Map.layer.clusters = new L.VectorLayer.Postgis (
 H5.Map.layer.clusters.setMap H5.Map.base
 
 if H5.DB.logged_in
+  #Quando logado mostrar a camada de nuvens.
+  H5.Map.layer.nuvem.setMap H5.Map.base
+  
   new L.Control.Cleancontrol(
     "OSM":
       layer: openstreet
@@ -248,7 +281,15 @@ if H5.DB.logged_in
     "RapidEye":
       layer: rapidEye
     "DETER Nuvem":
-      layer: nuvem
+      layer: H5.Map.layer.nuvem.layer
+      vectorLayer:
+        layer: H5.Map.layer.nuvem
+        filters:
+          "Data de Registro":
+            type: "date"
+            placeholder: "dd/mm/aaaa"
+            dbfield: "data_src"     
+
   ).addTo(H5.Map.base)
 else
   new L.Control.Cleancontrol(

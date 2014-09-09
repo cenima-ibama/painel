@@ -566,3 +566,7 @@ input.search{
   }
 }
 
+#formLabels{
+  max-height: 24em;
+  overflow: scroll;
+}

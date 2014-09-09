@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sistema de monitoramento de desmatamento">
 
+    <!-- Leaflet 0.7.3 -->
+    <link href="<?= base_url()?>assets/css/leaflet.css" rel="stylesheet">
+
     <!-- Leaflet -->
-    <link href="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" rel="stylesheet" />
-    <link href="<?= base_url()?>assets/css/leaflet-markercluster.css" rel="stylesheet">
+    <!-- <link href="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" rel="stylesheet" /> -->
+    <link href="<?= base_url()?>assets/css/leaflet-markercluster.css" rel="stylesheet">  
     <link href="<?= base_url()?>assets/css/leaflet-minimap.css" rel="stylesheet">
     <link href="<?= base_url()?>assets/css/leaflet-fullscreen.css" rel="stylesheet">
     <link href="<?= base_url()?>assets/css/leaflet-control-geosearch.css" rel="stylesheet">

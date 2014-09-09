@@ -614,7 +614,7 @@ class H5.Charts.Knobs extends H5.Charts.SmallContainer
           step: ->
             dial.val(Math.floor @value).trigger "change"
     else
-      dial.val(Math.floor total).trigger "change"
+      dial.val(Math.floor total).trigger "change" 
 
 class H5.Charts.Sparks extends H5.Charts.SmallContainer
 
