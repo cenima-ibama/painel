@@ -408,7 +408,7 @@
         </a>
         <a id="brasil" href="#" class="item active">
           <i class="icon-brasil"></i>
-          <span>Brasil</span>
+          <span>Amazonia Legal</span>
         </a>
       </div>
     </div>

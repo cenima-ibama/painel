@@ -73,10 +73,11 @@
   });
 
 
-  /*
+/*
   $( '#map' ).width( $( window ).width() )
   $( '#map' ).height( $( window ).height() - $('#navbar').height())
-   */
+*/
+
 
   $('#dash').width("100%");
 
@@ -88,10 +89,11 @@
 
   window.addEventListener(orientationEvent, (function() {
 
-    /*
+  /*  
     $( '#map' ).width( $( window ).width() )
-    $( '#map' ).height( $( window ).height() - $('#navbar').height())
-     */
+    $( '#map' ).height( $( window ).height() - $('#navbar').height()-32)
+*/
+    
     $('#dash').width("100%");
     return $('#dash').height("100%");
   }), false);

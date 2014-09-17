@@ -1,7 +1,7 @@
 .map {
-  position: absolute;
+  position: relative;
   z-index: 1;
-  top: 42px;
+  top: 72px;
   left: 0;
   right: 0;
   bottom: 0;
