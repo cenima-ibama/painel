@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+	<head>
+  	<meta charset="UTF-8" />
+   	<title> Cruzamento de Dados </title>
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-jqueryui.css" />
+    <link rel="stylesheet" href="css/bootstrap-combined.no-icons.min.css" >
+    <link rel="stylesheet" href="css/bootstrap-jqueryui.css" >
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css" >
+    <link rel="stylesheet" href="css/hash5-charts.css" />
+    </head>
+
+<body>
+ <div ng-controller="cruzamentoCtrl">
+               <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav navbar-right">
+                            <a button class="btn" href="#/cruzamento">Cruzamento</a>
+                        </ul>
+                    </div>
+                </div>
+ </div>
+        <!-- libraries Javascript -->
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js"></script>
+        <script src="js/lib/angular-route.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="js/lib/bootstrap.min.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/lib/ng-google-chart.js"></script>
+        <script src="js/cruzamentoController.js"></script>
+        <script src="js/jquery-ui.min.js"></script>
+        <script src="js/chartsController.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script src="js/lib/cookies.js"></script>
+<!--        <script src="//barra.brasil.gov.br/barra.js" type="text/javascript"></script> -->
+    	<div ng-view></div>
+
+	</body>
+</html>
+
