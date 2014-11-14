@@ -1,9 +1,10 @@
 app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routeParams, $rootScope,$cookies){
 
     $scope.Deter = 'true';
+    $scope.load = 'false';
 
-    $scope.url = '//' + window.location.hostname + '/new_panel/server/cruzamentos.php'; // The url of our search local
-    $urlIcons = '//' + window.location.hostname + '/new_panel';
+    $baseUrl = '//' + window.location.hostname + '/cruzamentos';
+    $scope.url = $baseUrl + '/server/cruzamentos.php'; // The url of our search local
 
     $scope.taxas = ['PRODES', 'DETER', 'AWIFS', 'LANDSAT'];
     $scope.estados = ['AC', 'AM', 'AP', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO', 'AMAZONIA LEGAL'];
@@ -19,16 +20,16 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
     { name: 'Terra Arrecadada', value: 'terra_arrecadada' }
     ];
     $scope.ufs = [
-        { name: 'AC', image: $urlIcons + '/img/icons/AC.png' },
-        { name: 'AM', image: $urlIcons + '/img/icons/AM.png' },
-        { name: 'AP', image: $urlIcons + '/img/icons/AP.png' },
-        { name: 'MA', image: $urlIcons + '/img/icons/MA.png' },
-        { name: 'MT', image: $urlIcons + '/img/icons/MT.png' },
-        { name: 'PA', image: $urlIcons + '/img/icons/PA.png' },
-        { name: 'RO', image: $urlIcons + '/img/icons/RO.png' },
-        { name: 'RR', image: $urlIcons + '/img/icons/RR.png' },
-        { name: 'TO', image: $urlIcons + '/img/icons/TO.png' },
-        { name: 'AMAZONIA LEGAL', image: $urlIcons + '/img/icons/BR.png' }
+        { name: 'AC', image: $baseUrl + '/img/icons/AC.png' },
+        { name: 'AM', image: $baseUrl + '/img/icons/AM.png' },
+        { name: 'AP', image: $baseUrl + '/img/icons/AP.png' },
+        { name: 'MA', image: $baseUrl + '/img/icons/MA.png' },
+        { name: 'MT', image: $baseUrl + '/img/icons/MT.png' },
+        { name: 'PA', image: $baseUrl + '/img/icons/PA.png' },
+        { name: 'RO', image: $baseUrl + '/img/icons/RO.png' },
+        { name: 'RR', image: $baseUrl + '/img/icons/RR.png' },
+        { name: 'TO', image: $baseUrl + '/img/icons/TO.png' },
+        { name: 'BR', image: $baseUrl + '/img/icons/BR.png' }
     ];
 
     $scope.changeThis = function($out){
@@ -49,16 +50,19 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
         }
     }
 
-
     $scope.hideState = function ($shape){
-        if ($shape ==  'terra_indigena') {
-            $scope.dominios.pop();
+        if ($shape ==  'terra_indigena' || $shape ==  'terra_arrecadada' || $shape == 'floresta') {
+            if ($scope.dominios.indexOf('ESTADUAL') != -1) {
+                $scope.dominios.pop();
+            }
         } else if ($scope.dominios.indexOf('ESTADUAL') == -1){
             $scope.dominios.push('ESTADUAL');
         }
     }
 
     $scope.cruzamento = function() {
+
+        $rootScope.$broadcast('load', 'true');
 
         var request = $http({
             method: "post",
@@ -76,10 +80,12 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
 
         request.
         success(function(data, status) {
+            $rootScope.$broadcast('load', 'false');
             $scope.status = status;
             $scope.data = data;
-            var area = $scope.data.area;
-            $rootScope.$broadcast('area', area)
+            // var area = $scope.data.area;
+            var data = $scope.data;
+            $rootScope.$broadcast('area', data);
             console.log('broadcasting');
         })
         request.
@@ -88,7 +94,7 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
             $scope.status = status;
         });
 
-    };
+    }
 
 });
 
