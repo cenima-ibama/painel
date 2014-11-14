@@ -6,7 +6,7 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
     $baseUrl = '//' + window.location.hostname + '/cruzamentos';
     $scope.url = $baseUrl + '/server/cruzamentos.php'; // The url of our search local
 
-    $scope.taxas = ['PRODES', 'DETER', 'AWIFS', 'LANDSAT'];
+    $scope.taxas = ['PRODES', 'DETER', 'AWIFS', 'INDICAR'];
     $scope.estados = ['AC', 'AM', 'AP', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO', 'AMAZONIA LEGAL'];
     $scope.anos = ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'];
     // $scope.dominios = [ {name: 'ESTADUAL'}, {name: 'FEDERAL'}];
