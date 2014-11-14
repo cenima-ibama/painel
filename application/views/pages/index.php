@@ -254,7 +254,12 @@
     </div>
   </div>
 </div>
-<div  id="prodes" class="dash">
+
+<div id="prodes" class="dash">
+  <iframe id="cruzamento_frame" src="http://10.1.8.55/cruzamentos" style="width:100%;height:734px" frameborder="0"></iframe>
+</div>
+
+<!-- <div  id="prodes" class="dash">
 
   <div class="alert alert-danger alert-block fade in" style="margin: 30px 20% 20px">
     <button class="close" data-dismiss="alert">&times;</button>
@@ -266,11 +271,6 @@
   </div>
 
   <div class="charts-content">
-    <!-- <div class="row-fluid" id="compare" class="row-fluid">
-      <div class="item" style="margin:0;">
-        <label><font size="5" style="font-weight:bold; color:#666666;">Taxas de Desmatamento PRODES</font></label>
-      </div>
-    </div> -->
     <div class="row-fluid">
       <div  class="quick-slct">
         <div class="row-fluid" id="compare" class="row-fluid"  style="display: inline-flex;">
@@ -341,7 +341,6 @@
                   <option value="uc_integral">UC de proteção integral</option>
                   <option value="assentamento">Assentamentos</option>
                   <option value="floresta">Terras Arrecadadas</option>
-                  <!-- <option value="dominio_publico">Domínio Estadual</option> -->
                 </select>
               </div>
             </div>
@@ -418,15 +417,13 @@
       <div id="chart11" class="box" style="display:block"> </div>
       <div id="chart12" class="box-double" style="display:block"> </div>
       <div id="chart13" class="box" style="display:block"> </div>
-      <!-- <div id="chart14" class="box-double" style="display:block"> </div> -->
-      <!-- <div id="chart15" class="box" style="display:block"> </div> -->
 
       <div id="chart_div"></div>
       <div id="chart_div2"></div>
       <div id="chart_div3"></div>
     </div>
   </div>
-</div>
+</div> -->
 
 <?php
 
