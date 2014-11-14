@@ -90,6 +90,7 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
         })
         request.
         error(function(data, status) {
+            $rootScope.$broadcast('load', 'false');
             $scope.data = data || "Request failed";
             $scope.status = status;
         });

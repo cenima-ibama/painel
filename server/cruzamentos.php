@@ -283,6 +283,8 @@
 
     // $result = pg_query($query);
 
+    pg_close($POSTGRES);
+
 
     $jsn = json_encode($return);
     print_r($jsn);
