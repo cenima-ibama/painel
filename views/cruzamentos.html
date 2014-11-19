@@ -2,7 +2,7 @@
   <figure class="quick quick-btn" id="selectMap">
     <img id="{{ufs.name}}" href="#" class="item"
          ng-repeat="ufs in ufs" ng-src="{{ufs.image}}"
-         value="{{ufs.name}}" ng-click='getValueClass(this)' ng-class="changeClass(this)">
+         value="{{ufs.name}}" ng-click='getValueClass(this)' ng-class="changeClass(this)" style="width:88px; height:90px;">
   </figure>
     <form class="charts-content" >
 
@@ -23,7 +23,7 @@
       <td><select id="taxa" ng-model="taxa" ng-options="taxa for taxa in taxas" ng-change="changeThis(taxa)"></select></td>
       <td ng-if="Deter == 'true'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.inicio' /></td>
       <td ng-if="Deter == 'true'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.fim' /></td>
-      <td ng-if="Deter == 'false'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.inicio' /></td>
+      <!-- <td ng-if="Deter == 'false'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.inicio' /></td> -->
       <td><select id="shape" ng-model="shape" ng-options="shape.value as shape.name for shape in shapes" ng-change="hideState(shape)"></select></td>
       <td><select ng-model="dominio" ng-options="dominio for dominio in dominios"></select></td>
       <!-- <td><option value="{{shape}}">Shapes</option></td> -->
@@ -39,19 +39,33 @@
 
 <div ng-controller="chartsCtrl">
   <div style="display:inline-block;">
-    <!-- <div class="box-header" style="width:679px; padding-left:15px; margin:0px 35px 0px 10px; display:inline-block;"></div> -->
-    <div ng-if="load == 'false'" google-chart chart="chart1" style="{{chart1.cssStyle}}"/></div>
-    <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
-      <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+   <!--  <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div>
+    <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div>
+    <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div>
+    <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div> -->
+    <div style="{{divStyle}}">
+      <div ng-if="load == 'false'" google-chart chart="chart1" style="{{chart1.cssStyle}}"/></div>
+      <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
+        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+      </div>
     </div>
-    <!-- <div class="box-header" style="width:679px; padding-left:15px; margin:0px 35px 0px 10px; display:inline-block;"></div> -->
-    <div ng-if="load == 'false'" google-chart chart="chart2" style="{{chart2.cssStyle}}"/></div>
-    <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
-      <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+    <div style="{{divStyle}}">
+      <div ng-if="load == 'false'" google-chart chart="chart2" style="{{chart2.cssStyle}}"/></div>
+      <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
+        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+      </div>
     </div>
-    <div ng-if="load == 'false'" google-chart chart="chart3" style="{{chart3.cssStyle}}"/></div>
-    <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
-      <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+    <div style="{{divStyle}}">
+      <div ng-if="load == 'false'" google-chart chart="chart3" style="{{chart3.cssStyle}}"/></div>
+      <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
+        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+      </div>
+    </div>
+    <div style="{{divStyle}}">
+      <div ng-if="load == 'false'" google-chart chart="chart4" style="{{chart4.cssStyle}}"/></div>
+      <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
+        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+      </div>
     </div>
   </div>
 </div>

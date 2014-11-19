@@ -15,7 +15,9 @@
     $dominio = $request->dominio;
     $uf = $request->uf;
 
-    $date_diff = date_diff(new DateTime($inicio),new DateTime($fim));
+    if ($taxa != "PRODES") {
+        $date_diff = date_diff(new DateTime($inicio),new DateTime($fim));
+    }
 
     // Array that will store the days that will be queried on the database
     $periodosinicio = [];
@@ -25,116 +27,103 @@
     $months = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 
-    // if the ending day is smaller than the beginning day, adds a new loop so the bug
-    // revolving around the number of loops corrects itself
-    $varFim = new DateTime($fim);
-    $var = new DateTime($inicio);
-    if ($varFim->format('d') < $var->format('d') || $varFim->format('m') < $var->format('m')) {
-        $beginning = 0;
-    } else {
-        $beginning = 1;
-    }
-
-
-    if($date_diff->days < 50){
-        // creates periods for the sql query
-        for ($i=1; $i <= $date_diff->days; $i++) {
-            array_push($periodosinicio,date_format($var, 'Y-m-d'));
-            $var->add(new DateInterval('P1D'));
-            array_push($periodosfim,date_format($var, 'Y-m-d'));
-        }
-    } else if ($date_diff->days < 730) {
-
-        // In case there is more than 1 year, adds 12 months to the loop limit
-        if($date_diff->y > 0) {
-            $totalMonths = 12 + $date_diff->m;
+    if ($taxa != "PRODES") {
+        // if the ending day is smaller than the beginning day, adds a new loop so the bug
+        // revolving around the number of loops corrects itself
+        $varFim = new DateTime($fim);
+        $var = new DateTime($inicio);
+        if ($varFim->format('d') < $var->format('d') || $varFim->format('m') < $var->format('m')) {
+            $beginning = 0;
         } else {
-            $totalMonths = $date_diff->m;
+            $beginning = 1;
         }
 
-        while ($var->format('m') != $varFim->format('m') || $var->format('y') != $varFim->format('y')) {
-            array_push($periodosinicio,date_format($var, 'Y-m-d'));
-            if($var->format('d') != 1) {
-                $var->setDate($var->format('Y'),$var->format('m'),'1');
+
+        if($date_diff->days < 50){
+            // creates periods for the sql query
+            for ($i=1; $i <= $date_diff->days; $i++) {
+                array_push($periodosinicio,date_format($var, 'Y-m-d'));
+                $var->add(new DateInterval('P1D'));
+                array_push($periodosfim,date_format($var, 'Y-m-d'));
+            }
+        } else if ($date_diff->days < 730) {
+
+            // In case there is more than 1 year, adds 12 months to the loop limit
+            if($date_diff->y > 0) {
+                $totalMonths = 12 + $date_diff->m;
+            } else {
+                $totalMonths = $date_diff->m;
             }
 
-            // sets the period of a month, on the query value
-            $var->add(new DateInterval('P1M'));
+            while ($var->format('m') != $varFim->format('m') || $var->format('y') != $varFim->format('y')) {
+                array_push($periodosinicio,date_format($var, 'Y-m-d'));
+                if($var->format('d') != 1) {
+                    $var->setDate($var->format('Y'),$var->format('m'),'1');
+                }
 
-            // sets the last day to be queried as being the last day of the month
-            $var->sub(new DateInterval('P1D'));
+                // sets the period of a month, on the query value
+                $var->add(new DateInterval('P1M'));
 
-            array_push($periodosfim,date_format($var, 'Y-m-d'));
+                // sets the last day to be queried as being the last day of the month
+                $var->sub(new DateInterval('P1D'));
 
-            // resets the next day as being the previous first day of the month
-            $var->add(new DateInterval('P1D'));
+                array_push($periodosfim,date_format($var, 'Y-m-d'));
+
+                // resets the next day as being the previous first day of the month
+                $var->add(new DateInterval('P1D'));
+            }
+
+            array_push($periodosinicio,date_format($var, 'Y-m-d'));
+            array_push($periodosfim,date_format(new DateTime($fim), 'Y-m-d'));
+
+        } else {
+
+            while ($var->format('y') != $varFim->format('y')) {
+                array_push($periodosinicio,date_format($var, 'Y-m-d'));
+                if($var->format('d') != 1) {
+                    $var->setDate($var->format('Y'),'1','1');
+                }
+
+                // sets the period of a year, on the query value
+                $var->add(new DateInterval('P1Y'));
+
+                // sets the last day to be queried as being the next query day minus one day
+                $var->sub(new DateInterval('P1D'));
+
+                array_push($periodosfim,date_format($var, 'Y-m-d'));
+
+                // resets the next day as being the previous first day
+                $var->add(new DateInterval('P1D'));
+            }
+
+            // for ($i=$beginning; $i <= $date_diff->y; $i++) {
+            //     array_push($periodosinicio,date_format($var, 'Y-m-d'));
+            //     if($var->format('d') != 1) {
+            //         $var->setDate($var->format('Y'),'1','1');
+            //     }
+
+            //     // sets the period of a year, on the query value
+            //     $var->add(new DateInterval('P1Y'));
+
+            //     // sets the last day to be queried as being the next query day minus one day
+            //     $var->sub(new DateInterval('P1D'));
+
+            //     array_push($periodosfim,date_format($var, 'Y-m-d'));
+
+            //     // resets the next day as being the previous first day
+            //     $var->add(new DateInterval('P1D'));
+
+            // }
+
+            array_push($periodosinicio,date_format($var, 'Y-m-d'));
+            array_push($periodosfim,date_format(new DateTime($fim), 'Y-m-d'));
         }
-
-        // for ($i=$beginning; $i <= $totalMonths ; $i++) {
-
-        //     array_push($periodosinicio,date_format($var, 'Y-m-d'));
-        //     if($var->format('d') != 1) {
-        //         $var->setDate($var->format('Y'),$var->format('m'),'1');
-        //     }
-
-        //     // sets the period of a month, on the query value
-        //     $var->add(new DateInterval('P1M'));
-
-        //     // sets the last day to be queried as being the next query day minus one day
-        //     $var->sub(new DateInterval('P1D'));
-
-        //     array_push($periodosfim,date_format($var, 'Y-m-d'));
-
-        //     // resets the next day as being the previous first day
-        //     $var->add(new DateInterval('P1D'));
-
-        // }
-        array_push($periodosinicio,date_format($var, 'Y-m-d'));
-        array_push($periodosfim,date_format(new DateTime($fim), 'Y-m-d'));
 
     } else {
-
-        while ($var->format('y') != $varFim->format('y')) {
-            array_push($periodosinicio,date_format($var, 'Y-m-d'));
-            if($var->format('d') != 1) {
-                $var->setDate($var->format('Y'),'1','1');
-            }
-
-            // sets the period of a year, on the query value
-            $var->add(new DateInterval('P1Y'));
-
-            // sets the last day to be queried as being the next query day minus one day
-            $var->sub(new DateInterval('P1D'));
-
-            array_push($periodosfim,date_format($var, 'Y-m-d'));
-
-            // resets the next day as being the previous first day
-            $var->add(new DateInterval('P1D'));
+        for ($i=2000; $i < 2014; $i++) {
+            array_push($periodosfim,(string) "01-01-" . $i);
         }
-
-        // for ($i=$beginning; $i <= $date_diff->y; $i++) {
-        //     array_push($periodosinicio,date_format($var, 'Y-m-d'));
-        //     if($var->format('d') != 1) {
-        //         $var->setDate($var->format('Y'),'1','1');
-        //     }
-
-        //     // sets the period of a year, on the query value
-        //     $var->add(new DateInterval('P1Y'));
-
-        //     // sets the last day to be queried as being the next query day minus one day
-        //     $var->sub(new DateInterval('P1D'));
-
-        //     array_push($periodosfim,date_format($var, 'Y-m-d'));
-
-        //     // resets the next day as being the previous first day
-        //     $var->add(new DateInterval('P1D'));
-
-        // }
-
-        array_push($periodosinicio,date_format($var, 'Y-m-d'));
-        array_push($periodosfim,date_format(new DateTime($fim), 'Y-m-d'));
     }
-
 
     // echo json_encode($periodosinicio);
     // echo json_encode($periodosfim);
@@ -210,22 +199,63 @@
                 break;
         }
 
+    } else if ($taxa == 'PRODES'){
+
+        switch ($shape) {
+            case 'assentamento':
+                $function = 'assentamento';
+                break;
+            case 'terra_indigena':
+                $function = 'terra_indigena';
+                break;
+            case 'uc_integral':
+                $function = 'unidades_de_conservacao_protecao_integral';
+                break;
+            case 'uc_sustentavel':
+                $function = 'unidades_de_conservacao_uso_sustentavel';
+                break;
+            case 'floresta':
+                $function = 'terra_arrecadada';
+                break;
+            case 'terra_arrecadada':
+                $function = 'terra_arrecadada_estadual';
+                break;
+        }
+
     }
 
-    if($shape ==="terra_indigena" || $shape ==="terra_arrecadada" || $shape ==="floresta"){
+    $query = "";
+
+    if ($taxa == 'PRODES') {
         $query = "SELECT ";
 
-        for ($i=0; $i < sizeof($periodosinicio); $i++) {
-            $query = $query . "( SELECT coalesce(resultado,0) FROM  ".$function." ( '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
+        if(($shape == "uc_integral" || $shape == "uc_sustentavel" || $shape == "assentamentos" ) && $dominio == 'ESTADUAL') {
+            $function = $function . "_estadual";
         }
-        // $query = " SELECT * FROM  ".$function." ( '$uf' ,'$inicio','$fim' ) AS foo (Resultado float);";
-    }else{
-        $query = "SELECT ";
 
-        for ($i=0; $i < sizeof($periodosinicio); $i++) {
-            $query = $query . "( SELECT coalesce(resultado,0) FROM  ".$function." ( '$dominio' , '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
+        for ($i=0; $i < sizeof($periodosfim); $i++) {
+            $array = explode('-', $periodosfim[$i]);
+            $query = $query . "( SELECT SUM(" . $function . ") FROM public.dado_prodes_consolidado WHERE ano = '$array[2]' ";
+            if ($uf != 'BR') {
+                $query = $query . " and uf='$uf' ";
+            }
+            $query = $query . " ), ";
         }
-        // $query = " SELECT * FROM  ".$function." ( '$dominio' , '$uf' ,'$inicio','$fim' ) AS foo (Resultado float);";
+    } else {
+
+        if($shape ==="terra_indigena" || $shape ==="terra_arrecadada" || $shape ==="floresta"){
+            $query = "SELECT ";
+
+            for ($i=0; $i < sizeof($periodosinicio); $i++) {
+                $query = $query . "( SELECT coalesce(resultado,0) FROM  ".$function." ( '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
+            }
+        }else{
+            $query = "SELECT ";
+
+            for ($i=0; $i < sizeof($periodosinicio); $i++) {
+                $query = $query . "( SELECT coalesce(resultado,0) FROM  ".$function." ( '$dominio' , '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
+            }
+        }
     }
 
     $query = substr($query, 0, -2);
@@ -233,12 +263,7 @@
     $rows = array();
     $table = array();
 
-    //echo $query;
-
     $POSTGRES = pg_connect("host=$HOST port=$PORT dbname=$DATABASE user=$USER password=$PASSWORD");
-
-    // echo $query;
-    // exit;
 
 	$result = pg_query($query);
 
@@ -248,40 +273,33 @@
     while($row = pg_fetch_row($result)){
         $out = $row;
     }
-    // $local = $out[0];
 
-    // $arr = array(
-    // 'area'  => $local
-    // );
+    // echo $query;
+    // exit;
 
     $return = array();
-    $obj = array();
 
     foreach ($out as $key => $value) {
         $c = array();
 
         $string = new DateTime($periodosfim[$key]);
 
-        if ($date_diff->days < 50)
-            array_push($c, (object) array(v => $string->format('d/m')));
-        else if ($date_diff->days < 730)
-            array_push($c, (object) array(v => $months[(int) $string->format('m')]));
-        else
+        if ($taxa != "PRODES") {
+            if ($date_diff->days < 50)
+                array_push($c, (object) array(v => $string->format('d/m')));
+            else if ($date_diff->days < 730)
+                array_push($c, (object) array(v => $months[(int) $string->format('m')]));
+            else
+                array_push($c, (object) array(v => $string->format('Y')));
+        } else {
             array_push($c, (object) array(v => $string->format('Y')));
+        }
 
         array_push($c, (object) array(v => (float) number_format((float)$value, 2, '.', '')));
 
         // array_push($obj, (object) array(c => $c));
         array_push($return, (object) array(c => $c));
     }
-
-    // array_push($return, $obj);
-
-
-    // $query  = " SELECT * FROM dado_prodes_consolidado "
-
-
-    // $result = pg_query($query);
 
     pg_close($POSTGRES);
 

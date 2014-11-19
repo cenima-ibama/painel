@@ -82,6 +82,7 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
         success(function(data, status) {
             $rootScope.$broadcast('load', 'false');
             $scope.status = status;
+            console.log(data);
             $scope.data = data;
             // var area = $scope.data.area;
             var data = $scope.data;
