@@ -13,13 +13,17 @@
     $fim = $request->fim;
     $shape = $request->shape;
     $dominio = $request->dominio;
+    $estagio = $request->estagio;
     $uf = $request->uf;
+
+    // Inicialização da variavel que guardará o nome da função a ser consultada no banco.
+    $function = "";
 
     if ($taxa != "PRODES") {
         $date_diff = date_diff(new DateTime($inicio),new DateTime($fim));
     }
 
-    // Array that will store the days that will be queried on the database
+    // Array que guardará os dias que serão consultados no banco
     $periodosinicio = [];
     $periodosfim = [];
     $totalMonths = 0;
@@ -28,8 +32,8 @@
 
 
     if ($taxa != "PRODES") {
-        // if the ending day is smaller than the beginning day, adds a new loop so the bug
-        // revolving around the number of loops corrects itself
+        // Se o ultimo dia da consulta for menor que o primeiro dia da consulta, adiciona uma nova iteração
+        // para que o problema de calculo de iterações se auto-corrija
         $varFim = new DateTime($fim);
         $var = new DateTime($inicio);
         if ($varFim->format('d') < $var->format('d') || $varFim->format('m') < $var->format('m')) {
@@ -40,7 +44,7 @@
 
 
         if($date_diff->days < 50){
-            // creates periods for the sql query
+            // cria periodos para a consulta sql
             for ($i=1; $i <= $date_diff->days; $i++) {
                 array_push($periodosinicio,date_format($var, 'Y-m-d'));
                 $var->add(new DateInterval('P1D'));
@@ -48,7 +52,7 @@
             }
         } else if ($date_diff->days < 730) {
 
-            // In case there is more than 1 year, adds 12 months to the loop limit
+            // Para o caso de ter mais de 1 ano, adiciona-se mais 12 meses ao limite da iteração
             if($date_diff->y > 0) {
                 $totalMonths = 12 + $date_diff->m;
             } else {
@@ -61,15 +65,15 @@
                     $var->setDate($var->format('Y'),$var->format('m'),'1');
                 }
 
-                // sets the period of a month, on the query value
+                // Seta o periodo de 1 mes para a consulta no banco
                 $var->add(new DateInterval('P1M'));
 
-                // sets the last day to be queried as being the last day of the month
+                // Seta o ultimo dia para ser consultado como o ultimo dia do mes
                 $var->sub(new DateInterval('P1D'));
 
                 array_push($periodosfim,date_format($var, 'Y-m-d'));
 
-                // resets the next day as being the previous first day of the month
+                // Retorna o valor do proximo dia como sendo o valor inicial, o primeiro dia do proximo mes
                 $var->add(new DateInterval('P1D'));
             }
 
@@ -84,36 +88,17 @@
                     $var->setDate($var->format('Y'),'1','1');
                 }
 
-                // sets the period of a year, on the query value
+                // Seta o periodo de 1 ano para a consulta no banco
                 $var->add(new DateInterval('P1Y'));
 
-                // sets the last day to be queried as being the next query day minus one day
+                // Seta o ultimo dia para ser consultado como o ultimo dia do ano
                 $var->sub(new DateInterval('P1D'));
 
                 array_push($periodosfim,date_format($var, 'Y-m-d'));
 
-                // resets the next day as being the previous first day
+                // Retorna o valor do proximo dia como sendo o valor inicial, o primeiro dia do proximo ano
                 $var->add(new DateInterval('P1D'));
             }
-
-            // for ($i=$beginning; $i <= $date_diff->y; $i++) {
-            //     array_push($periodosinicio,date_format($var, 'Y-m-d'));
-            //     if($var->format('d') != 1) {
-            //         $var->setDate($var->format('Y'),'1','1');
-            //     }
-
-            //     // sets the period of a year, on the query value
-            //     $var->add(new DateInterval('P1Y'));
-
-            //     // sets the last day to be queried as being the next query day minus one day
-            //     $var->sub(new DateInterval('P1D'));
-
-            //     array_push($periodosfim,date_format($var, 'Y-m-d'));
-
-            //     // resets the next day as being the previous first day
-            //     $var->add(new DateInterval('P1D'));
-
-            // }
 
             array_push($periodosinicio,date_format($var, 'Y-m-d'));
             array_push($periodosfim,date_format(new DateTime($fim), 'Y-m-d'));
@@ -124,10 +109,6 @@
             array_push($periodosfim,(string) "01-01-" . $i);
         }
     }
-
-    // echo json_encode($periodosinicio);
-    // echo json_encode($periodosfim);
-    // exit;
 
 
     if($taxa ==='DETER'){
@@ -148,7 +129,7 @@
             case 'floresta':
                 $function = 'painel.f_deter_floresta_publica';
                 break;
-            default:
+            case 'terra_arrecadada':
                 $function = 'painel.f_deter_terra_arrecadada';
                 break;
         }
@@ -168,15 +149,12 @@
             case 'uc_sustentavel':
                 $function = 'painel.f_awifs_unidade_uso_sustentavel';
                 break;
-            case 'floresta':
-                $function = 'painel.f_awifs_floresta_publica';
-                break;
-            default:
+            case 'terra_arrecadada':
                 $function = 'painel.f_awifs_terra_arrecadada';
                 break;
         }
 
-    } else if ($taxa == 'LANDSAT'){
+    } else if ($taxa == 'INDICAR'){
 
         switch ($shape) {
             case 'assentamento':
@@ -191,10 +169,7 @@
             case 'uc_sustentavel':
                 $function = 'painel.f_landsat_unidade_uso_sustentavel';
                 break;
-            case 'floresta':
-                $function = 'painel.f_landsat_floresta_publica';
-                break;
-            default:
+            case 'terra_arrecadada':
                 $function = 'painel.f_landsat_terra_arrecadada';
                 break;
         }
@@ -214,9 +189,6 @@
             case 'uc_sustentavel':
                 $function = 'unidades_de_conservacao_uso_sustentavel';
                 break;
-            case 'floresta':
-                $function = 'terra_arrecadada';
-                break;
             case 'terra_arrecadada':
                 $function = 'terra_arrecadada_estadual';
                 break;
@@ -229,7 +201,7 @@
     if ($taxa == 'PRODES') {
         $query = "SELECT ";
 
-        if(($shape == "uc_integral" || $shape == "uc_sustentavel" || $shape == "assentamentos" ) && $dominio == 'ESTADUAL') {
+        if(($shape == "uc_integral" || $shape == "uc_sustentavel" || $shape == "assentamentos" || $shape == "terra_arrecadada") && $dominio == 'ESTADUAL') {
             $function = $function . "_estadual";
         }
 
@@ -242,18 +214,29 @@
             $query = $query . " ), ";
         }
     } else {
+        if (($shape == "terra_arrecadada") && ($dominio == "ESTADUAL")) {
+            $function = $function . "_estadual";
+        } else if (($shape == "terra_arrecadada") && ($dominio == "FEDERAL")) {
+            $function = $function . "_federal";
+        }
 
-        if($shape ==="terra_indigena" || $shape ==="terra_arrecadada" || $shape ==="floresta"){
+        if (($taxa == 'INDICAR') || ($taxa == 'AWIFS')) {
+            $estagioDB = " '" . $estagio . "', ";
+        } else {
+            $estagioDB = "";
+        }
+
+        if(($shape == "terra_indigena") || ($shape == "terra_arrecadada")){
             $query = "SELECT ";
 
             for ($i=0; $i < sizeof($periodosinicio); $i++) {
-                $query = $query . "( SELECT coalesce(resultado,0) FROM  ".$function." ( '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
+                $query = $query . "( SELECT coalesce(resultado,0) FROM  ". $function ." ( " . $estagioDB . " '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
             }
         }else{
             $query = "SELECT ";
 
             for ($i=0; $i < sizeof($periodosinicio); $i++) {
-                $query = $query . "( SELECT coalesce(resultado,0) FROM  ".$function." ( '$dominio' , '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
+                $query = $query . "( SELECT coalesce(resultado,0) FROM  ".$function." ( " . $estagioDB . " '$dominio' , '$uf' ,'$periodosinicio[$i]','$periodosfim[$i]' ) AS foo (Resultado float)), ";
             }
         }
     }
@@ -265,6 +248,9 @@
 
     $POSTGRES = pg_connect("host=$HOST port=$PORT dbname=$DATABASE user=$USER password=$PASSWORD");
 
+    // echo $query;
+    // exit;
+
 	$result = pg_query($query);
 
 
@@ -273,9 +259,6 @@
     while($row = pg_fetch_row($result)){
         $out = $row;
     }
-
-    // echo $query;
-    // exit;
 
     $return = array();
 

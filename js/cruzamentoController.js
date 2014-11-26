@@ -3,21 +3,26 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
     $scope.Deter = 'true';
     $scope.load = 'false';
 
+    $scope.uf = "BR";
+
     $baseUrl = '//' + window.location.hostname + '/cruzamentos';
     $scope.url = $baseUrl + '/server/cruzamentos.php'; // The url of our search local
 
     $scope.taxas = ['PRODES', 'DETER', 'AWIFS', 'INDICAR'];
     $scope.estados = ['AC', 'AM', 'AP', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO', 'AMAZONIA LEGAL'];
     $scope.anos = ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'];
-    // $scope.dominios = [ {name: 'ESTADUAL'}, {name: 'FEDERAL'}];
+    $scope.estagios = [
+        { name: 'CORTE RASO', value: '' },
+        { name: 'DEGRADAÇÂO', value: '' },
+        { name: 'FOGO EM FLORESTA', value: '' }
+    ];
     $scope.dominios = ['FEDERAL', 'ESTADUAL'];
     $scope.shapes= [
-    { name: 'Terras Indígenas', value: 'terra_indigena' },
-    { name: 'UC de uso sustentável', value: 'uc_sustentavel' },
-    { name: 'UC de proteção integral', value: 'uc_integral' },
-    { name: 'Assentamentos', value: 'assentamento' },
-    { name: 'Floresta', value: 'floresta' },
-    { name: 'Terra Arrecadada', value: 'terra_arrecadada' }
+        { name: 'Terras Indígenas', value: 'terra_indigena' },
+        { name: 'UC de uso sustentável', value: 'uc_sustentavel' },
+        { name: 'UC de proteção integral', value: 'uc_integral' },
+        { name: 'Assentamentos', value: 'assentamento' },
+        { name: 'Terra Arrecadada', value: 'terra_arrecadada' }
     ];
     $scope.ufs = [
         { name: 'AC', image: $baseUrl + '/img/icons/AC.png' },
@@ -33,10 +38,42 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
     ];
 
     $scope.changeThis = function($out){
-        if ($out === 'DETER')
+        if ($out === 'DETER') {
+            $scope.estagios = [
+                { name: 'Corte Raso', value: '' }
+            ];
             return $scope.Deter = 'true';
-        if ($out === 'PRODES')
+        }
+        if ($out === 'PRODES') {
+            $scope.estagios = [
+                { name: 'Corte Raso + Degradação', value: '' }
+            ];
             return $scope.Deter = 'false';
+        }
+        if ($out === 'AWIFS') {
+            $scope.estagios = [
+                { name: 'DEGRADACAO', value: 'DEGRADACAO' },
+                { name: 'DESMATAMENTO_CR', value: 'DESMATAMENTO_CR' },
+                { name: 'DESMATAMENTO_VEG', value: 'DESMATAMENTO_VEG' },
+                { name: 'CICATRIZ_DE_QUEIMADA', value: 'CICATRIZ_DE_QUEIMADA' },
+                { name: 'CS_TIPO1', value: 'CS_TIPO1' },
+                { name: 'CS_TIPO2', value: 'CS_TIPO2' },
+                { name: 'MINERACAO', value: 'MINERACAO' },
+                { name: 'CS_CONVENCIONAL', value: 'CS_CONVENCIONAL' },
+                { name: 'CS_REGULAR', value: 'CS_REGULAR' },
+                { name: 'TODOS', value: 'TODOS' }
+            ];
+            return $scope.Deter = 'true';
+        }
+        if ($out === 'INDICAR') {
+            $scope.estagios = [
+                { name: 'Corte Raso', value: 'CR' },
+                { name: 'Degradação', value: 'DG' },
+                { name: 'Fogo em Floresta', value: 'FF' },
+                { name: 'Todos', value: 'TODOS' }
+            ];
+            return $scope.Deter = 'true';
+        }
     }
 
     $scope.getValueClass = function ($out){
@@ -51,7 +88,7 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
     }
 
     $scope.hideState = function ($shape){
-        if ($shape ==  'terra_indigena' || $shape ==  'terra_arrecadada' || $shape == 'floresta') {
+        if ($shape ==  'terra_indigena') {
             if ($scope.dominios.indexOf('ESTADUAL') != -1) {
                 $scope.dominios.pop();
             }
@@ -73,6 +110,7 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
                 fim: $scope.fim,
                 shape: $scope.shape,
                 dominio: $scope.dominio,
+                estagio: $scope.estagio,
                 uf: $scope.uf
             },
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }

@@ -10,23 +10,24 @@
 <table style="position: relative; left: 5%;">
   <thead>
     <tr>
-      <th><label>Taxa de desmatamento </label></th>
+      <th><label>Tipo de Detecção </label></th>
       <th ng-if="Deter == 'true'"><label>Data Inicial </label></th>
       <th ng-if="Deter == 'true'"><label>Data Final </label></th>
-      <th ng-if="Deter == 'false'"><label>Data </label></th>
+      <!-- <th ng-if="Deter == 'false'"><label>Data </label></th> -->
+      <th><label>Estagio da Alteração </label></th>
       <th><label>Áreas de Comparação </label></th>
       <th><label>Domínio </label></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><select id="taxa" ng-model="taxa" ng-options="taxa for taxa in taxas" ng-change="changeThis(taxa)"></select></td>
-      <td ng-if="Deter == 'true'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.inicio' /></td>
-      <td ng-if="Deter == 'true'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.fim' /></td>
+      <td><select id="taxa" ng-model="taxa" ng-options="taxa for taxa in taxas" ng-change="changeThis(taxa)" style="width:180px;"></select></td>
+      <td ng-if="Deter == 'true'"><input style="top: -0.4em; width:180px; position: relative;" calendar ng-model='$parent.inicio' /></td>
+      <td ng-if="Deter == 'true'"><input style="top: -0.4em; width:180px; position: relative;" calendar ng-model='$parent.fim' /></td>
       <!-- <td ng-if="Deter == 'false'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.inicio' /></td> -->
-      <td><select id="shape" ng-model="shape" ng-options="shape.value as shape.name for shape in shapes" ng-change="hideState(shape)"></select></td>
-      <td><select ng-model="dominio" ng-options="dominio for dominio in dominios"></select></td>
-      <!-- <td><option value="{{shape}}">Shapes</option></td> -->
+      <td><select id="estagio" ng-model="estagio" ng-options="estagio.value as estagio.name for estagio in estagios" style="width:180px;"></select></td>
+      <td><select id="shape" ng-model="shape" ng-options="shape.value as shape.name for shape in shapes" style="width:180px;" ng-change="hideState(shape)"></select></td>
+      <td><select ng-model="dominio" ng-options="dominio for dominio in dominios" style="width:180px;"></select></td>
 
       <td><button type="submit" style="top: -0.5em; position: relative"class="btn btn-default" ng-click="cruzamento()">Cruzamento</button></td>
 
