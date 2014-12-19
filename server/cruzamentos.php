@@ -105,7 +105,8 @@
         }
 
     } else {
-        for ($i=2000; $i < 2014; $i++) {
+        // for ($i=2000; $i < 2014; $i++) {
+        for ($i=$inicio; $i <= $fim; $i++) {
             array_push($periodosfim,(string) "01-01-" . $i);
         }
     }
@@ -261,6 +262,7 @@
     }
 
     $return = array();
+    $obj = array();
 
     foreach ($out as $key => $value) {
         $c = array();
@@ -281,8 +283,142 @@
         array_push($c, (object) array(v => (float) number_format((float)$value, 2, '.', '')));
 
         // array_push($obj, (object) array(c => $c));
-        array_push($return, (object) array(c => $c));
+        array_push($obj, (object) array(c => $c));
     }
+
+
+    array_push($return, (object) array(chart1 => $obj));
+
+
+
+    $tax = strtolower($taxa);
+    $areas = ["assentamento", "terra_arrecadada", "uc_integral", "uc_sustentavel", "terra_indigena"];
+    $dominios = ["FEDERAL", "ESTADUAL"];
+
+    // $dataInicio = date_format($inicio, 'Y-m-d');
+    // $dataFim = date_format($fim, 'Y-m-d');
+
+    // print_r($dataInicio . " " . $dataFim);
+    // exit;
+
+    $obj1 = array();
+    $obj2 = array();
+
+    foreach ($areas as $key => $area) {
+        foreach ($dominios as $key => $dom) {
+
+            $query = "";
+            $label = "";
+
+            switch ($area) {
+                case 'assentamento':
+                    // if($dom == 'federal') {
+                    //     $query = $query . "f_deter_assentamento('','FEDERAL','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    // } else {
+                    //     $query = $query . "f_awifs_assentamento('','ESTADUAL'," . $uf . ",'" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    // }
+                    $label = "Assentamento " . ucfirst(strtolower($dom));
+
+                    if ($tax == 'deter')
+                        $query = "SELECT * FROM painel.f_" . $tax . "_assentamento('" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else
+                        $query = "SELECT * FROM painel.f_" . $tax . "_assentamento('','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    break;
+
+                case 'terra_arrecadada':
+                    $label = "Terra Arrecadada " . ucfirst(strtolower($dom));
+
+                    if ($tax == 'deter')
+                        $query = "SELECT * FROM painel.f_" . $tax . "_terra_arrecadada_" . strtolower($dom) . "('" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else
+                        $query = "SELECT * FROM painel.f_" . $tax . "_terra_arrecadada_" . strtolower($dom) . "('','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+
+                    break;
+
+                case 'uc_integral':
+                    $label = "UC Proteção Integral " . ucfirst(strtolower($dom));
+
+                    if ($tax == 'deter')
+                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_protecao_integral('" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else
+                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_protecao_integral('','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    break;
+
+                case 'uc_sustentavel':
+                    $label = "UC Uso Sustentavel " . ucfirst(strtolower($dom));
+
+                    if ($tax == 'deter')
+                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_uso_sustentavel('" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else
+                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_uso_sustentavel('','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    break;
+
+                case 'terra_indigena':
+                    $label = "Terra Indígena";
+
+                    if ($dom == "FEDERAL") {
+                        if ($tax == 'deter')
+                            $query = "SELECT * FROM painel.f_" . $tax . "_terra_indigena('" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                        else
+                            $query = "SELECT * FROM painel.f_" . $tax . "_terra_indigena('','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    }
+                    break;
+
+                default:
+                    $query = "";
+                    break;
+            }
+
+            if(!empty($query)) {
+                $result = pg_query($query);
+
+                // print_r($query);
+
+                $out = array();
+
+                while($row = pg_fetch_row($result)){
+                    $out = $row;
+                }
+
+                // if ($area == "terra_indigena") {
+                //     print_r($query);
+                //     print_r(json_encode($out));
+                // }
+
+                foreach ($out as $key => $value) {
+                    $c = array();
+
+
+                    // if ($taxa == "PRODES") {
+                    //     if ($date_diff->days < 50)
+                    //         array_push($c, (object) array(v => $string->format('d/m')));
+                    //     else if ($date_diff->days < 730)
+                    //         array_push($c, (object) array(v => $months[(int) $string->format('m')]));
+                    //     else
+                    //         array_push($c, (object) array(v => $string->format('Y')));
+                    // } else {
+                        // array_push($c, (object) array(v => $string->format('Y')));
+                    // }
+                    // $label = $area . "_" . strtolower($dom);
+
+                    array_push($c, (object) array(v => $label));
+
+                    array_push($c, (object) array(v => (float) number_format((float)$value, 2, '.', '')));
+
+                    if ($dom == "FEDERAL" || $area == "terra_indigena") {
+                        array_push($obj1, (object) array(c => $c));
+                    } else
+                        array_push($obj2, (object) array(c => $c));
+                }
+            }
+        }
+    }
+
+    array_push($return, (object) array(federalChart => $obj1));
+    array_push($return, (object) array(estadualChart => $obj2));
+
+
+    $result = pg_query($query);
 
     pg_close($POSTGRES);
 

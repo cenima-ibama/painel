@@ -13,7 +13,8 @@
       <th><label>Tipo de Detecção </label></th>
       <th ng-if="Deter == 'true'"><label>Data Inicial </label></th>
       <th ng-if="Deter == 'true'"><label>Data Final </label></th>
-      <!-- <th ng-if="Deter == 'false'"><label>Data </label></th> -->
+      <th ng-if="Deter == 'false'"><label>Data Inicial </label></th>
+      <th ng-if="Deter == 'false'"><label>Data Final </label></th>
       <th><label>Estagio da Alteração </label></th>
       <th><label>Áreas de Comparação </label></th>
       <th><label>Domínio </label></th>
@@ -24,7 +25,8 @@
       <td><select id="taxa" ng-model="taxa" ng-options="taxa for taxa in taxas" ng-change="changeThis(taxa)" style="width:180px;"></select></td>
       <td ng-if="Deter == 'true'"><input style="top: -0.4em; width:180px; position: relative;" calendar ng-model='$parent.inicio' /></td>
       <td ng-if="Deter == 'true'"><input style="top: -0.4em; width:180px; position: relative;" calendar ng-model='$parent.fim' /></td>
-      <!-- <td ng-if="Deter == 'false'"><input style="top: -0.4em;  position: relative;" calendar ng-model='$parent.inicio' /></td> -->
+      <td ng-if="Deter == 'false'"><select id="inicio" style="width:180px;" ng-options="ano for ano in anos" ng-model='$parent.inicio' /></td>
+      <td ng-if="Deter == 'false'"><select id="fim" style="width:180px;" ng-options="ano for ano in anos" ng-model='$parent.fim' /></td>
       <td><select id="estagio" ng-model="estagio" ng-options="estagio.value as estagio.name for estagio in estagios" style="width:180px;"></select></td>
       <td><select id="shape" ng-model="shape" ng-options="shape.value as shape.name for shape in shapes" style="width:180px;" ng-change="hideState(shape)"></select></td>
       <td><select ng-model="dominio" ng-options="dominio for dominio in dominios" style="width:180px;"></select></td>
@@ -38,35 +40,121 @@
 
 </div>
 
-<div ng-controller="chartsCtrl">
+<div ng-controller="chartsCtrl" ng-show="chart1!=null || load=='true'">
   <div style="display:inline-block;">
-   <!--  <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div>
-    <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div>
-    <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div>
-    <div class="box-header" style="width:{{chartWidth}}px;margin: 0px 10px;"></div> -->
     <div style="{{divStyle}}">
+      <div class="box-header" style="height:2.9em; border-bottom:2px solid #DDDDDD;">
+        <h2>{{chart1.title}}</h2>
+        <div class="btn-group chart-icon btn-right">
+<!--           <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
+            <i class="glyphicon glyphicon-list-alt"></i>
+          </button> -->
+          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+            <i class="glyphicon glyphicon-download-alt"></i>
+          </button>
+          <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
+            <i class="glyphicon glyphicon-chevron-up"></i>
+          </button>
+          <button id="chart2-btn-maximize" class="btn" title="Ativar/Desativar Tela Cheia">
+            <i class="glyphicon glyphicon-resize-full"></i>
+          </button>
+        </div>
+        <div class="chart-icon btn-right" style="display:inline-block;margin-right:10px;">
+          <select ng-model="graph" ng-change="changeGraph(graph)" ng-options="graph for graph in graphs"></select>
+        </div>
+      </div>
       <div ng-if="load == 'false'" google-chart chart="chart1" style="{{chart1.cssStyle}}"/></div>
       <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
-        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+        <img src="img/spinner.gif"> Por favor, aguarde.
       </div>
     </div>
-    <div style="{{divStyle}}">
+<!--     <div style="{{divStyle}}">
+      <div class="box-header" style="height:2.9em; border-bottom:2px solid #DDDDDD;">
+        <h2>{{chart2.title}}</h2>
+        <div class="btn-group chart-icon btn-right">
+          <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
+            <i class="glyphicon glyphicon-list-alt"></i>
+          </button>
+          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+            <i class="glyphicon glyphicon-download-alt"></i>
+          </button>
+          <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
+            <i class="glyphicon glyphicon-chevron-up"></i>
+          </button>
+          <button id="chart2-btn-maximize" class="btn" title="Ativar/Desativar Tela Cheia">
+            <i class="glyphicon glyphicon-resize-full"></i>
+        </div>
+      </div>
       <div ng-if="load == 'false'" google-chart chart="chart2" style="{{chart2.cssStyle}}"/></div>
       <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
-        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+        <img src="img/spinner.gif"> Por favor, aguarde.
       </div>
-    </div>
+    </div> -->
     <div style="{{divStyle}}">
+      <div class="box-header" style="height:2.9em; border-bottom:2px solid #DDDDDD;">
+        <h2>{{chart3.title}}</h2>
+        <div class="btn-group chart-icon btn-right">
+<!--           <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
+            <i class="glyphicon glyphicon-list-alt"></i>
+          </button> -->
+          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+            <i class="glyphicon glyphicon-download-alt"></i>
+          </button>
+          <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
+            <i class="glyphicon glyphicon-chevron-up"></i>
+          </button>
+          <button id="chart2-btn-maximize" class="btn" title="Ativar/Desativar Tela Cheia">
+            <i class="glyphicon glyphicon-resize-full"></i>
+        </div>
+      </div>
       <div ng-if="load == 'false'" google-chart chart="chart3" style="{{chart3.cssStyle}}"/></div>
       <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
-        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+        <img src="img/spinner.gif"> Por favor, aguarde.
       </div>
     </div>
     <div style="{{divStyle}}">
+      <div class="box-header" style="height:2.9em; border-bottom:2px solid #DDDDDD;">
+        <h2>{{chart4.title}}</h2>
+        <div class="btn-group chart-icon btn-right">
+<!--           <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
+            <i class="glyphicon glyphicon-list-alt"></i>
+          </button> -->
+          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+            <i class="glyphicon glyphicon-download-alt"></i>
+          </button>
+          <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
+            <i class="glyphicon glyphicon-chevron-up"></i>
+          </button>
+          <button id="chart2-btn-maximize" class="btn" title="Ativar/Desativar Tela Cheia">
+            <i class="glyphicon glyphicon-resize-full"></i>
+        </div>
+      </div>
       <div ng-if="load == 'false'" google-chart chart="chart4" style="{{chart4.cssStyle}}"/></div>
       <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
-        <img src="img/spinner.gif"> Por favor, aguarde. Dados sendo capturados dos nossos bancos de dados...
+        <img src="img/spinner.gif"> Por favor, aguarde.
       </div>
     </div>
+<!--     <div style="{{divStyle}}">
+      <div class="box-header" style="height:2.9em; border-bottom:2px solid #DDDDDD;">
+        <h2>{{chart5.title}}</h2>
+        <div class="btn-group chart-icon btn-right">
+          <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
+            <i class="glyphicon glyphicon-list-alt"></i>
+          </button>
+          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+            <i class="glyphicon glyphicon-download-alt"></i>
+          </button>
+          <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
+            <i class="glyphicon glyphicon-chevron-up"></i>
+          </button>
+          <button id="chart2-btn-maximize" class="btn" title="Ativar/Desativar Tela Cheia">
+            <i class="glyphicon glyphicon-resize-full"></i>
+        </div>
+      </div>
+      <div ng-if="load == 'false'" google-chart chart="chart5" style="{{chart5.cssStyle}}"/></div>
+      <div ng-if="load == 'true'" style="height:210px; width:679px;display:inline-block; margin:0px 10px 0px 10px; text-align:center;"/>
+        <img src="img/spinner.gif"> Por favor, aguarde.
+      </div>
+    </div> -->
   </div>
 </div>

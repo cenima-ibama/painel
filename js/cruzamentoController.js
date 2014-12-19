@@ -1,5 +1,6 @@
 app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routeParams, $rootScope,$cookies){
 
+
     $scope.Deter = 'true';
     $scope.load = 'false';
 
@@ -12,9 +13,9 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
     $scope.estados = ['AC', 'AM', 'AP', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO', 'AMAZONIA LEGAL'];
     $scope.anos = ['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'];
     $scope.estagios = [
-        { name: 'CORTE RASO', value: '' },
-        { name: 'DEGRADAÇÂO', value: '' },
-        { name: 'FOGO EM FLORESTA', value: '' }
+        { name: 'Corte Raso', value: '' },
+        { name: 'Degradação', value: '' },
+        { name: 'Fogo em Floresta', value: '' }
     ];
     $scope.dominios = ['FEDERAL', 'ESTADUAL'];
     $scope.shapes= [
@@ -40,13 +41,13 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
     $scope.changeThis = function($out){
         if ($out === 'DETER') {
             $scope.estagios = [
-                { name: 'Corte Raso', value: '' }
+                { name: 'Corte Raso + Degradação', value: '' }
             ];
             return $scope.Deter = 'true';
         }
         if ($out === 'PRODES') {
             $scope.estagios = [
-                { name: 'Corte Raso + Degradação', value: '' }
+                { name: 'Corte Raso', value: '' }
             ];
             return $scope.Deter = 'false';
         }
@@ -118,6 +119,7 @@ app.controller('cruzamentoCtrl', function ($scope, $http, $location , $routePara
 
         request.
         success(function(data, status) {
+            $rootScope.taxa = $scope.taxa;
             $rootScope.$broadcast('load', 'false');
             $scope.status = status;
             console.log(data);
