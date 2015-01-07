@@ -59,35 +59,35 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
 
         //inicio do segundo grafico
 
-        // var chart2 = {};
-        // chart2.type = "ColumnChart";
-        // // chart2.cssStyle = "height:210px; width:679px;display:inline-block; " + border + " padding-left:10px; margin:0px 10px 0px 10px;";
-        // // chart2.cssStyle = "heigth:180px";
-        // chart2.data = {"cols": [
-        //     {id: "month", label: "Período", type: "string"},
-        //     {id: "laptop-id", label: "Área km²", type: "number"}
-        // ], "rows": $rootScope.cruzamento[0].chart1
-        // };
+        var chart2 = {};
+        chart2.type = "ColumnChart";
+        // chart2.cssStyle = "height:210px; width:679px;display:inline-block; " + border + " padding-left:10px; margin:0px 10px 0px 10px;";
+        // chart2.cssStyle = "heigth:180px";
+        chart2.data = {"cols": [
+            {id: "month", label: "Período", type: "string"},
+            {id: "laptop-id", label: "Área km²", type: "number"}
+        ], "rows": $rootScope.cruzamento[0].chart1
+        };
 
-        // chart2.options = {
-        //     // "title": $rootScope.taxa + " - Gráfico de Barra",
-        //     "isStacked": "true",
-        //     "fill": 20,
-        //     "displayExactValues": true,
-        //     "vAxis": {
-        //         "title": "Área km²", "gridlines": {"count": 6}
-        //     },
-        //     "hAxis": {
-        //         "title": "Date"
-        //     }
-        // };
-        // if ($rootScope.taxa) {
-        //    chart2.title = $rootScope.taxa + " - Gráfico de Barra";
-        // } else {
-        //     chart1.title = "Gráfico de Barra";
-        // }
-        // chart2.formatters = {};
-        // $scope.chart2 = chart2;
+        chart2.options = {
+            // "title": $rootScope.taxa + " - Gráfico de Barra",
+            "isStacked": "true",
+            "fill": 20,
+            "displayExactValues": true,
+            "vAxis": {
+                "title": "Área km²", "gridlines": {"count": 6}
+            },
+            "hAxis": {
+                "title": "Date"
+            }
+        };
+        if ($rootScope.taxa) {
+           chart2.title = $rootScope.taxa + " - Gráfico de Barra";
+        } else {
+            chart1.title = "Gráfico de Barra";
+        }
+        chart2.formatters = {};
+        $scope.chart2 = chart2;
 
         //inicio do terceiro grafico
 

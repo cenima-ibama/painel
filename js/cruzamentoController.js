@@ -145,7 +145,7 @@ app.directive('calendar', function () {
         require: 'ngModel',
         link: function (scope, el, attr, ngModel) {
             $(el).datepicker({
-                dateFormat: 'yy-mm-dd',
+                dateFormat: 'dd-mm-yy',
                 onSelect: function (dateText) {
                     scope.$apply(function () {
                         ngModel.$setViewValue(dateText);

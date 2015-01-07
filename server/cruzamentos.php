@@ -191,7 +191,7 @@
                 $function = 'unidades_de_conservacao_uso_sustentavel';
                 break;
             case 'terra_arrecadada':
-                $function = 'terra_arrecadada_estadual';
+                $function = 'terra_arrecadada';
                 break;
         }
 
@@ -304,11 +304,23 @@
     $obj1 = array();
     $obj2 = array();
 
+
+    $selectedUf = $uf != 'BR' ? " AND uf == " . $uf : " ";
+
     foreach ($areas as $key => $area) {
         foreach ($dominios as $key => $dom) {
 
             $query = "";
             $label = "";
+
+            if ($area == "terra_indigena")
+                $field = $area;
+            else if ($area == "uc_sustentavel")
+                $field = $dom == 'ESTADUAL' ? "unidades_de_conservacao_uso_sustentavel_" . strtolower($dom) : "unidades_de_conservacao_uso_sustentavel";
+            else if ($area == "uc_integral")
+                $field = $dom == 'ESTADUAL' ? "unidades_de_conservacao_protecao_integral_" . strtolower($dom) : "unidades_de_conservacao_protecao_integral";
+            else
+                $field = $dom == 'ESTADUAL' ? $area . "_" . strtolower($dom) : $area;
 
             switch ($area) {
                 case 'assentamento':
@@ -321,8 +333,12 @@
 
                     if ($tax == 'deter')
                         $query = "SELECT * FROM painel.f_" . $tax . "_assentamento('" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else if ($tax == 'prodes')
+                        $query = "SELECT sum(" . $field . ") FROM public.dado_prodes_consolidado WHERE ano<='" . $fim . "' AND ano>='" . $inicio . "' " . $selectedUf;
+                    else if ($tax == 'indicar')
+                        $query = "SELECT * FROM painel.f_landsat_assentamento('" . $estagio . "','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     else
-                        $query = "SELECT * FROM painel.f_" . $tax . "_assentamento('','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                        $query = "SELECT * FROM painel.f_" . $tax . "_assentamento('" . $estagio . "','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     break;
 
                 case 'terra_arrecadada':
@@ -330,8 +346,12 @@
 
                     if ($tax == 'deter')
                         $query = "SELECT * FROM painel.f_" . $tax . "_terra_arrecadada_" . strtolower($dom) . "('" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else if ($tax == 'prodes')
+                        $query = "SELECT sum(" . $field . ") FROM public.dado_prodes_consolidado WHERE ano<='" . $fim . "' AND ano>='" . $inicio . "' " . $selectedUf;
+                    else if ($tax == 'indicar')
+                        $query = "SELECT * FROM painel.f_landsat_terra_arrecadada_" . strtolower($dom) . "('" . $estagio . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     else
-                        $query = "SELECT * FROM painel.f_" . $tax . "_terra_arrecadada_" . strtolower($dom) . "('','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                        $query = "SELECT * FROM painel.f_" . $tax . "_terra_arrecadada_" . strtolower($dom) . "('" . $estagio . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
 
                     break;
 
@@ -340,8 +360,12 @@
 
                     if ($tax == 'deter')
                         $query = "SELECT * FROM painel.f_" . $tax . "_unidade_protecao_integral('" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else if ($tax == 'prodes')
+                        $query = "SELECT sum(" . $field . ") FROM public.dado_prodes_consolidado WHERE ano<='" . $fim . "' AND ano>='" . $inicio . "' " . $selectedUf;
+                    else if ($tax == 'indicar')
+                        $query = "SELECT * FROM painel.f_landsat_unidade_protecao_integral('" . $estagio . "','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     else
-                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_protecao_integral('','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_protecao_integral('" . $estagio . "','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     break;
 
                 case 'uc_sustentavel':
@@ -349,8 +373,12 @@
 
                     if ($tax == 'deter')
                         $query = "SELECT * FROM painel.f_" . $tax . "_unidade_uso_sustentavel('" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                    else if ($tax == 'prodes')
+                        $query = "SELECT sum(" . $field . ") FROM public.dado_prodes_consolidado WHERE ano<='" . $fim . "' AND ano>='" . $inicio . "' " . $selectedUf;
+                    else if ($tax == 'indicar')
+                        $query = "SELECT * FROM painel.f_landsat_unidade_uso_sustentavel('" . $estagio . "','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     else
-                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_uso_sustentavel('','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                        $query = "SELECT * FROM painel.f_" . $tax . "_unidade_uso_sustentavel('" . $estagio . "','" . $dom . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     break;
 
                 case 'terra_indigena':
@@ -359,8 +387,12 @@
                     if ($dom == "FEDERAL") {
                         if ($tax == 'deter')
                             $query = "SELECT * FROM painel.f_" . $tax . "_terra_indigena('" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                        else if ($tax == 'prodes')
+                            $query = "SELECT sum(" . $field . ") FROM public.dado_prodes_consolidado WHERE ano<='" . $fim . "' AND ano>='" . $inicio . "' " . $selectedUf;
+                        else if ($tax == 'indicar')
+                            $query = "SELECT * FROM painel.f_landsat_terra_indigena('" . $estagio . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                         else
-                            $query = "SELECT * FROM painel.f_" . $tax . "_terra_indigena('','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
+                            $query = "SELECT * FROM painel.f_" . $tax . "_terra_indigena('" . $estagio . "','" . $uf . "','" . $inicio . "','" . $fim . "') AS foo (Resultado float);";
                     }
                     break;
 
@@ -373,6 +405,7 @@
                 $result = pg_query($query);
 
                 // print_r($query);
+                // exit;
 
                 $out = array();
 
