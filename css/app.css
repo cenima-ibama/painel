@@ -30,3 +30,7 @@ th, td {
 #prodes, #deter  {
   margin: -91px 17em;
 }
+
+.google-visualization-table-td {
+  text-align: center !important;
+}

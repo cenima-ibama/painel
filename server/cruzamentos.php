@@ -16,6 +16,21 @@
     $estagio = $request->estagio;
     $uf = $request->uf;
 
+    $federal = 0.0;
+    $estadual = 0.0;
+
+    // chart1 - Cruzamentos
+    $obj = [];
+    // chart3 - Área Federais
+    $obj1 = [];
+    // chart4 - Área Estaduais
+    $obj2 = [];
+    // chart3 - Área Federais vs Áreas Estaduais
+    $obj3 = [];
+    // Filter informations
+    $obj4 = [];
+
+
     // Inicialização da variavel que guardará o nome da função a ser consultada no banco.
     $function = "";
 
@@ -244,8 +259,8 @@
 
     $query = substr($query, 0, -2);
 
-    $rows = array();
-    $table = array();
+    $rows = [];
+    $table = [];
 
     $POSTGRES = pg_connect("host=$HOST port=$PORT dbname=$DATABASE user=$USER password=$PASSWORD");
 
@@ -255,19 +270,18 @@
 	$result = pg_query($query);
 
 
-    $out = array();
+    $out = [];
 
     while($row = pg_fetch_row($result)){
         $out = $row;
     }
 
-    $return = array();
-    $obj = array();
+    $return = [];
 
     foreach ($out as $key => $value) {
-        $c = array();
+        $c = [];
 
-        $string = new DateTime($periodosfim[$key]);
+        $string = new DateTime($periodosinicio[$key]);
 
         if ($taxa != "PRODES") {
             if ($date_diff->days < 50)
@@ -301,11 +315,8 @@
     // print_r($dataInicio . " " . $dataFim);
     // exit;
 
-    $obj1 = array();
-    $obj2 = array();
 
-
-    $selectedUf = $uf != 'BR' ? " AND uf == " . $uf : " ";
+    $selectedUf = $uf != 'BR' ? " AND uf='" . $uf . "' " : " ";
 
     foreach ($areas as $key => $area) {
         foreach ($dominios as $key => $dom) {
@@ -407,7 +418,7 @@
                 // print_r($query);
                 // exit;
 
-                $out = array();
+                $out = [];
 
                 while($row = pg_fetch_row($result)){
                     $out = $row;
@@ -419,7 +430,7 @@
                 // }
 
                 foreach ($out as $key => $value) {
-                    $c = array();
+                    $c = [];
 
 
                     // if ($taxa == "PRODES") {
@@ -440,15 +451,46 @@
 
                     if ($dom == "FEDERAL" || $area == "terra_indigena") {
                         array_push($obj1, (object) array(c => $c));
-                    } else
+                        $federal = $federal + (float) number_format((float)$value, 2, '.', '');
+                    } else {
+                        $estadual = $estadual + (float) number_format((float)$value, 2, '.', '');
                         array_push($obj2, (object) array(c => $c));
+                    }
                 }
             }
         }
     }
 
+    // Creating the object that holds the info for the graphic "Estaduais vs Federais"
+    $c = [];
+    array_push($c, (object) array(v => "Áreas Estaduais"));
+    array_push($c, (object) array(v => $estadual));
+    array_push($obj3, (object) array(c => $c));
+
+    $c = [];
+    array_push($c, (object) array(v => "Áreas Federais"));
+    array_push($c, (object) array(v => $federal));
+    array_push($obj3, (object) array(c => $c));
+
+    // Return infos on the current data crossing
+    foreach ($request as $key => $value) {
+        $c = [];
+        array_push($obj4, (object) array($key => ucfirst(strtolower($value))));
+    }
+
+    // $taxa = $request->taxa;
+    // $inicio = $request->inicio;
+    // $fim = $request->fim;
+    // $shape = $request->shape;
+    // $dominio = $request->dominio;
+    // $estagio = $request->estagio;
+    // $uf = $request->uf;
+
+    // Adding objects with infos for the graphics into the returning object
     array_push($return, (object) array(federalChart => $obj1));
     array_push($return, (object) array(estadualChart => $obj2));
+    array_push($return, (object) array(geralChart => $obj3));
+    array_push($return, (object) array(filters => $obj4));
 
 
     $result = pg_query($query);

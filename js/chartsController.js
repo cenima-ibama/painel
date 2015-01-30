@@ -16,6 +16,15 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
         $rootScope.pie = dbdata;
         $scope.graphs = ['Linha', 'Coluna', 'Tabela'];
         $scope.graph = 'Linha';
+
+        $dataInicio = $rootScope.cruzamento[4].filters[1].inicio;
+        $dataFim = $rootScope.cruzamento[4].filters[2].fim;
+        $areaComparacao = $rootScope.cruzamento[4].filters[3].shape;
+        $estagio = "";
+        if ($rootScope.cruzamento[4].filters[5].estagio !== '') {
+            $estagio = " - " + $rootScope.cruzamento[4].filters[5].estagio;
+        }
+
         // $rootScope.cruzamento = dbdata[0];
          // console.log($rootScope.cruzamento);
 
@@ -60,13 +69,13 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
         //inicio do segundo grafico
 
         var chart2 = {};
-        chart2.type = "ColumnChart";
+        chart2.type = "PieChart";
         // chart2.cssStyle = "height:210px; width:679px;display:inline-block; " + border + " padding-left:10px; margin:0px 10px 0px 10px;";
         // chart2.cssStyle = "heigth:180px";
         chart2.data = {"cols": [
             {id: "month", label: "Período", type: "string"},
             {id: "laptop-id", label: "Área km²", type: "number"}
-        ], "rows": $rootScope.cruzamento[0].chart1
+        ], "rows": $rootScope.cruzamento[3].geralChart
         };
 
         chart2.options = {
@@ -82,7 +91,7 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
             }
         };
         if ($rootScope.taxa) {
-           chart2.title = $rootScope.taxa + " - Gráfico de Barra";
+           chart2.title = $rootScope.taxa + " - Áreas Estaduais vs. Áreas Federais";
         } else {
             chart1.title = "Gráfico de Barra";
         }
@@ -106,7 +115,7 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
             "sliceVisibilityThreshold": 0
         };
         if ($rootScope.taxa) {
-            chart3.title = $rootScope.taxa + " - Gráfico de Áreas Federais";
+            chart3.title = $rootScope.taxa + " - Federais - " + $dataInicio.replace(/-/g , "/") + " a " + $dataFim.replace(/-/g , "/") + $estagio;
         } else {
             chart1.title = "Gráfico de Áreas Federais";
         }
@@ -133,7 +142,7 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
             "sliceVisibilityThreshold": 0
         };
         if ($rootScope.taxa) {
-            chart4.title = $rootScope.taxa + " - Gráfico de Áreas Estaduais";
+            chart4.title = $rootScope.taxa + " - Estaduais - " + $dataInicio.replace(/-/g , "/") + " a " + $dataFim.replace(/-/g , "/") + $estagio;
         } else {
             chart1.title = "Gráfico de Áreas Estaduais";
         }
@@ -240,8 +249,8 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
             chart1.cssStyle = "height:200px; width:" + parseFloat(($(window).width() / 2 ) - 40) + "px;display:flex;";
             // chart4.cssStyle = "heigth:200px";
             chart1.data = {"cols": [
-                {id: "m", label: "Período", type: "string"},
-                {id: "l-id", label: "Área km²", type: "number"}
+                {id: "m", label: "Período", type: "string", style: "text-align:center"},
+                {id: "l-id", label: "Área km²", type: "number", style: "text-align:center"}
             ], "rows": $rootScope.cruzamento[0].chart1
             };
 
