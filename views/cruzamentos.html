@@ -45,11 +45,12 @@
     <div style="{{divStyle}}">
       <div class="box-header" style="height:2.9em; border-bottom:2px solid #DDDDDD;">
         <h2>{{chart1.title}}</h2>
-        <div class="btn-group chart-icon btn-right">
-<!--           <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
+       <!--<button id="chart2-btn-table" class="btn" title="Tabela de Dados">
             <i class="glyphicon glyphicon-list-alt"></i>
           </button> -->
-          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+          <div class="btn-group chart-icon btn-right">
+          <button id="chart1" class="btn" title="Exportar Dados" 
+          ng-csv="gerarChart('chart1')"  filename="{{ filename }}.csv">
             <i class="glyphicon glyphicon-download-alt"></i>
           </button>
           <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
@@ -75,7 +76,8 @@
           <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
             <i class="glyphicon glyphicon-list-alt"></i>
           </button>
-          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+          <button id="chart4" class="btn" title="Exportar Dados" 
+          ng-csv="gerarChart('chart4')" filename="{{ filename }}.csv">
             <i class="glyphicon glyphicon-download-alt"></i>
           </button>
           <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
@@ -97,7 +99,7 @@
 <!--           <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
             <i class="glyphicon glyphicon-list-alt"></i>
           </button> -->
-          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+          <button id="chart2" class="btn" title="Exportar Dados" ng-csv="gerarChart('chart2')" filename="{{ filename }}.csv">
             <i class="glyphicon glyphicon-download-alt"></i>
           </button>
           <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
@@ -119,7 +121,7 @@
 <!--           <button id="chart2-btn-table" class="btn" title="Tabela de Dados">
             <i class="glyphicon glyphicon-list-alt"></i>
           </button> -->
-          <button id="chart2-btn-export" class="btn" title="Exportar Dados">
+          <button id="chart3" class="btn" title="Exportar Dados" ng-csv="gerarChart('chart3')" filename="{{ filename }}.csv">
             <i class="glyphicon glyphicon-download-alt"></i>
           </button>
           <button id="chart2-btn-minimize" class="btn" title="Esconder/Mostrar Gráfico">
