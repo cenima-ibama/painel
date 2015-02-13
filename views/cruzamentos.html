@@ -1,43 +1,35 @@
 <div ng-controller="cruzamentoCtrl">
   <figure class="quick quick-btn" id="selectMap">
-    <img id="{{ufs.name}}" href="#" class="item"
+    <img  id="{{ufs.name}}" href="#" class="item "
          ng-repeat="ufs in ufs" ng-src="{{ufs.image}}"
          value="{{ufs.name}}" ng-click='getValueClass(this)' ng-class="changeClass(this)" style="width:88px; height:90px;">
   </figure>
-    <form class="charts-content" >
+    <form id="painel" class="charts-content row container panel panel-default" role="form" >
 
-
-<table style="position: relative; left: 5%;">
-  <thead>
-    <tr>
-      <th><label>Tipo de Detecção </label></th>
-      <th ng-if="Deter == 'true'"><label>Data Inicial </label></th>
-      <th ng-if="Deter == 'true'"><label>Data Final </label></th>
-      <th ng-if="Deter == 'false'"><label>Data Inicial </label></th>
-      <th ng-if="Deter == 'false'"><label>Data Final </label></th>
-      <th><label>Estagio da Alteração </label></th>
-      <th><label>Áreas de Comparação </label></th>
-      <th><label>Domínio </label></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><select id="taxa" ng-model="taxa" ng-options="taxa for taxa in taxas" ng-change="changeThis(taxa)" style="width:180px;"></select></td>
-      <td ng-if="Deter == 'true'"><input style="top: -0.4em; width:180px; position: relative;" calendar ng-model='$parent.inicio' /></td>
-      <td ng-if="Deter == 'true'"><input style="top: -0.4em; width:180px; position: relative;" calendar ng-model='$parent.fim' /></td>
-      <td ng-if="Deter == 'false'"><select id="inicio" style="width:180px;" ng-options="ano for ano in anos" ng-model='$parent.inicio' /></td>
-      <td ng-if="Deter == 'false'"><select id="fim" style="width:180px;" ng-options="ano for ano in anos" ng-model='$parent.fim' /></td>
-      <td><select id="estagio" ng-model="estagio" ng-options="estagio.value as estagio.name for estagio in estagios" style="width:180px;"></select></td>
-      <td><select id="shape" ng-model="shape" ng-options="shape.value as shape.name for shape in shapes" style="width:180px;" ng-change="hideState(shape)"></select></td>
-      <td><select ng-model="dominio" ng-options="dominio for dominio in dominios" style="width:180px;"></select></td>
-
-      <td><button type="submit" style="top: -0.5em; position: relative"class="btn btn-default" ng-click="cruzamento()">Cruzamento</button></td>
-
-    </tr>
-  </tbody>
-</table>
-<form>
-
+      <div class="form-group col-md-2 col-xs-12">
+        <select class="form-control" id="taxa" ng-model="taxa" ng-options="taxa for taxa in taxas" ng-change="changeThis(taxa)" ><option  id="label" value="" default selected>Tipo de Detecção</option></select>
+      </div>
+      <div class="form-group col-md-2 col-xs-12">
+        <input  ng-if="Deter == 'true'" placeholder="Data Inicial" class="form-control"  calendar ng-model='$parent.inicio' />
+        <select ng-if="Deter == 'false'" class="form-control" id="inicio"  ng-options="ano for ano in anos" ng-model='$parent.inicio'><option  id="label" value="" default selected>Data Inicial</option></select>
+      </div>
+      <div class="form-group col-md-2 col-xs-12">
+        <input  ng-if="Deter == 'true'" placeholder="Data Final" class="form-control"  calendar ng-model='$parent.fim' />
+        <select ng-if="Deter == 'false'" class="form-control" id="fim"  ng-options="ano for ano in anos" ng-model='$parent.fim'><option  id="label" value="" default selected>Data Final</option></select>
+      </div> 
+      <div class="form-group col-md-2 col-xs-12">
+        <select class="form-control" id="estagio" ng-model="estagio" ng-options="estagio.value as estagio.name for estagio in estagios" ><option  id="label" value="" default selected>Estagio da Alteração</option></select>
+      </div>
+      <div class="form-group col-md-2 col-xs-12">
+        <select class="form-control" id="shape" ng-model="shape" ng-options="shape.value as shape.name for shape in shapes" ng-change="hideState(shape)"><option  id="label" value="" default selected>Áreas de Comparação</option></select>
+      </div>
+      <div class="form-group col-md-2 col-xs-12">
+        <select class="form-control" ng-model="dominio" ng-options="dominio for dominio in dominios" ><option  id="label" value="" default selected>Domínio</option></select>
+      </div>
+      <div  class="form-group col-md-12 col-xs-12">
+        <button  type="submit" class="btn btn-primary" ng-click="cruzamento()"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Cruzamento</button>
+      </div>
+  <form>
 </div>
 
 <div ng-controller="chartsCtrl" ng-show="chart1!=null || load=='true'">

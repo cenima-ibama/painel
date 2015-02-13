@@ -20,17 +20,22 @@
 }
 
 #selectMap {
-	margin: 5% 0 0 20%;
-}
-
-th, td {
-	padding: 0.5em;	position: relative;
-}
-
-#prodes, #deter  {
-  margin: -91px 17em;
+	margin: 6% auto;
+  display: table;
 }
 
 .google-visualization-table-td {
   text-align: center !important;
+}
+
+ #painel{
+  width: 96%;
+ }
+.form-group{
+  margin-top: 2%;
+
+}
+
+#label{
+    display: none
 }
