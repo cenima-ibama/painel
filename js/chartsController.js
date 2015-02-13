@@ -148,6 +148,54 @@ app.controller('chartsCtrl', function ($scope, $http, $location , $routeParams, 
         }
         chart4.formatters = {};
         $scope.chart4 = chart4;
+          //Função para gerar o arquivo CSV.
+        $scope.gerarChart = function($chart_t){
+
+        $scope.getArray = [];   
+        $periodo = []; 
+        $scope.filename = '';
+
+
+        if ($chart_t=="chart1"){
+            
+            $scope.filename = "Gráfico de Linha";
+            for (var i in $rootScope.cruzamento[0].chart1) {
+            $periodo.push($rootScope.cruzamento[0].chart1[i].c[0].v);
+            $periodo.push($rootScope.cruzamento[0].chart1[i].c[1].v);
+            }
+                
+        }else if($chart_t =="chart2"){
+              
+            $scope.filename = "Gráfico de Áreas Federais";
+                for (var i in $rootScope.cruzamento[1].federalChart) {
+            $periodo.push($rootScope.cruzamento[1].federalChart[i].c[0].v);
+            $periodo.push($rootScope.cruzamento[1].federalChart[i].c[1].v);
+            }
+             
+        }else if($chart_t =="chart3"){
+            $scope.filename = "Gráfico de Áreas Estaduais";
+            for (var i in $rootScope.cruzamento[2].estadualChart) {
+            $periodo.push($rootScope.cruzamento[2].estadualChart[i].c[0].v);
+            $periodo.push($rootScope.cruzamento[2].estadualChart[i].c[1].v);
+            }
+        }else if($chart_t =="chart4"){
+            $scope.filename = "EstaduaisVsFederais";
+            for (var i in $rootScope.cruzamento[3].geralChart) {
+            $periodo.push($rootScope.cruzamento[3].geralChart[i].c[0].v);
+            $periodo.push($rootScope.cruzamento[3].geralChart[i].c[1].v);
+            }
+
+        }    
+            
+            for (var i=0; i< $periodo.length; i++) {
+            $scope.getArray.push({a: "Area : " + $periodo[i], 
+            b: "periodo : " + $periodo[i+1] }); 
+            i++;
+            }
+
+        return $scope.getArray
+      }  
+
 
         //inicio do quarto grafico
 

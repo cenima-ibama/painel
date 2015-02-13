@@ -1,5 +1,4 @@
-var app = angular.module('app',['ngRoute','googlechart','ngCookies']);
-
+var app = angular.module('app',['ngRoute','googlechart','ngCookies','ngSanitize','ngCsv']);
 app.config(function($routeProvider){
 
     //configure Route Provider
