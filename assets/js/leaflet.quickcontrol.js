@@ -123,6 +123,7 @@
       className = this._className = "switch-control-layers";
       container = this._container = L.DomUtil.create("div", "leaflet-bar " + className);
       this._container.setAttribute('aria-haspopup', true);
+
       if (!L.Browser.touch) {
         L.DomEvent.disableClickPropagation(this._container);
         L.DomEvent.on(this._container, "mousewheel", L.DomEvent.stopPropagation);
@@ -131,6 +132,7 @@
         L.DomEvent.disableClickPropagation(this._container);
         L.DomEvent.on(this._container, "click", L.DomEvent.stopPropagation);
       }
+
       if (this.options.collapsed) {
         L.DomEvent.on(this._container, "click", this._expand, this);
         link = this._link = L.DomUtil.create("a", className + "-toggle", this._container);
@@ -342,7 +344,6 @@
                 }
 
                 //function returns coords of map to zoom in a locate choosed in input.value
-                //added by Dagnaldo Silva - 08/14
                 getBoundingBox = function(State){
                   array = [];
                   switch(State){
@@ -364,14 +365,29 @@
                       return State = [[-13.162, -65.590],[-8.399, -59.125]];
                     case 'RR':
                       return State = [[-2.024, -64.950],[6.265, -58.125]];
-                    default: //returns Brazil zoom
+                    default:
                      return State = [[-34.3848,  -70.6921], [8.2450, -33.1274]];
+
                   }
                 }
                 //zoom in on map to locates that input.file returns
                 boundingBox = getBoundingBox(input.value);
                 H5.Map.base.fitBounds(L.latLngBounds(L.latLng(boundingBox[0]), L.latLng(boundingBox[1])));
- 
+                 
+                break;
+              case "date":
+                filter = obj.vectorLayer.filters[key];
+                input = obj.vectorLayer.inputs[key];
+                if (inputRange.start.value) {
+                  start = input.start.value.split("/");                  
+                  if (qry) {
+                    qry += " AND ";
+                  }
+                  qry += filter.dbfield + " = '" + start[2] + "-" + start[1] + "-" + start[0] + "'";
+                }
+                else {
+                  qry == null;
+                }                
                 break;
               case "period":
                 filter = obj.vectorLayer.filters[key];
@@ -384,6 +400,7 @@
                   }
                   qry += filter.dbfield + " BETWEEN '" + start[2] + "-" + start[1] + "-" + start[0] + "' AND '" + end[2] + "-" + end[1] + "-" + parseInt(parseInt(end[0]) + 1) + "'";
                 }
+                
             }
           }
           obj.vectorLayer.layer.setOptions({
@@ -419,6 +436,7 @@
               }
               _results.push($(select).on("change", function(e) {
                 return updateQuery();
+                
               }));
               break;
             case "input":
@@ -479,6 +497,95 @@
                   }
                 }
               });
+              _results.push(obj.vectorLayer.inputs[key] = inputRange);
+              break;
+            case "date":
+              inputRange = L.DomUtil.create('div', 'input-daterange pull-right', container);
+              $(inputRange).attr('id', "switch" + key);
+              inputRange.start = L.DomUtil.create('input', 'input-small', inputRange);
+              
+              $(inputRange.start).attr('name', 'start');
+              $(inputRange.start).attr('type', 'text');
+              $(inputRange.start).attr('id', 'dateStart');
+              $(inputRange.start).attr('placeholder', data.placeholder);              
+
+              datesDeterNuvem = "";                           
+
+              H5.Data.restURL = "http://" + document.domain + "/painel/rest"
+
+              rest = new H5.Rest ({
+                url: H5.Data.restURL,
+                table: "nuvem_deter",                
+                order: "data_src desc",
+                fields: "objectid,data_src,to_char(data_src,'MM-DD-YYYY') as date"
+              })
+              
+              $.each(rest.data, function(index,dt){
+                  
+                  if (datesDeterNuvem.length > 0)
+                    datesDeterNuvem += ",";
+
+                  datesDeterNuvem += dt.date;                                
+              });             
+
+              deterDatesArray = datesDeterNuvem.split(",");
+
+               $(inputRange).datepicker({
+                format: "dd/mm/yyyy",
+                language: "pt-BR",
+                autoclose: true,
+                orientation: "auto right",
+                clearBtn: true,
+                startView: 1,
+                startDate: "01/07/2004",
+                endDate: "today",
+                beforeShowDay: function(d)
+                {
+                    var dmy = (d.getMonth()+1); 
+
+                    if(d.getMonth()<9) 
+                      dmy="0"+dmy; 
+
+                    dmy+= "-"; 
+        
+                    if(d.getDate()<10) 
+                      dmy+="0"; 
+
+                    dmy+=d.getDate() + "-" + d.getFullYear(); 
+                    
+
+                    if ($.inArray(dmy, deterDatesArray) != -1)
+                      return {enabled: true, tooltip: "Esta data possui registro."};
+                    else
+                      return { enabled: false, tooltip: "Não há registro nesta data."}; 
+                
+                  return;    
+                    
+                }             
+
+              });
+              
+              $(inputRange).on("changeDate", function(e) {
+                if (!inputRange.start.value) {
+                  return;
+                }
+                return updateQuery();
+              });
+             
+              $(document).click(function(e) {
+                if (e.target.id !== "dateStart") {
+
+                  if ($(".datepicker").is(":visible")) {
+
+                    if (!$(e.target).hasClass("day") && !$(e.target).hasClass("month") && !$(e.target).hasClass("year") && !$(e.target).hasClass("datepicker-switch") && !$(e.target).hasClass("prev") && !$(e.target).hasClass("next") && !$(e.target).parents(".datepicker").hasClass("datepicker")) {
+                                            
+                      return $(inputRange.start).datepicker("hide");
+
+                    }
+                  }
+                }
+              });
+
               _results.push(obj.vectorLayer.inputs[key] = inputRange);
               break;
             default:
@@ -1003,6 +1110,46 @@
       this._separator = L.DomUtil.create('div', this._className + '-separator', this._form);
       return this._overlayersList = L.DomUtil.create('div', this._className + '-overlayers', this._form);
     };
+    // updateQuery = function(field) {
+    //       var data, end, filter, input, param, start, _ref1;
+    //       param = "";
+    //       _ref1 = obj.filters;
+    //       for (key in _ref1) {
+    //         data = _ref1[key];
+    //         switch (data.type) {
+    //           case "select" || "input":
+    //             filter = obj.filters[key];
+    //             input = obj.inputs[key];
+    //             if (param && (input.value !== filter.reset)) {
+    //               param += " AND ";
+    //             }
+    //             if (input.value !== filter.reset) {
+
+    //               param += filter.dbfield + " = '" + input.value + "'";
+    //             break;
+    //           case "period":
+    //             filter = obj.vectorLayer.filters[key];
+    //             input = obj.vectorLayer.inputs[key];
+    //             if (inputRange.start.value && inputRange.end.value) {
+    //               start = input.start.value.split("/");
+    //               end = input.end.value.split("/");
+    //               if (param) {
+    //                 param += " AND ";
+    //               }
+    //               param += filter.dbfield + " BETWEEN '" + start[2] + "-" + start[1] + "-" + start[0] + "' AND '" + end[2] + "-" + end[1] + "-" + end[0] + "'";
+    //             }
+    //         }
+    //       }
+    //       if (param) {
+    //         obj.layer.setParams({
+    //           cql_filter: param
+    //         });
+    //       } else {
+    //         delete obj.layer.wmsParams.cql_filter
+    //         obj.layer._map.setView(new L.LatLng(-37, -61),4);
+    //       }
+    //       obj.layer.redraw();
+    //     };
 
     Cleancontrol.prototype._addLayer = function(layer, name, overlayer, vectorLayer) {
       var id;

@@ -572,6 +572,7 @@ H5.Leaflet.Postgis = H5.Leaflet.GeoJSONLayer.extend(
     uniqueField: null
 
   _requiredParams: ["url", "geotable"]
+  
   _getFeatures: ->
 
     # Build Query
@@ -822,6 +823,7 @@ H5.Leaflet.LayerControl = L.Control.extend (
     @_separator = L.DomUtil.create('div', className + '-separator', form)
     @_overlayersList = L.DomUtil.create('div', className + '-overlayers', form)
     $(container).append form
+    
 
   _addLayer: (layer, name, overlayer, overlayControl) ->
     id = L.stamp(layer)

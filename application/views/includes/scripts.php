@@ -8,7 +8,9 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
   <script src="<?= base_url()?>assets/js/jquery.maskedinput.min.js"></script>
   <!-- Leaflet -->
-  <script src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+  <!-- // <script src="//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script> -->
+
+  <script src="<?= base_url()?>assets/js/leaflet.js"></script> <!-- Leaflet 0.7.3 -->
   <script src="<?= base_url()?>assets/js/leaflet.bing.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.markercluster.js"></script>
   <script src="<?= base_url()?>assets/js/leaflet.minimap.js"></script>
@@ -62,4 +64,5 @@
   <script src="<?= base_url()?>assets/js/h5home.js" type="text/javascript"></script>
   <script src="<?= base_url()?>assets/js/h5map.js" type="text/javascript"></script>
   <script src="<?= base_url()?>assets/js/h5charts.js" type="text/javascript"></script>
-
+  
+  <script defer="defer" async="async" src="http://barra.brasil.gov.br/barra.js" type="text/javascript"></script>

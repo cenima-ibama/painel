@@ -1,5 +1,6 @@
 #!/bin/bash
 
+coffee --join js/hash5leaflet.js -cw coffee/hash5leaflet.coffee &
 coffee --join js/h5map.js -cw coffee/h5map.coffee &
 coffee --join js/h5charts.js -cw coffee/h5charts.coffee &
 coffee --join js/h5home.js -cw coffee/h5home.coffee &
