@@ -255,7 +255,7 @@
     </div>
   </div>
 </div>
-<div id="prodes" class="dash govbar-style">
+<div id="prodes" class="govbar-style">
   <iframe id="cruzamento_frame" src="../cruzamentos" style="width:100%;height:700px" frameborder="0"></iframe>
 </div>
 
