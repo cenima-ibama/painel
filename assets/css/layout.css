@@ -570,3 +570,7 @@ input.search{
   max-height: 24em;
   overflow: scroll;
 }
+
+.govbar-style {
+  margin-top: 35px;
+}

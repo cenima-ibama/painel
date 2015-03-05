@@ -24,9 +24,9 @@
     echo '<div id="login" class="login"> </div>';
   }
 ?>
-<div id="map" class="map">
+<div id="map" class="map govbar-style">
 </div>
-<div id="dash" class="dash">
+<div id="dash" class="dash govbar-style">
   <div class="charts-content">
     <div class="row-fluid">
       <?php
@@ -72,6 +72,7 @@
             <option value="2012">2012</option>
             <option value="2013">2013</option>
             <option value="2014">2014</option>
+            <option value="2015">2015</option>
           </select>
         </div>
         <div class="item">
@@ -254,9 +255,8 @@
     </div>
   </div>
 </div>
-
-<div id="prodes" class="dash">
-  <iframe id="cruzamento_frame" src="http://10.1.8.55/cruzamentos" style="width:100%;height:734px" frameborder="0"></iframe>
+<div id="prodes" class="dash govbar-style">
+  <iframe id="cruzamento_frame" src="../cruzamentos" style="width:100%;height:700px" frameborder="0"></iframe>
 </div>
 
 <!-- <div  id="prodes" class="dash">
