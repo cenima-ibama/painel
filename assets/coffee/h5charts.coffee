@@ -39,7 +39,7 @@ H5.Data.regions = {
   centrooeste: ["DF", "GO", "MT", "MS"]
 }
 
-H5.Data.years = [ "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006","2005" ]
+H5.Data.years = [ "2015", "2014","2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006","2005" ]
 
 H5.Data.thisDate = new Date()
 H5.Data.thisYear = H5.Data.thisDate.getFullYear()
